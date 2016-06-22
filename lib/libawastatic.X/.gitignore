@@ -1,0 +1,6 @@
+# Builds
+build/
+debug/
+dist/
+temp/
+

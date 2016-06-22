@@ -1,0 +1,213 @@
+ifblock DS60001191
+
+config BSP_DS60001191_COMMON
+    set JTAGEN to "OFF"
+    set TRCEN to "OFF"
+	set ICESEL to "ICS_PGx2" if USE_BSP
+	set FNOSC to "SPLL"
+	set FSOSCEN to "OFF"
+	set IESO to "OFF"
+	set POSCMOD to "EC" if USE_BSP
+	set FWDTEN to "OFF"
+	set FDMTEN to "OFF"
+    set FPLLRNG to "RANGE_5_10_MHZ"
+    set FPLLICLK to "PLL_POSC" if USE_BSP
+    set FPLLICLK to "PLL_FRC" if !USE_BSP
+    set FPLLIDIV to "DIV_3" if USE_BSP
+    set FPLLIDIV to "DIV_1" if !USE_BSP
+    set FPLLMULT to "MUL_50"
+    set FPLLODIV to "DIV_2"
+    set TSEQ to "0x0000"
+    set CSEQ to "0xffff"
+    bool
+    default y if USE_BSP
+
+choice
+    prompt "Select BSP To Use For $DEVICE Device"
+    depends on USE_BSP
+    default BSP_PIC32MZ_EC_SK
+    ---help---
+    IDH_HTML_BSP_Board_Support_Packages
+    ---endhelp---
+
+	
+config BSP_PIC32MZ_EC_PIM_BT_AUDIO_DK
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_POSC_24MHz
+    select BSP_LED5
+    select BSP_LED6
+    select BSP_LED7
+    select BSP_LED8
+    select BSP_LED9
+	select BSP_BT_AUDIO_DK_BOARD
+    select USE_GFX_CRYSTAL_2_172x220_NEEDED if BSP_GRAPHICS_NEEDED
+    select USE_DRV_GFX_OTM2201A_NEEDED if BSP_GRAPHICS_NEEDED
+    bool "PIC32MZ EC PIM w/ Bluetooth Audio Development Kit"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_pim_bt_audio_dk
+    ---endhelp---
+	
+config BSP_PIC32MZ_EC_PIM_E16
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_POSC_24MHz
+    select BSP_LED3
+    select BSP_LED4
+    select BSP_LED5
+    select BSP_LED6
+    select BSP_LED7
+    select BSP_LED8
+    select BSP_LED9
+    select BSP_LED10
+    bool "PIC32MZ EC PIM w/ Explorer16"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_pim_e16
+    ---endhelp---
+	
+config BSP_PIC32MZ_EC_SK
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_USE_USBSWITCH
+	select BSP_POSC_24MHz
+    select BSP_LED1
+    select BSP_LED2
+    select BSP_LED3
+    bool "PIC32MZ EC Starter Kit"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_sk
+    ---endhelp---
+	
+config BSP_PIC32MZ_EC_SK_MEB2
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_USE_USBSWITCH
+	select BSP_POSC_24MHz
+    select BSP_LED1
+    select BSP_LED2
+    select BSP_LED3
+    select BSP_MEB2_LED3
+    select BSP_MEB2_LED4
+    select BSP_MEB2_LED5
+    select BSP_MEB2_LED6
+    select BSP_MEB2_LED7
+    select USE_GFX_NEWHAVEN_43_480X272_PCAP_NEEDED if BSP_GRAPHICS_NEEDED
+    select USE_DRV_GFX_LCC_NEEDED if BSP_GRAPHICS_NEEDED
+    select USE_DRV_TOUCH_MTCH6301_NEEDED if BSP_TOUCH_INPUT_NEEDED
+    set EXT_INT_PERIPHERAL_ID_IDX0 to "INT_EXTERNAL_INT_SOURCE1" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2
+    set DRV_TOUCH_MTCH6301_INTERRUPT_SOURCE to "INT_SOURCE_EXTERNAL_1" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2
+    set EXT_INT_PRIORITY_IDX0 to "INT_PRIORITY_LEVEL5" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2
+    set EXT_INT_POLARITY_IDX0 to "INT_EDGE_TRIGGER_RISING" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2
+    bool "PIC32MZ EC Starter Kit w/ Multimedia Expansion Board (MEB) II"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_sk_meb2
+    ---endhelp---
+	
+config BSP_PIC32MZ_EC_SK_MEB2_WVGA
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_USE_USBSWITCH
+	select BSP_POSC_24MHz
+    select BSP_LED1
+    select BSP_LED2
+    select BSP_LED3
+    select BSP_MEB2_LED3
+    select BSP_MEB2_LED4
+    select BSP_MEB2_LED5
+    select BSP_MEB2_LED6
+    select BSP_MEB2_LED7
+    select USE_GFX_NEWHAVEN_50_800X480_PCAP_NEEDED if BSP_GRAPHICS_NEEDED
+    select USE_DRV_GFX_LCC_NEEDED if BSP_GRAPHICS_NEEDED
+    select USE_DRV_TOUCH_MTCH6303_NEEDED if BSP_TOUCH_INPUT_NEEDED
+    set EXT_INT_PERIPHERAL_ID_IDX0 to "INT_EXTERNAL_INT_SOURCE1" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2_WVGA
+    set DRV_TOUCH_MTCH6303_INTERRUPT_SOURCE to "INT_SOURCE_EXTERNAL_1" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2_WVGA
+    set EXT_INT_PRIORITY_IDX0 to "INT_PRIORITY_LEVEL5" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2_WVGA
+    set EXT_INT_POLARITY_IDX0 to "INT_EDGE_TRIGGER_FALLING" if BSP_TOUCH_INPUT_NEEDED && BSP_PIC32MZ_EC_SK_MEB2_WVGA
+    bool "PIC32MZ EC Starter Kit w/ Multimedia Expansion Board (MEB) II and WVGA glass"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_sk_meb2_wvga
+    ---endhelp---
+
+config BSP_PIC32MZ_EC_SK_S1D_PICTAIL_VGA
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_USE_USBSWITCH
+	select BSP_POSC_24MHz
+    select BSP_LED1
+    select BSP_LED2
+    select BSP_LED3
+    select USE_GFX_TRULY_57_640X480_NEEDED
+    select USE_DRV_GFX_S1D13517_NEEDED
+    bool "PIC32MZ EC Starter Kit w/ S1D13517 Pictail+ and VGA glass"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_sk_s1d_pictail_vga
+    ---endhelp---
+	
+config BSP_PIC32MZ_EC_SK_S1D_PICTAIL_WQVGA
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_USE_USBSWITCH
+	select BSP_POSC_24MHz
+    select BSP_LED1
+    select BSP_LED2
+    select BSP_LED3
+    select USE_GFX_POWERTIP_43_480X272_NEEDED
+    select USE_DRV_GFX_S1D13517_NEEDED
+    bool "PIC32MZ EC Starter Kit w/ S1D13517 Pictail+ and WQVGA glass"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_sk_s1d_pictail_wqvga
+    ---endhelp---
+
+config BSP_PIC32MZ_EC_SK_S1D_PICTAIL_WVGA
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_USE_USBSWITCH
+	select BSP_POSC_24MHz
+    select BSP_LED1
+    select BSP_LED2
+    select BSP_LED3
+    select USE_GFX_TRULY_7_800X480_NEEDED
+    select USE_DRV_GFX_S1D13517_NEEDED
+    bool "PIC32MZ EC Starter Kit w/ S1D13517 Pictail+ and WVGA glass"
+    ---help---
+    IDH_HTML_BSP_pic32mz_ec_sk_s1d_pictail_wvga
+    ---endhelp---
+
+config BSP_CHIPKIT_WIFIRE_EC
+    depends on USE_BSP
+    depends on DS60001191
+	select BSP_TRIGGER
+	select BSP_POSC_24MHz
+    select BSP_LED1
+    select BSP_LED2
+    select BSP_LED3
+    select BSP_LED4
+	select BSP_USE_USBSWITCH
+    bool "chipKIT WiFIRE (PIC32MZ2048ECG100)"
+    ---help---
+    IDH_HTML_BSP_chipkit_wifire
+    ---endhelp---
+
+endchoice	
+
+
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_pim+bt_audio_dk/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_pim+e16/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_sk/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_sk+meb2/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_sk+meb2+wvga/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_sk+s1d_pictail+vga/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_sk+s1d_pictail+wqvga/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/pic32mz_ec_sk+s1d_pictail+wvga/config/bsp.hconfig"
+source "$HARMONY_VERSION_PATH/bsp/chipkit_wifire_ec/config/bsp.hconfig"
+
+endif
+

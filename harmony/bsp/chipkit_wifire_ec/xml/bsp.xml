@@ -1,0 +1,38 @@
+﻿<?xml version="1.0"?>
+<bsp name="chipkit_wifire_ec">
+    <function name="SWITCH_1" pin="RA5" mode="digital" pullup="false">
+        <constraint type="enable">
+            <pair key="BSP_CK_WIFIRE_EC_SW1" value="y"/>
+        </constraint>
+    </function>
+    <function name="SWITCH_2" pin="RA4" mode="digital" pullup="false">
+        <constraint type="enable">
+            <pair key="BSP_CK_WIFIRE_EC_SW2" value="y"/>
+        </constraint>
+    </function>
+    <function name="LED_1" pin="RG6" mode="digital" direction="out">
+        <constraint type="enable">
+            <pair key="BSP_CK_WIFIRE_EC_LED1" value="y"/>
+        </constraint>
+    </function>
+    <function name="LED_2" pin="RD4" mode="digital" direction="out">
+        <constraint type="enable">
+            <pair key="BSP_CK_WIFIRE_EC_LED2" value="y"/>
+        </constraint>
+    </function>
+    <function name="LED_3" pin="RB11" mode="digital" direction="out">
+        <constraint type="enable">
+            <pair key="BSP_CK_WIFIRE_EC_LED3" value="y"/>
+        </constraint>
+    </function>
+    <function name="LED_4" pin="RG15" mode="digital" direction="out">
+        <constraint type="enable">
+            <pair key="BSP_CK_WIFIRE_EC_LED4" value="y"/>
+        </constraint>
+    </function>
+    <function name="USB_VBUS_SWITCH" pin="RB0" mode="digital" direction ="out">
+        <constraint type="enable">
+            <pair key="BSP_CK_WIFIRE_EC_USB" value="y"/>
+        </constraint>
+    </function>
+</bsp>

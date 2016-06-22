@@ -1,0 +1,1487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <logicalFolder name="f1" displayName="Third party" projectFiles="true">
+        <logicalFolder name="f2" displayName="Creator" projectFiles="true">
+          <logicalFolder name="creator" displayName="include" projectFiles="true">
+            <logicalFolder name="core" displayName="core" projectFiles="true">
+              <itemPath>../../include/creator/core/base_types.h</itemPath>
+              <itemPath>../../include/creator/core/base_types_methods.h</itemPath>
+              <itemPath>../../include/creator/core/common_messaging_defines.h</itemPath>
+              <itemPath>../../include/creator/core/common_messaging_main.h</itemPath>
+              <itemPath>../../include/creator/core/core.h</itemPath>
+              <itemPath>../../include/creator/core/error_methods.h</itemPath>
+              <itemPath>../../include/creator/core/errortype.h</itemPath>
+              <itemPath>../../include/creator/core/creator_cert.h</itemPath>
+              <itemPath>../../include/creator/core/creator_debug.h</itemPath>
+              <itemPath>../../include/creator/core/creator_list.h</itemPath>
+              <itemPath>../../include/creator/core/creator_memalloc.h</itemPath>
+              <itemPath>../../include/creator/core/creator_task_scheduler.h</itemPath>
+              <itemPath>../../include/creator/core/creator_nvs.h</itemPath>
+              <itemPath>../../include/creator/core/creator_threading.h</itemPath>
+              <itemPath>../../include/creator/core/creator_time.h</itemPath>
+              <itemPath>../../include/creator/core/creator_timer.h</itemPath>
+              <itemPath>../../include/creator/core/creator_httpmethod.h</itemPath>
+              <itemPath>../../include/creator/core/http_query.h</itemPath>
+              <itemPath>../../include/creator/core/xmlparser.h</itemPath>
+              <itemPath>../../include/creator/core/xmltree.h</itemPath>
+            </logicalFolder>
+            <itemPath>../../include/creator/creatorcore.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="libcreatorcore"
+                         displayName="libcreatorcore"
+                         projectFiles="true">
+            <logicalFolder name="include" displayName="include" projectFiles="true">
+              <logicalFolder name="private" displayName="private" projectFiles="true">
+                <logicalFolder name="creator" displayName="creator" projectFiles="true">
+                  <logicalFolder name="core" displayName="core" projectFiles="true">
+                    <itemPath>../libcreatorcore/include/private/creator/core/base_types_methods_private.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/client_private.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/c_utils.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/creator_cert_private.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/http_encoding.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/query_encoding.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/server_private.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/session_private.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/timeparse.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/creator/core/session_events.h</itemPath>
+                  </logicalFolder>
+                  <logicalFolder name="debug" displayName="debug" projectFiles="true">
+                    <itemPath>../libcreatorcore/include/private/creator/debug/debug_features.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="ext-dep" displayName="ext-dep" projectFiles="true">
+                  <itemPath>../libcreatorcore/include/private/ext-dep/creator_http.h</itemPath>
+                  <itemPath>../libcreatorcore/include/private/ext-dep/creator_httpmethod.h</itemPath>
+                  <itemPath>../libcreatorcore/include/private/ext-dep/creator_threading_private.h</itemPath>
+                  <itemPath>../libcreatorcore/include/private/ext-dep/creator_tls.h</itemPath>
+                </logicalFolder>
+                <logicalFolder name="support" displayName="support" projectFiles="true">
+                  <logicalFolder name="data_buffer" displayName="data_buffer" projectFiles="true">
+                    <itemPath>../libcreatorcore/include/private/support/data_buffer/data_buffer.h</itemPath>
+                  </logicalFolder>
+                  <logicalFolder name="oauth_lib" displayName="oauth_lib" projectFiles="true">
+                    <itemPath>../libcreatorcore/include/private/support/oauth_lib/oauth.h</itemPath>
+                    <itemPath>../libcreatorcore/include/private/support/oauth_lib/xmalloc.h</itemPath>
+                  </logicalFolder>
+                  <logicalFolder name="string_manip"
+                                 displayName="string_manip"
+                                 projectFiles="true">
+                    <itemPath>../libcreatorcore/include/private/support/string_manip/string_manip.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+            </logicalFolder>
+            <logicalFolder name="src" displayName="src" projectFiles="true">
+              <logicalFolder name="ext-dep" displayName="ext-dep" projectFiles="true">
+                <logicalFolder name="cache_creatorobject"
+                               displayName="cache_creatorobject"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="debug-assertminimal"
+                               displayName="debug-assertminimal"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="debug-assertsigint"
+                               displayName="debug-assertsigint"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="debug-assertsignal"
+                               displayName="debug-assertsignal"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="debug-logminimal"
+                               displayName="debug-logminimal"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="debug-logstdout"
+                               displayName="debug-logstdout"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="debug-logws" displayName="debug-logws" projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="http_creator"
+                               displayName="http_creator"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="http_curl" displayName="http_curl" projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="memalloc_stdlib"
+                               displayName="memalloc_stdlib"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="nvs_file" displayName="nvs_file" projectFiles="true">
+                  <itemPath>../libcreatorcore/src/ext-dep/nvs_file/creator_nvs_file.h</itemPath>
+                </logicalFolder>
+                <logicalFolder name="nvs_pic32mz" displayName="nvs_pic32mz" projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="pic32_time" displayName="pic32_time" projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="posix_time" displayName="posix_time" projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="task_scheduler"
+                               displayName="task_scheduler"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="threading-semaphore-posix"
+                               displayName="threading-semaphore-posix"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="threading-semaphore-rtos"
+                               displayName="threading-semaphore-rtos"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="threading-threads-posix"
+                               displayName="threading-threads-posix"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="threading-threads-rtos"
+                               displayName="threading-threads-rtos"
+                               projectFiles="true">
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="support" displayName="support" projectFiles="true">
+                <logicalFolder name="data_buffer" displayName="data_buffer" projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="oauth_lib" displayName="oauth_lib" projectFiles="true">
+                  <itemPath>../libcreatorcore/src/support/oauth_lib/sha1.h</itemPath>
+                </logicalFolder>
+                <logicalFolder name="readwrite_gate"
+                               displayName="readwrite_gate"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="resizeable_array"
+                               displayName="resizeable_array"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="string_manip"
+                               displayName="string_manip"
+                               projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="xml" displayName="xml" projectFiles="true">
+                </logicalFolder>
+              </logicalFolder>
+            </logicalFolder>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="f1" displayName="FreeRTOS" projectFiles="true">
+          <logicalFolder name="include" displayName="pic32mz" projectFiles="true">
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/croutine.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/event_groups.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/FreeRTOS.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/list.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/mpu_wrappers.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/portable.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/projdefs.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/queue.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/semphr.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/StackMacros.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/task.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/timers.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ/ISR_Support.h</itemPath>
+            <itemPath>../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ/portmacro.h</itemPath>
+            <itemPath>./system_config/pic32mz/FreeRTOS_profile/FreeRTOSConfig.h</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="f1" displayName="CreatorCore" projectFiles="true">
+        <logicalFolder name="creator" displayName="creator" projectFiles="true">
+          <logicalFolder name="core" displayName="core" projectFiles="true">
+            <itemPath>../libcreatorcore/src/creator/core/base_types_methods.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/core.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/creator_cert.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/http_encoding.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/http_query.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/query_encoding.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/timeparse.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/creator_list.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/creator_queue.c</itemPath>
+            <itemPath>../libcreatorcore/src/creator/core/creator_random.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="ext-dep" displayName="ext-dep" projectFiles="true">
+          <logicalFolder name="debug-assertminimal"
+                         displayName="debug-assertminimal"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/debug-assertminimal/assert.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="debug-assertsigint"
+                         displayName="debug-assertsigint"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/debug-assertsigint/assert.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="debug-assertsignal"
+                         displayName="debug-assertsignal"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/debug-assertsignal/assert.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="debug-logminimal"
+                         displayName="debug-logminimal"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/debug-logminimal/log.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="debug-logstdout"
+                         displayName="debug-logstdout"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/debug-logstdout/log.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="debug-logws" displayName="debug-logws" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/debug-logws/log.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="http_creator"
+                         displayName="http_creator"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/http_creator/creator_http.c</itemPath>
+            <itemPath>../libcreatorcore/src/ext-dep/http_creator/http_server.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="http_curl" displayName="http_curl" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/http_curl/http.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="memalloc_rtos"
+                         displayName="memalloc_rtos"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/memalloc_rtos/creator_memalloc_rtos.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="memalloc_stdlib"
+                         displayName="memalloc_stdlib"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/memalloc_stdlib/creator_memalloc_stdlib.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="nvs_file" displayName="nvs_file" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/nvs_file/creator_nvs.c</itemPath>
+            <itemPath>../libcreatorcore/src/ext-dep/nvs_file/creator_nvs_impl.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="nvs_pic32mz" displayName="nvs_pic32mz" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/nvs_pic32mz/creator_nvs.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="task_scheduler"
+                         displayName="task_scheduler"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/task_scheduler/task_scheduler.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="threading-semaphore-posix"
+                         displayName="threading-semaphore-posix"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/threading-semaphore-posix/semaphores.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="threading-semaphore-rtos"
+                         displayName="threading-semaphore-rtos"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/threading-semaphore-rtos/semaphores.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="threading-threads-posix"
+                         displayName="threading-threads-posix"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/threading-threads-posix/threads.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="threading-threads-rtos"
+                         displayName="threading-threads-rtos"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/threading-threads-rtos/threads.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="time_pic32" displayName="time_pic32" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/time_pic32/creator_time.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="time_posix" displayName="time_posix" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/time_posix/creator_time.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f1" displayName="timer-rtos" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/timer-rtos/creator_timer.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="tls_cyassl" displayName="tls_cyassl" projectFiles="true">
+            <itemPath>../libcreatorcore/src/ext-dep/tls_cyassl/creator_tls.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="support" displayName="support" projectFiles="true">
+          <logicalFolder name="common_messaging"
+                         displayName="common_messaging"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/support/common_messaging/common_messaging_main.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/common_messaging/common_messaging_parser.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="data_buffer" displayName="data_buffer" projectFiles="true">
+            <itemPath>../libcreatorcore/src/support/data_buffer/databuffer.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="oauth_lib" displayName="oauth_lib" projectFiles="true">
+            <itemPath>../libcreatorcore/src/support/oauth_lib/oauth.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/oauth_lib/sha1.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/oauth_lib/xmalloc.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/oauth_lib/oauth_hash.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="string_manip"
+                         displayName="string_manip"
+                         projectFiles="true">
+            <itemPath>../libcreatorcore/src/support/string_manip/build_query_string.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/string_manip/encoder_not.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/string_manip/escape_characters.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/string_manip/inplace_replace.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/string_manip/insert_at.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/string_manip/strpad.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="xml" displayName="xml" projectFiles="true">
+            <itemPath>../libcreatorcore/src/support/xml/xmlparser.c</itemPath>
+            <itemPath>../libcreatorcore/src/support/xml/xmltree.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../libcreatorcore</Elem>
+    <Elem>../include</Elem>
+    <Elem>tcpip</Elem>
+    <Elem>../../include</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="pic32mz_ef" type="3">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>PIC32MZ2048EFG100</targetDevice>
+        <targetHeader></targetHeader>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>ICD3PlatformTool</platformTool>
+        <languageToolchain>XC32</languageToolchain>
+        <languageToolchainVersion>1.40</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+        <archiverTool>
+        </archiverTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>true</makeCustomizationPreStepEnabled>
+        <makeCustomizationPreStep>${ProjectDir}/../mkdir_portable.bat ${ProjectDir}/../../../../bin/third_party</makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep>${ProjectDir}/../repack.bat ${ImagePath} ${ImageName} ${ProjectDir}/../../../../bin/third_party/libcreatorcore_ef.a creatorcore</makeCustomizationPostStep>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+      </makeCustomizationType>
+      <item path="../libcreatorcore/src/creator/core/creator_cert.c"
+            ex="false"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/debug-assertsigint/assert.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/debug-assertsignal/assert.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/debug-logstdout/log.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/debug-logws/log.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/http_curl/http.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/memalloc_stdlib/creator_memalloc_stdlib.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/nvs_file/creator_nvs.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/nvs_file/creator_nvs_impl.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/threading-semaphore-posix/semaphores.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/threading-threads-posix/threads.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/time_posix/creator_time.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/support/oauth_lib/oauth_hash.c"
+            ex="false"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/support/oauth_lib/sha1.c"
+            ex="false"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <C32>
+        <property key="additional-warnings" value="false"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories"
+                  value="..\..\..\..\framework;..\..\..\..\framework\crypto;..\..\..\..\bsp\pic32mz_wifire;..\..\..\..\third_party\rtos\FreeRTOS\Source\include;..\..\..\..\third_party\rtos\FreeRTOS\Source\portable\MPLAB\PIC32MZ;system_config\pic32mz\FreeRTOS_profile;..\..\include;..\libcreatorcore\include\private\ext-dep;..\libcreatorcore\include\private;..\libcreatorcore\include\private\support\data_buffer;..\libcreatorcore\include\private\support\oauth_lib;..\libcreatorcore\include\private\support\common_messaging;..\libcreatorcore\include\private\support\string_manip;..\..\..\..\third_party\tcpip\wolfssl;system_config\pic32mz"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="true"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros"
+                  value="PLIB_INLINE=&quot;static inline&quot;;PLIB_INLINE_API=&quot;static inline&quot;;PIC32_STARTER_KIT;PORT_DEBUG;TCPIP_IF_MRF24W;PIC32MZ_WIFIRE;CREATOR_LICENSE_USERS;FREERTOS;MICROCHIP_PIC32;MICROCHIP_MPLAB_HARMONY;CREATOR_DEBUG_ON;CREATOR_CONFIG_CYASSL"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="support-ansi" value="false"/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32>
+      <C32-AR>
+        <property key="additional-options-chop-files" value="false"/>
+      </C32-AR>
+      <C32-AS>
+        <property key="assembler-symbols" value=""/>
+        <property key="enable-symbols" value="true"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="expand-macros" value="false"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
+        <property key="extra-include-directories-for-preprocessor" value=""/>
+        <property key="false-conditionals" value="false"/>
+        <property key="keep-locals" value="false"/>
+        <property key="list-assembly" value="false"/>
+        <property key="list-source" value="false"/>
+        <property key="list-symbols" value="false"/>
+        <property key="oXC32asm-list-to-file" value="false"/>
+        <property key="omit-debug-dirs" value="false"/>
+        <property key="omit-forms" value="false"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="warning-level" value=""/>
+      </C32-AS>
+      <C32-LD>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="enable-check-sections" value="false"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="exclude-standard-libraries" value="false"/>
+        <property key="extra-lib-directories" value=""/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value=""/>
+        <property key="fill-flash-options-how" value="0"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-cross-reference-file" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="heap-size" value=""/>
+        <property key="input-libraries" value=""/>
+        <property key="linker-symbols" value=""/>
+        <property key="map-file" value="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"/>
+        <property key="no-startup-files" value="false"/>
+        <property key="oXC32ld-extra-opts" value=""/>
+        <property key="optimization-level" value=""/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="remove-unused-sections" value="false"/>
+        <property key="report-memory-usage" value="false"/>
+        <property key="stack-size" value=""/>
+        <property key="symbol-stripping" value=""/>
+        <property key="trace-symbols" value=""/>
+        <property key="warn-section-align" value="false"/>
+      </C32-LD>
+      <C32CPP>
+        <property key="additional-warnings" value="false"/>
+        <property key="check-new" value="false"/>
+        <property key="eh-specs" value="true"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exceptions" value="true"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories" value=""/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="false"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value=""/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="rtti" value="true"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32CPP>
+      <C32Global>
+        <property key="common-include-directories" value=""/>
+        <property key="gp-relative-option" value=""/>
+        <property key="legacy-libc" value="false"/>
+        <property key="relaxed-math" value="false"/>
+        <property key="save-temps" value="false"/>
+        <property key="wpo-lto" value="false"/>
+      </C32Global>
+      <ICD3PlatformTool>
+        <property key="ADC" value="true"/>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="CHANGE NOTICE A" value="true"/>
+        <property key="CHANGE NOTICE B" value="true"/>
+        <property key="CHANGE NOTICE C" value="true"/>
+        <property key="CHANGE NOTICE D" value="true"/>
+        <property key="CHANGE NOTICE E" value="true"/>
+        <property key="CHANGE NOTICE F" value="true"/>
+        <property key="CHANGE NOTICE G" value="true"/>
+        <property key="COMPARATOR" value="true"/>
+        <property key="DMA" value="true"/>
+        <property key="ETHERNET CONTROLLER" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
+        <property key="I2C 1" value="true"/>
+        <property key="I2C 2" value="true"/>
+        <property key="I2C 3" value="true"/>
+        <property key="I2C 4" value="true"/>
+        <property key="I2C 5" value="true"/>
+        <property key="INPUT CAPTURE 1" value="true"/>
+        <property key="INPUT CAPTURE 2" value="true"/>
+        <property key="INPUT CAPTURE 3" value="true"/>
+        <property key="INPUT CAPTURE 4" value="true"/>
+        <property key="INPUT CAPTURE 5" value="true"/>
+        <property key="INPUT CAPTURE 6" value="true"/>
+        <property key="INPUT CAPTURE 7" value="true"/>
+        <property key="INPUT CAPTURE 8" value="true"/>
+        <property key="INPUT CAPTURE 9" value="true"/>
+        <property key="INTERRUPT CONTROL" value="true"/>
+        <property key="OUTPUT COMPARE 1" value="true"/>
+        <property key="OUTPUT COMPARE 2" value="true"/>
+        <property key="OUTPUT COMPARE 3" value="true"/>
+        <property key="OUTPUT COMPARE 4" value="true"/>
+        <property key="OUTPUT COMPARE 5" value="true"/>
+        <property key="OUTPUT COMPARE 6" value="true"/>
+        <property key="OUTPUT COMPARE 7" value="true"/>
+        <property key="OUTPUT COMPARE 8" value="true"/>
+        <property key="OUTPUT COMPARE 9" value="true"/>
+        <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
+        <property key="REAL TIME CLOCK" value="true"/>
+        <property key="REFERENCE CLOCK1" value="true"/>
+        <property key="REFERENCE CLOCK2" value="true"/>
+        <property key="REFERENCE CLOCK3" value="true"/>
+        <property key="REFERENCE CLOCK4" value="true"/>
+        <property key="SPI/I2S 1" value="true"/>
+        <property key="SPI/I2S 2" value="true"/>
+        <property key="SPI/I2S 3" value="true"/>
+        <property key="SPI/I2S 4" value="true"/>
+        <property key="SPI/I2S 5" value="true"/>
+        <property key="SPI/I2S 6" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="TIMER1" value="true"/>
+        <property key="TIMER2" value="true"/>
+        <property key="TIMER3" value="true"/>
+        <property key="TIMER4" value="true"/>
+        <property key="TIMER5" value="true"/>
+        <property key="TIMER6" value="true"/>
+        <property key="TIMER7" value="true"/>
+        <property key="TIMER8" value="true"/>
+        <property key="TIMER9" value="true"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="UART1" value="true"/>
+        <property key="UART2" value="true"/>
+        <property key="UART3" value="true"/>
+        <property key="UART4" value="true"/>
+        <property key="UART5" value="true"/>
+        <property key="UART6" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="false"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x1d1fffff"/>
+        <property key="memories.programmemory.partition2" value="true"/>
+        <property key="memories.programmemory.partition2.end"
+                  value="${memories.programmemory.partition2.end.value}"/>
+        <property key="memories.programmemory.partition2.start"
+                  value="${memories.programmemory.partition2.start.value}"/>
+        <property key="memories.programmemory.start" value="0x1d000000"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x1d1fffff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VDDFirst"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="3.25"/>
+      </ICD3PlatformTool>
+      <PICkit3PlatformTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="CHANGE NOTICE A" value="true"/>
+        <property key="CHANGE NOTICE B" value="true"/>
+        <property key="CHANGE NOTICE C" value="true"/>
+        <property key="CHANGE NOTICE D" value="true"/>
+        <property key="CHANGE NOTICE E" value="true"/>
+        <property key="CHANGE NOTICE F" value="true"/>
+        <property key="CHANGE NOTICE G" value="true"/>
+        <property key="COMPARATOR" value="true"/>
+        <property key="DMA" value="true"/>
+        <property key="ETHERNET CONTROLLER" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
+        <property key="I2C 1" value="true"/>
+        <property key="I2C 2" value="true"/>
+        <property key="I2C 3" value="true"/>
+        <property key="I2C 4" value="true"/>
+        <property key="I2C 5" value="true"/>
+        <property key="INPUT CAPTURE 1" value="true"/>
+        <property key="INPUT CAPTURE 2" value="true"/>
+        <property key="INPUT CAPTURE 3" value="true"/>
+        <property key="INPUT CAPTURE 4" value="true"/>
+        <property key="INPUT CAPTURE 5" value="true"/>
+        <property key="INPUT CAPTURE 6" value="true"/>
+        <property key="INPUT CAPTURE 7" value="true"/>
+        <property key="INPUT CAPTURE 8" value="true"/>
+        <property key="INPUT CAPTURE 9" value="true"/>
+        <property key="INTERRUPT CONTROL" value="true"/>
+        <property key="OUTPUT COMPARE 1" value="true"/>
+        <property key="OUTPUT COMPARE 2" value="true"/>
+        <property key="OUTPUT COMPARE 3" value="true"/>
+        <property key="OUTPUT COMPARE 4" value="true"/>
+        <property key="OUTPUT COMPARE 5" value="true"/>
+        <property key="OUTPUT COMPARE 6" value="true"/>
+        <property key="OUTPUT COMPARE 7" value="true"/>
+        <property key="OUTPUT COMPARE 8" value="true"/>
+        <property key="OUTPUT COMPARE 9" value="true"/>
+        <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
+        <property key="REAL TIME CLOCK" value="true"/>
+        <property key="REFERENCE CLOCK1" value="true"/>
+        <property key="REFERENCE CLOCK2" value="true"/>
+        <property key="REFERENCE CLOCK3" value="true"/>
+        <property key="REFERENCE CLOCK4" value="true"/>
+        <property key="SPI/I2S 1" value="true"/>
+        <property key="SPI/I2S 2" value="true"/>
+        <property key="SPI/I2S 3" value="true"/>
+        <property key="SPI/I2S 4" value="true"/>
+        <property key="SPI/I2S 5" value="true"/>
+        <property key="SPI/I2S 6" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="TIMER1" value="true"/>
+        <property key="TIMER2" value="true"/>
+        <property key="TIMER3" value="true"/>
+        <property key="TIMER4" value="true"/>
+        <property key="TIMER5" value="true"/>
+        <property key="TIMER6" value="true"/>
+        <property key="TIMER7" value="true"/>
+        <property key="TIMER8" value="true"/>
+        <property key="TIMER9" value="true"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="UART1" value="true"/>
+        <property key="UART2" value="true"/>
+        <property key="UART3" value="true"/>
+        <property key="UART4" value="true"/>
+        <property key="UART5" value="true"/>
+        <property key="UART6" value="true"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x1d1fffff"/>
+        <property key="memories.programmemory.partition2" value="true"/>
+        <property key="memories.programmemory.partition2.end"
+                  value="${memories.programmemory.partition2.end.value}"/>
+        <property key="memories.programmemory.partition2.start"
+                  value="${memories.programmemory.partition2.start.value}"/>
+        <property key="memories.programmemory.start" value="0x1d000000"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmertogo.imagename" value=""/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmspeed" value="2"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x1d1fffff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="3.25"/>
+      </PICkit3PlatformTool>
+    </conf>
+    <conf name="pic32mz_ec" type="3">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>PIC32MZ2048ECG100</targetDevice>
+        <targetHeader></targetHeader>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>ICD3PlatformTool</platformTool>
+        <languageToolchain>XC32</languageToolchain>
+        <languageToolchainVersion>1.40</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+        <archiverTool>
+        </archiverTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>true</makeCustomizationPreStepEnabled>
+        <makeCustomizationPreStep>${ProjectDir}/../mkdir_portable.bat ${ProjectDir}/../../../../bin/third_party</makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep>${ProjectDir}/../repack.bat ${ImagePath} ${ImageName} ${ProjectDir}/../../../../bin/third_party/libcreatorcore_ec.a creatorcore</makeCustomizationPostStep>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+      </makeCustomizationType>
+      <item path="../libcreatorcore/src/ext-dep/debug-assertsigint/assert.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/debug-assertsignal/assert.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/debug-logstdout/log.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/debug-logws/log.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/http_curl/http.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/memalloc_stdlib/creator_memalloc_stdlib.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/nvs_file/creator_nvs.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/nvs_file/creator_nvs_impl.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/threading-semaphore-posix/semaphores.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/threading-threads-posix/threads.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/ext-dep/time_posix/creator_time.c"
+            ex="true"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/support/oauth_lib/oauth_hash.c"
+            ex="false"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <item path="../libcreatorcore/src/support/oauth_lib/sha1.c"
+            ex="false"
+            overriding="false">
+        <C32>
+        </C32>
+        <C32-AR>
+        </C32-AR>
+        <C32-AS>
+        </C32-AS>
+        <C32-LD>
+        </C32-LD>
+        <C32CPP>
+        </C32CPP>
+        <C32Global>
+        </C32Global>
+      </item>
+      <C32>
+        <property key="additional-warnings" value="false"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories"
+                  value="..\..\..\..\framework;..\..\..\..\framework\crypto;..\..\..\..\bsp\pic32mz_wifire;..\..\..\..\third_party\rtos\FreeRTOS\Source\include;..\..\..\..\third_party\rtos\FreeRTOS\Source\portable\MPLAB\PIC32MZ;system_config\pic32mz\FreeRTOS_profile;..\..\include;..\libcreatorcore\include\private\ext-dep;..\libcreatorcore\include\private;..\libcreatorcore\include\private\support\data_buffer;..\libcreatorcore\include\private\support\oauth_lib;..\libcreatorcore\include\private\support\common_messaging;..\libcreatorcore\include\private\support\string_manip;..\..\..\..\third_party\tcpip\wolfssl;system_config\pic32mz"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="true"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros"
+                  value="PLIB_INLINE=&quot;static inline&quot;;PLIB_INLINE_API=&quot;static inline&quot;;PIC32_STARTER_KIT;PORT_DEBUG;TCPIP_IF_MRF24W;PIC32MZ_WIFIRE;CREATOR_LICENSE_USERS;FREERTOS;MICROCHIP_PIC32;MICROCHIP_MPLAB_HARMONY;CREATOR_DEBUG_ON;CREATOR_CONFIG_CYASSL"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="support-ansi" value="false"/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32>
+      <C32-AR>
+        <property key="additional-options-chop-files" value="false"/>
+      </C32-AR>
+      <C32-AS>
+        <property key="assembler-symbols" value=""/>
+        <property key="enable-symbols" value="true"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="expand-macros" value="false"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
+        <property key="extra-include-directories-for-preprocessor" value=""/>
+        <property key="false-conditionals" value="false"/>
+        <property key="keep-locals" value="false"/>
+        <property key="list-assembly" value="false"/>
+        <property key="list-source" value="false"/>
+        <property key="list-symbols" value="false"/>
+        <property key="oXC32asm-list-to-file" value="false"/>
+        <property key="omit-debug-dirs" value="false"/>
+        <property key="omit-forms" value="false"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="warning-level" value=""/>
+      </C32-AS>
+      <C32-LD>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="enable-check-sections" value="false"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="exclude-standard-libraries" value="false"/>
+        <property key="extra-lib-directories" value=""/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value=""/>
+        <property key="fill-flash-options-how" value="0"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-cross-reference-file" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="heap-size" value=""/>
+        <property key="input-libraries" value=""/>
+        <property key="linker-symbols" value=""/>
+        <property key="map-file" value="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"/>
+        <property key="no-startup-files" value="false"/>
+        <property key="oXC32ld-extra-opts" value=""/>
+        <property key="optimization-level" value=""/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="remove-unused-sections" value="false"/>
+        <property key="report-memory-usage" value="false"/>
+        <property key="stack-size" value=""/>
+        <property key="symbol-stripping" value=""/>
+        <property key="trace-symbols" value=""/>
+        <property key="warn-section-align" value="false"/>
+      </C32-LD>
+      <C32CPP>
+        <property key="additional-warnings" value="false"/>
+        <property key="check-new" value="false"/>
+        <property key="eh-specs" value="true"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exceptions" value="true"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories" value=""/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="false"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value=""/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="rtti" value="true"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32CPP>
+      <C32Global>
+        <property key="common-include-directories" value=""/>
+        <property key="gp-relative-option" value=""/>
+        <property key="legacy-libc" value="false"/>
+        <property key="relaxed-math" value="false"/>
+        <property key="save-temps" value="false"/>
+        <property key="wpo-lto" value="false"/>
+      </C32Global>
+      <ICD3PlatformTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="CHANGE NOTICE A" value="true"/>
+        <property key="CHANGE NOTICE B" value="true"/>
+        <property key="CHANGE NOTICE C" value="true"/>
+        <property key="CHANGE NOTICE D" value="true"/>
+        <property key="CHANGE NOTICE E" value="true"/>
+        <property key="CHANGE NOTICE F" value="true"/>
+        <property key="CHANGE NOTICE G" value="true"/>
+        <property key="COMPARATOR" value="true"/>
+        <property key="DMA" value="true"/>
+        <property key="ETHERNET CONTROLLER" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
+        <property key="I2C 1" value="true"/>
+        <property key="I2C 2" value="true"/>
+        <property key="I2C 3" value="true"/>
+        <property key="I2C 4" value="true"/>
+        <property key="I2C 5" value="true"/>
+        <property key="INPUT CAPTURE 1" value="true"/>
+        <property key="INPUT CAPTURE 2" value="true"/>
+        <property key="INPUT CAPTURE 3" value="true"/>
+        <property key="INPUT CAPTURE 4" value="true"/>
+        <property key="INPUT CAPTURE 5" value="true"/>
+        <property key="INPUT CAPTURE 6" value="true"/>
+        <property key="INPUT CAPTURE 7" value="true"/>
+        <property key="INPUT CAPTURE 8" value="true"/>
+        <property key="INPUT CAPTURE 9" value="true"/>
+        <property key="INTERRUPT CONTROL" value="true"/>
+        <property key="OUTPUT COMPARE 1" value="true"/>
+        <property key="OUTPUT COMPARE 2" value="true"/>
+        <property key="OUTPUT COMPARE 3" value="true"/>
+        <property key="OUTPUT COMPARE 4" value="true"/>
+        <property key="OUTPUT COMPARE 5" value="true"/>
+        <property key="OUTPUT COMPARE 6" value="true"/>
+        <property key="OUTPUT COMPARE 7" value="true"/>
+        <property key="OUTPUT COMPARE 8" value="true"/>
+        <property key="OUTPUT COMPARE 9" value="true"/>
+        <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
+        <property key="REAL TIME CLOCK" value="true"/>
+        <property key="REFERENCE CLOCK1" value="true"/>
+        <property key="REFERENCE CLOCK2" value="true"/>
+        <property key="REFERENCE CLOCK3" value="true"/>
+        <property key="REFERENCE CLOCK4" value="true"/>
+        <property key="SPI/I2S 1" value="true"/>
+        <property key="SPI/I2S 2" value="true"/>
+        <property key="SPI/I2S 3" value="true"/>
+        <property key="SPI/I2S 4" value="true"/>
+        <property key="SPI/I2S 5" value="true"/>
+        <property key="SPI/I2S 6" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="TIMER1" value="true"/>
+        <property key="TIMER2" value="true"/>
+        <property key="TIMER3" value="true"/>
+        <property key="TIMER4" value="true"/>
+        <property key="TIMER5" value="true"/>
+        <property key="TIMER6" value="true"/>
+        <property key="TIMER7" value="true"/>
+        <property key="TIMER8" value="true"/>
+        <property key="TIMER9" value="true"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="UART1" value="true"/>
+        <property key="UART2" value="true"/>
+        <property key="UART3" value="true"/>
+        <property key="UART4" value="true"/>
+        <property key="UART5" value="true"/>
+        <property key="UART6" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="false"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x1d1fffff"/>
+        <property key="memories.programmemory.partition2" value="true"/>
+        <property key="memories.programmemory.partition2.end"
+                  value="${memories.programmemory.partition2.end.value}"/>
+        <property key="memories.programmemory.partition2.start"
+                  value="${memories.programmemory.partition2.start.value}"/>
+        <property key="memories.programmemory.start" value="0x1d000000"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x1d1fffff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VDDFirst"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="3.25"/>
+      </ICD3PlatformTool>
+      <PICkit3PlatformTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="CHANGE NOTICE A" value="true"/>
+        <property key="CHANGE NOTICE B" value="true"/>
+        <property key="CHANGE NOTICE C" value="true"/>
+        <property key="CHANGE NOTICE D" value="true"/>
+        <property key="CHANGE NOTICE E" value="true"/>
+        <property key="CHANGE NOTICE F" value="true"/>
+        <property key="CHANGE NOTICE G" value="true"/>
+        <property key="COMPARATOR" value="true"/>
+        <property key="DMA" value="true"/>
+        <property key="ETHERNET CONTROLLER" value="true"/>
+        <property key="Freeze All Other Peripherals" value="true"/>
+        <property key="I2C 1" value="true"/>
+        <property key="I2C 2" value="true"/>
+        <property key="I2C 3" value="true"/>
+        <property key="I2C 4" value="true"/>
+        <property key="I2C 5" value="true"/>
+        <property key="INPUT CAPTURE 1" value="true"/>
+        <property key="INPUT CAPTURE 2" value="true"/>
+        <property key="INPUT CAPTURE 3" value="true"/>
+        <property key="INPUT CAPTURE 4" value="true"/>
+        <property key="INPUT CAPTURE 5" value="true"/>
+        <property key="INPUT CAPTURE 6" value="true"/>
+        <property key="INPUT CAPTURE 7" value="true"/>
+        <property key="INPUT CAPTURE 8" value="true"/>
+        <property key="INPUT CAPTURE 9" value="true"/>
+        <property key="INTERRUPT CONTROL" value="true"/>
+        <property key="OUTPUT COMPARE 1" value="true"/>
+        <property key="OUTPUT COMPARE 2" value="true"/>
+        <property key="OUTPUT COMPARE 3" value="true"/>
+        <property key="OUTPUT COMPARE 4" value="true"/>
+        <property key="OUTPUT COMPARE 5" value="true"/>
+        <property key="OUTPUT COMPARE 6" value="true"/>
+        <property key="OUTPUT COMPARE 7" value="true"/>
+        <property key="OUTPUT COMPARE 8" value="true"/>
+        <property key="OUTPUT COMPARE 9" value="true"/>
+        <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
+        <property key="REAL TIME CLOCK" value="true"/>
+        <property key="REFERENCE CLOCK1" value="true"/>
+        <property key="REFERENCE CLOCK2" value="true"/>
+        <property key="REFERENCE CLOCK3" value="true"/>
+        <property key="REFERENCE CLOCK4" value="true"/>
+        <property key="SPI/I2S 1" value="true"/>
+        <property key="SPI/I2S 2" value="true"/>
+        <property key="SPI/I2S 3" value="true"/>
+        <property key="SPI/I2S 4" value="true"/>
+        <property key="SPI/I2S 5" value="true"/>
+        <property key="SPI/I2S 6" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="TIMER1" value="true"/>
+        <property key="TIMER2" value="true"/>
+        <property key="TIMER3" value="true"/>
+        <property key="TIMER4" value="true"/>
+        <property key="TIMER5" value="true"/>
+        <property key="TIMER6" value="true"/>
+        <property key="TIMER7" value="true"/>
+        <property key="TIMER8" value="true"/>
+        <property key="TIMER9" value="true"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="UART1" value="true"/>
+        <property key="UART2" value="true"/>
+        <property key="UART3" value="true"/>
+        <property key="UART4" value="true"/>
+        <property key="UART5" value="true"/>
+        <property key="UART6" value="true"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x1d1fffff"/>
+        <property key="memories.programmemory.partition2" value="true"/>
+        <property key="memories.programmemory.partition2.end"
+                  value="${memories.programmemory.partition2.end.value}"/>
+        <property key="memories.programmemory.partition2.start"
+                  value="${memories.programmemory.partition2.start.value}"/>
+        <property key="memories.programmemory.start" value="0x1d000000"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmertogo.imagename" value=""/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmspeed" value="2"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x1d1fffff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="3.25"/>
+      </PICkit3PlatformTool>
+    </conf>
+  </confs>
+</configurationDescriptor>

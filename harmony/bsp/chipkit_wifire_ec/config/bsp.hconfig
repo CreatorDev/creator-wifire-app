@@ -1,0 +1,119 @@
+menu "Select BSP Features"
+depends on USE_BSP
+depends on BSP_CHIPKIT_WIFIRE_EC
+
+config BSP_CK_WIFIRE_EC_LED1
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use LED LD1?"
+    default y
+    
+config BSP_CK_WIFIRE_EC_LED_LD1_NAME
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    depends on BSP_CK_WIFIRE_EC_LED1
+    string "LED LD1 Name"
+    default "BSP_LED_1"
+
+config BSP_CK_WIFIRE_EC_LED2
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use LED LD2?"
+    default y
+
+config BSP_CK_WIFIRE_EC_LED_LD2_NAME
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    depends on BSP_CK_WIFIRE_EC_LED2
+    string "LED LD2 Name"
+    default "BSP_LED_2"
+
+config BSP_CK_WIFIRE_EC_LED3
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use LED LD3?"
+    default y
+
+config BSP_CK_WIFIRE_EC_LED_LD3_NAME
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    depends on BSP_CK_WIFIRE_EC_LED3
+    string "LED LD3 Name"
+    default "BSP_LED_3"
+
+config BSP_CK_WIFIRE_EC_LED4
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use LED LD4?"
+    default y
+
+config BSP_CK_WIFIRE_EC_LED_LD4_NAME
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    depends on BSP_CK_WIFIRE_EC_LED4
+    string "LED LD4 Name"
+    default "BSP_LED_4"
+
+config BSP_CK_WIFIRE_EC_SW1
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use Switch SW1?"
+    default y
+
+config BSP_CK_WIFIRE_EC_SW1_NAME
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    depends on BSP_CK_WIFIRE_EC_SW1
+    string "Switch SW1 Name"
+    default "BSP_SWITCH_1"
+
+config BSP_CK_WIFIRE_EC_SW2
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use Switch SW2?"
+    default y
+
+config BSP_CK_WIFIRE_EC_SW2_NAME
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    depends on BSP_CK_WIFIRE_EC_SW2
+    string "Switch SW2 Name"
+    default "BSP_SWITCH_2"
+
+config BSP_CK_WIFIRE_EC_WIFI
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use WIFI Module?"
+    default n
+    select USE_DRV_WIFI_NEEDED
+    set USE_DRV_WIFI to y if BSP_CK_WF32_WIFI = y
+    set DRV_SPI_USE_ISR_MODE to n if BSP_CK_WF32_WIFI = y
+    set DRV_SPI_USE_POLLED_MODE to y if BSP_CK_WF32_WIFI = y
+    set USE_TCPIP_STACK to y if BSP_CK_WIFIRE_EC_WIFI = y
+    set TCPIP_NETWORK_DEFAULT_INTERFACE_NAME_IDX0 to "MRF24W" if BSP_CK_WIFIRE_EC_WIFI = y
+
+config BSP_CK_WIFIRE_EC_UART_USB
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use USB-UART interface (FTDI)?"
+    default n
+    select USE_DRV_USART_NEEDED
+    
+comment "Please map U4TX to RF8 and U4RX to RF2 in the Pin Manager."
+    depends on BSP_CK_WIFIRE_EC_UART_USB
+    
+config BSP_CK_WIFIRE_EC_USB
+    depends on USE_BSP
+    depends on BSP_CHIPKIT_WIFIRE_EC
+    bool "Use USB Switch?"
+    default y if USE_USB_STACK
+    default n
+
+endmenu
+
+ifblock BSP_CHIPKIT_WIFIRE_EC
+file BSP_chipkit_wifire_ec_BSP "$HARMONY_VERSION_PATH/bsp/chipkit_wifire_ec/xml/bsp.xml" to "$BSP_CONFIGURATION_XML"
+file BSP_chipkit_wifire_ec_H "$HARMONY_VERSION_PATH/bsp/chipkit_wifire_ec/bsp_config.h" to "$PROJECT_HEADER_FILES/bsp/chipkit_wifire_ec/bsp_config.h"
+file BSP_chipkit_wifire_ec_C "$HARMONY_VERSION_PATH/bsp/chipkit_wifire_ec/bsp_sys_init.c" to "$PROJECT_SOURCE_FILES/bsp/chipkit_wifire_ec/bsp_sys_init.c"
+compiler BSP_COMPILER_INCLUDE_chipkit_wifire_ec includepath "$HARMONY_VERSION_PATH/bsp/chipkit_wifire_ec"
+endif
