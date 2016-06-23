@@ -31,12 +31,13 @@
 #include <sys/errno.h>
 #include <sys/types.h>
 
-#include "lwm2m_util.h"
 #include "lwm2m_debug.h"
+#include "lwm2m_util.h"
 #include "network_abstraction.h"
 #include "dtls_abstraction.h"
 
 //#define NETWORK_IPV6
+//#define NETWORK_TCP
 
 struct _NetworkAddress
 {
@@ -62,6 +63,9 @@ struct _NetworkAddress
 struct _NetworkSocket
 {
     int Socket;
+#ifdef NETWORK_IPV6
+    int SocketIPv6;
+#endif
     NetworkSocketType SocketType;
     uint16_t Port;
     NetworkSocketError LastError;
@@ -89,6 +93,7 @@ typedef enum
 static NetworkAddressCache networkAddressCache[MAX_NETWORK_ADDRESS_CACHE] = {{0}};
 
 static void addCachedAddress(NetworkAddress * address, const char * uri, int uriLength);
+static NetworkAddress * getCachedAddress(NetworkAddress * matchAddress, const char * uri, int uriLength);
 static NetworkAddress * getCachedAddressByUri(const char * uri, int uriLength);
 static int getUriHostLength(const char * uri, int uriLength);
 
@@ -176,7 +181,7 @@ NetworkAddress * NetworkAddress_New(const char * uri, int uriLength)
                     {
                         break;
                     }
-                    else if isdigit(uri[index])
+                    else if (isdigit(uri[index]))
                     {
                         port = (port * 10) + (uri[index] - '0');
                     }
@@ -195,21 +200,42 @@ NetworkAddress * NetworkAddress_New(const char * uri, int uriLength)
                 if (resolvedAddress)
                 {
                     size_t size = sizeof(struct _NetworkAddress);
-                    result = (NetworkAddress *)malloc(size);
-                    if (result)
+                    NetworkAddress * networkAddress = (NetworkAddress *)malloc(size);
+                    if (networkAddress)
                     {
-                        memset(result, 0, size);
-                        result->Secure = secure;
+                        memset(networkAddress, 0, size);
+                        networkAddress->Secure = secure;
                         if (resolvedAddress->h_addrtype == AF_INET)
                         {
-                            result->Address.Sin.sin_family = AF_INET;
-                            memcpy(&result->Address.Sin.sin_addr, *(resolvedAddress->h_addr_list), sizeof(struct in_addr));
-                            result->Address.Sin.sin_port = port;    // Note: don't use htons() - this should do nothing with pic32, but it's wrong)
+                            networkAddress->Address.Sin.sin_family = AF_INET;
+                            memcpy(&networkAddress->Address.Sin.sin_addr, *(resolvedAddress->h_addr_list), sizeof(struct in_addr));
+                            networkAddress->Address.Sin.sin_port = port;    // Note: don't use htons() - this should do nothing with pic32, but it's wrong)
+                        }
+#ifdef NETWORK_IPV6
+                        else if (resolvedAddress->h_addrtype == AF_INET6)
+                        {
+                            networkAddress->Address.Sin6.sin6_family = AF_INET6;
+                            memcpy(&networkAddress->Address.Sin6.sin6_addr,*(resolvedAddress->h_addr_list),sizeof(struct in6_addr));
+                            networkAddress->Address.Sin6.sin6_port = port;
+                        }
+#endif
+                        else
+                        {
+                            free(networkAddress);
+                            networkAddress = NULL;
+                        }
+                    }
+                    if (networkAddress)
+                    {
+                        result = getCachedAddress(networkAddress, uri, uriHostLength);
+                        if (result)
+                        {
+                            // Matched existing address
+                            free(networkAddress);
                         }
                         else
                         {
-                            free(result);
-                            result = NULL;
+                            result = networkAddress;
                         }
                     }
                 }
@@ -262,7 +288,9 @@ void NetworkAddress_SetAddressType(NetworkAddress * address, AddressType * addre
     if (address && addressType)
     {
         memcpy(&addressType->Address, &address->Address.Sin.sin_addr, sizeof(addressType->Address));
-        addressType->Port = ntohs(address->Address.Sin.sin_port);
+        addressType->Secure = address->Secure;
+        addressType->Port = address->Address.Sin.sin_port;					// TODO - is swap needed c.f. linux abstraction?
+        //addressType->Port = ntohs(address->Address.Sin.sin_port);
     }
 }
 
@@ -281,13 +309,13 @@ void NetworkAddress_Free(NetworkAddress ** address)
                 {
                     if (networkAddressCache[index].uri)
                     {
-                        //Lwm2m_Debug("Address free: %s\n", networkAddressCache[index].uri);
+                        Lwm2m_Debug("Address free: %s\n", networkAddressCache[index].uri);
                         free(networkAddressCache[index].uri);
                         networkAddressCache[index].uri = NULL;
                     }
                     else
                     {
-                        //Lwm2m_Debug("Address free\n");
+                        Lwm2m_Debug("Address free\n");
                     }
                     networkAddressCache[index].address = NULL;
                     break;
@@ -301,14 +329,14 @@ void NetworkAddress_Free(NetworkAddress ** address)
 
 static void addCachedAddress(NetworkAddress * address, const char * uri, int uriLength)
 {
-    if (address && uri && uriLength > 0)
+    if (address)
     {
         int index;
         for (index = 0; index < MAX_NETWORK_ADDRESS_CACHE; index++)
         {
             if (networkAddressCache[index].address == NULL)
             {
-                if (uriLength > 0)
+                if (uri && uriLength > 0)
                 {
                     networkAddressCache[index].uri = (char *)malloc(uriLength + 1);
                     if (networkAddressCache[index].uri)
@@ -316,20 +344,22 @@ static void addCachedAddress(NetworkAddress * address, const char * uri, int uri
                         memcpy(networkAddressCache[index].uri, uri, uriLength);
                         networkAddressCache[index].uri[uriLength] = 0;
                         networkAddressCache[index].address = address;
-                        //Lwm2m_Debug("Address add: %s\n", networkAddressCache[index].uri);
+                        Lwm2m_Debug("Address add: %s\n", networkAddressCache[index].uri);
                     }
                 }
                 else
                 {
                     networkAddressCache[index].address = address;
                     networkAddressCache[index].uri = NULL;
-                    //Lwm2m_Debug("Address add (received)\n");
+                    Lwm2m_Debug("Address add (received)\n");    // TODO - print remote address
                 }
                 break;
             }
         }
     }
 }
+
+
 
 static NetworkAddress * getCachedAddressByUri(const char * uri, int uriLength)
 {
@@ -347,7 +377,7 @@ static NetworkAddress * getCachedAddressByUri(const char * uri, int uriLength)
     return result;
 }
 
-static NetworkAddress * getCachedAddress(NetworkAddress * matchAddress)
+static NetworkAddress * getCachedAddress(NetworkAddress * matchAddress, const char * uri, int uriLength)
 {
     NetworkAddress * result = NULL;
     int index;
@@ -358,13 +388,23 @@ static NetworkAddress * getCachedAddress(NetworkAddress * matchAddress)
         {
             if (NetworkAddress_Compare(matchAddress, address) == 0)
             {
+                if (uri && uriLength > 0 && networkAddressCache[index].uri == NULL)
+                {
+                    // Add info to cached address
+                    address->Secure = matchAddress->Secure;
+                    networkAddressCache[index].uri = (char *)malloc(uriLength + 1);
+                    if (networkAddressCache[index].uri)
+                    {
+                        memcpy(networkAddressCache[index].uri, uri, uriLength);
+                        networkAddressCache[index].uri[uriLength] = 0;
+                        Lwm2m_Debug("Address add uri: %s\n", networkAddressCache[index].uri);
+                    }
+                }
                 result = address;
                 break;
             }
         }
     }
-    if (!result)
-        Lwm2m_Debug("No Rx address match\n");
     return result;
 }
 
@@ -372,12 +412,11 @@ static int getUriHostLength(const char * uri, int uriLength)
 {
     // Search for end of host + optional port
     int result = uriLength;
-    int lengthRemaining;
     char * pathStart = memchr(uri, '/', uriLength);
     if (pathStart && pathStart[1] == '/' )
     {
         pathStart += 2;
-        lengthRemaining = uriLength - (pathStart - uri);
+        int lengthRemaining = uriLength - (pathStart - uri);
         if (lengthRemaining > 0)
         {
             pathStart = memchr(pathStart, '/', lengthRemaining);
@@ -415,8 +454,17 @@ NetworkSocketError NetworkSocket_GetError(NetworkSocket * networkSocket)
     return result;
 }
 
+int NetworkSocket_GetFileDescriptor(NetworkSocket * networkSocket)
+{
+    int result = -1;
+    if (networkSocket)
+    {
+        result = networkSocket->Socket;
+    }
+    return result;
+}
 
-void NetworkSocket_SetCertificate(NetworkSocket * networkSocket, uint8_t * cert, int certLength, CertificateFormat format)
+void NetworkSocket_SetCertificate(NetworkSocket * networkSocket, const uint8_t * cert, int certLength, CertificateFormat format)
 {
     DTLS_SetCertificate(cert, certLength, format);
 }
@@ -433,7 +481,16 @@ bool NetworkSocket_StartListening(NetworkSocket * networkSocket)
     bool result = false;
     if (networkSocket)
     {
-        networkSocket->Socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        int protocol = IPPROTO_UDP;
+        int socketMode = SOCK_DGRAM;
+#ifdef NETWORK_TCP
+        if ((networkSocket->SocketType & NetworkSocketType_TCP) == NetworkSocketType_TCP)
+        {
+            protocol = IPPROTO_TCP;
+            socketMode = SOCK_STREAM;
+        }
+#endif
+        networkSocket->Socket = socket(AF_INET, socketMode, protocol);
         if (networkSocket->Socket != SOCKET_ERROR)
         {
             struct sockaddr *address = NULL;
@@ -485,7 +542,7 @@ bool readUDP(NetworkSocket * networkSocket, int socketHandle, uint8_t * buffer, 
         memset(&matchAddress, 0, size);
         memcpy(&matchAddress.Address.Sa, &sourceSocket, sourceSocketLength);
         matchAddress.Address.Sa.sa_family = AF_INET;        // Note: work around - Berkeley doesn't set socket type!
-        networkAddress = getCachedAddress(&matchAddress);
+        networkAddress = getCachedAddress(&matchAddress, NULL, 0);
 
         if (networkAddress == NULL)
         {
@@ -517,7 +574,7 @@ bool NetworkSocket_Read(NetworkSocket * networkSocket, uint8_t * buffer, int buf
         if (buffer && bufferLength > 0 && readLength)
         {
             *readLength = 0;
-            if (networkSocket->SocketType == NetworkSocketType_UDP)
+            if ((networkSocket->SocketType & NetworkSocketType_UDP) == NetworkSocketType_UDP)
             {
                 if (sourceAddress)
                 {
@@ -527,7 +584,7 @@ bool NetworkSocket_Read(NetworkSocket * networkSocket, uint8_t * buffer, int buf
                    }
 	               if ((*readLength > 0) && *sourceAddress && (*sourceAddress)->Secure)
                    {
-                       if (DTLS_Decrypt(*sourceAddress, buffer, *readLength, encryptBuffer, ENCRYPT_BUFFER_LENGTH, readLength))
+                       if (DTLS_Decrypt(*sourceAddress, buffer, *readLength, encryptBuffer, ENCRYPT_BUFFER_LENGTH, readLength, networkSocket))
                        {
                            if (*readLength > 0)
                            {
@@ -541,26 +598,28 @@ bool NetworkSocket_Read(NetworkSocket * networkSocket, uint8_t * buffer, int buf
                     networkSocket->LastError = NetworkSocketError_InvalidArguments;
                 }
             }
+#ifdef NETWORK_TCP
             else
             {
-//                errno = 0;
-//                *readLength = recv(networkSocket->Socket, buffer, bufferLength, 0);
-//                int lastError = errno;
-//                if (*readLength == 0)
-//                {
-//                    networkSocket->LastError = NetworkSocketError_ConnectionLost;
-//                }
-//                else if (*readLength == SOCKET_ERROR)
-//                {
-//                    *readLength = 0;
-//                    if (lastError == EWOULDBLOCK)
-//                        *readLength = 0;
-//                    else if (lastError == ENOTCONN)
-//                        networkSocket->LastError = NetworkSocketError_ConnectionLost;
-//                    else if (lastError == EBADF)
-//                        networkSocket->LastError = NetworkSocketError_ConnectionLost;
-//                }
+                errno = 0;
+                *readLength = recv(networkSocket->Socket, buffer, bufferLength, 0);
+                int lastError = errno;
+                if (*readLength == 0)
+                {
+                    networkSocket->LastError = NetworkSocketError_ConnectionLost;
+                }
+                else if (*readLength == SOCKET_ERROR)
+                {
+                    *readLength = 0;
+                    if (lastError == EWOULDBLOCK)
+                        *readLength = 0;
+                    else if (lastError == ENOTCONN)
+                        networkSocket->LastError = NetworkSocketError_ConnectionLost;
+                    else if (lastError == EBADF)
+                        networkSocket->LastError = NetworkSocketError_ConnectionLost;
+                }
             }
+#endif
         }
         else
         {
@@ -605,6 +664,7 @@ bool sendUDP(NetworkSocket * networkSocket, NetworkAddress * destAddress, const 
         buffer += sentBytes;
         bufferLength -= sentBytes;
         }
+
     result = (bufferLength == 0);
     return result;
 }
@@ -617,7 +677,7 @@ bool NetworkSocket_Send(NetworkSocket * networkSocket, NetworkAddress * destAddr
         networkSocket->LastError = NetworkSocketError_NoError;
         if (buffer && bufferLength > 0)
         {
-            if (networkSocket->SocketType == NetworkSocketType_UDP)
+            if ((networkSocket->SocketType & NetworkSocketType_UDP) == NetworkSocketType_UDP)
             {
                 if (destAddress)
                 {
