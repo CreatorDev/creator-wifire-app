@@ -59,8 +59,6 @@
           <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap-conf.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap-constants.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap-engine.h</itemPath>
-          <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap-observe-client.h</itemPath>
-          <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap-observe.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap-separate.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap-transactions.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/erbium/er-coap.h</itemPath>
@@ -224,6 +222,7 @@
         <property key="use-cci" value="false"/>
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
+        <appendMe value="-fno-short-double"/>
       </C32>
       <C32-AR>
         <property key="additional-options-chop-files" value="false"/>
@@ -485,6 +484,7 @@
         <property key="use-cci" value="false"/>
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
+        <appendMe value="-fno-short-double"/>
       </C32>
       <C32-AR>
         <property key="additional-options-chop-files" value="false"/>

@@ -44,10 +44,21 @@ void Lwm2mCore_AddressTypeToPath(char * path, size_t pathSize, AddressType * add
 {
     char buffer[20];
     
+    memcpy(path, "coap", 4);
+    path += 4;
+    pathSize -= 4;
+
+    if (addr->Secure)
+    {
+        *path = 's';
+        path++;
+        pathSize--;
+    }
+    
     // TODO - fixme for DTLS (use network abstraction: get uri or secure for protocol)
     sprintf(buffer, "%d.%d.%d.%d", (uint8_t)addr->Address, (uint8_t)(addr->Address >> 8), (uint8_t)(addr->Address >> 16), (uint8_t)(addr->Address >> 24));
     //port = ntohs(addr->Port);
-    snprintf(path, pathSize, "coap://%s:%d", &buffer, addr->Port);
+    snprintf(path, pathSize, "://%s:%d", &buffer, addr->Port);
 }
 
 const char * Lwm2mCore_DebugPrintAddress(AddressType * addr)
