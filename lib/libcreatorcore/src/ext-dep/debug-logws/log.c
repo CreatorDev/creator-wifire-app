@@ -40,22 +40,22 @@ extern CreatorEventLog CreatorEventLogs_newItem(CreatorEventLogs logs);
 
 typedef struct LogItemImpl LogItem;
 
-struct LogItemImpl {
-	CreatorEventSeverity severity;
-	char *category;
-	CreatorDatetime moment;
-	const char *message;
-	size_t msgLength;
+struct LogItemImpl
+{
+    CreatorEventSeverity severity;
+    char *category;
+    CreatorDatetime moment;
+    const char *message;
+    size_t msgLength;
 
-	//linked list next item
-	LogItem *pNextItem;
+    //linked list next item
+    LogItem *pNextItem;
 };
 
 static const char szLogCategory[] = "libcreatorapi.creator_log";
 
 static LogItem *LogItem_New(CreatorLogLevel level, char *szMsg);
 static void LogItem_Destroy(LogItem *pItem);
-
 
 static CreatorSemaphore logsSemaphore;
 static LogItem *pFirstItem;
@@ -68,165 +68,188 @@ static void appendLogItem(LogItem *item);
 static CreatorTaskID logPostingTaskID;
 static void logsPoster(void*);
 
-
-bool CreatorLog_Initialise() {
-	pFirstItem = NULL;
-	pLastItem = NULL;
-	logsSemaphore = CreatorSemaphore_New(1, 0);
-	return logsSemaphore != NULL;
+bool CreatorLog_Initialise()
+{
+    pFirstItem = NULL;
+    pLastItem = NULL;
+    logsSemaphore = CreatorSemaphore_New(1, 0);
+    return logsSemaphore != NULL;
 }
 
 void CreatorLog_Shutdown()
 {
-	CreatorSemaphore_Free(&logsSemaphore);
+    CreatorSemaphore_Free(&logsSemaphore);
 }
 
-void CreatorLog_SetLevel(CreatorLogLevel level) {
+void CreatorLog_SetLevel(CreatorLogLevel level)
+{
 }
 
-void Creator_Log(CreatorLogLevel level, const char *message, ...) {
-	va_list vl;
-	va_start(vl, message);
-	Creator_Logv(level, message, vl);
-	va_end(vl);
+void Creator_Log(CreatorLogLevel level, const char *message, ...)
+{
+    va_list vl;
+    va_start(vl, message);
+    Creator_Logv(level, message, vl);
+    va_end(vl);
 }
 
-void Creator_Logv(CreatorLogLevel level, const char *message, va_list vl) {
-	char fullMsg[2048];
-	vsnprintf(fullMsg, sizeof(fullMsg), message, vl);
+void Creator_Logv(CreatorLogLevel level, const char *message, va_list vl)
+{
+    char fullMsg[2048];
+    vsnprintf(fullMsg, sizeof(fullMsg), message, vl);
 
-	LogItem *pNewItem = LogItem_New(level, fullMsg);
-	appendLogItem(pNewItem);
+    LogItem *pNewItem = LogItem_New(level, fullMsg);
+    appendLogItem(pNewItem);
 }
 
-static LogItem *LogItem_New(CreatorLogLevel level, const char *szMsg) {
-	LogItem *pNewItem = Creator_MemAlloc(sizeof(LogItem));
-	if (pNewItem) {
-		pNewItem->pNextItem = NULL;
-		pNewItem->severity = CREATOR_EVENTSEVERITY_ERROR;
-		pNewItem->category = szLogCategory;
-		pNewItem->moment = time(NULL);
+static LogItem *LogItem_New(CreatorLogLevel level, const char *szMsg)
+{
+    LogItem *pNewItem = Creator_MemAlloc(sizeof(LogItem));
+    if (pNewItem)
+    {
+        pNewItem->pNextItem = NULL;
+        pNewItem->severity = CREATOR_EVENTSEVERITY_ERROR;
+        pNewItem->category = szLogCategory;
+        pNewItem->moment = time(NULL);
 
-		switch (level) {
-			case CreatorLogLevel_Debug:
-				pNewItem->severity = CREATOR_EVENTSEVERITY_DEBUG;
-				break;
-			case CreatorLogLevel_Info:
-				pNewItem->severity = CREATOR_EVENTSEVERITY_INFORMATION;
-				break;
-			case CreatorLogLevel_Warning:
-				pNewItem->severity = CREATOR_EVENTSEVERITY_WARNING;
-				break;
-			case CreatorLogLevel_Error:
-				pNewItem->severity = CREATOR_EVENTSEVERITY_ERROR;
-				break;
-		}
+        switch (level) {
+            case CreatorLogLevel_Debug:
+                pNewItem->severity = CREATOR_EVENTSEVERITY_DEBUG;
+                break;
+            case CreatorLogLevel_Info:
+                pNewItem->severity = CREATOR_EVENTSEVERITY_INFORMATION;
+                break;
+            case CreatorLogLevel_Warning:
+                pNewItem->severity = CREATOR_EVENTSEVERITY_WARNING;
+                break;
+            case CreatorLogLevel_Error:
+                pNewItem->severity = CREATOR_EVENTSEVERITY_ERROR;
+                break;
+        }
 
-		if (szMsg) {
-			size_t msgSize = strlen(szMsg) + 1;
-			pNewItem->message = Creator_MemAlloc(msgSize);
-			if (pNewItem->message) {
-				strcpy(pNewItem->message, szMsg);
-				pNewItem->msgLength = msgSize;
-			}
-			else {
-				Creator_MemFree((void **)&pNewItem);
-			}
-		}
-	}
-	if (!pNewItem) {
-		fprintf(stderr, "Ran out of memory for saving log items\n");
-	}
-	return pNewItem;
+        if (szMsg)
+        {
+            size_t msgSize = strlen(szMsg) + 1;
+            pNewItem->message = Creator_MemAlloc(msgSize);
+            if (pNewItem->message)
+            {
+                strcpy(pNewItem->message, szMsg);
+                pNewItem->msgLength = msgSize;
+            }
+            else
+            {
+                Creator_MemFree((void **)&pNewItem);
+            }
+        }
+    }
+    if (!pNewItem)
+    {
+        fprintf(stderr, "Ran out of memory for saving log items\n");
+    }
+    return pNewItem;
 }
 
-static void LogItem_Destroy(LogItem *pItem) {
-	if (pItem)
-	{
-		if (pItem->message)
-		{
-			Creator_MemFree(&pItem->message);
-		}
-		Creator_MemFree(&pItem);
-	}
+static void LogItem_Destroy(LogItem *pItem)
+{
+    if (pItem)
+    {
+        if (pItem->message)
+        {
+            Creator_MemFree(&pItem->message);
+        }
+        Creator_MemFree(&pItem);
+    }
 }
 
-static void appendLogItem(LogItem *item) {
-	CreatorSemaphore_Wait(logsSemaphore, 1);
-	if (pLastItem == NULL) {
-		pFirstItem = item;
-		pLastItem = item;
-	}
-	else {
-		pLastItem->pNextItem = item;
-		pLastItem = item;
-	}
-	if (!logPostingTaskID) {
-		logPostingTaskID = CreatorScheduler_ScheduleTask(logsPoster, NULL, 5, false);
-	}
-	CreatorSemaphore_Release(logsSemaphore, 1);
+static void appendLogItem(LogItem *item)
+{
+    CreatorSemaphore_Wait(logsSemaphore, 1);
+    if (pLastItem == NULL)
+    {
+        pFirstItem = item;
+        pLastItem = item;
+    }
+    else
+    {
+        pLastItem->pNextItem = item;
+        pLastItem = item;
+    }
+    if (!logPostingTaskID)
+    {
+        logPostingTaskID = CreatorScheduler_ScheduleTask(logsPoster, NULL, 5, false);
+    }
+    CreatorSemaphore_Release(logsSemaphore, 1);
 }
 
-static void logsPoster(void *pArg) {
-	CreatorMemoryManager memoryManager = CreatorMemoryManager_New();
-	LogItem *pFirstSentItem = NULL, *pLastUnsentItem = NULL;
+static void logsPoster(void *pArg)
+{
+    CreatorMemoryManager memoryManager = CreatorMemoryManager_New();
+    LogItem *pFirstSentItem = NULL, *pLastUnsentItem = NULL;
 
-	CreatorSemaphore_Wait(logsSemaphore, 1);
-	CreatorEventLogs logs = CreatorEventLogsNew(memoryManager);
-	fprintf(stdout, "Posting batch of events to webservice\n");
+    CreatorSemaphore_Wait(logsSemaphore, 1);
+    CreatorEventLogs logs = CreatorEventLogsNew(memoryManager);
+    fprintf(stdout, "Posting batch of events to webservice\n");
 
-	pFirstSentItem = pFirstItem;
-	pLastUnsentItem = NULL;
+    pFirstSentItem = pFirstItem;
+    pLastUnsentItem = NULL;
 
-	LogItem *pCurrentItem = pFirstItem, *pNextItem;
-	size_t cumulatedSize = 0;
-	while (pCurrentItem) {
-		CreatorEventLog log = CreatorEventLogs_newItem(logs);
+    LogItem *pCurrentItem = pFirstItem, *pNextItem;
+    size_t cumulatedSize = 0;
+    while (pCurrentItem)
+    {
+        CreatorEventLog log = CreatorEventLogs_newItem(logs);
 
-		CreatorEventLog_SetCategory(log, pCurrentItem->category);
-		CreatorEventLog_SetEventDate(log, pCurrentItem->moment);
-		CreatorEventLog_SetMessage(log, pCurrentItem->message);
-		CreatorEventLog_SetSeverity(log, pCurrentItem->severity);
-		cumulatedSize += pCurrentItem->msgLength;
+        CreatorEventLog_SetCategory(log, pCurrentItem->category);
+        CreatorEventLog_SetEventDate(log, pCurrentItem->moment);
+        CreatorEventLog_SetMessage(log, pCurrentItem->message);
+        CreatorEventLog_SetSeverity(log, pCurrentItem->severity);
+        cumulatedSize += pCurrentItem->msgLength;
 
-		pNextItem = pCurrentItem->pNextItem;
-		pCurrentItem = pLastUnsentItem = pNextItem;
+        pNextItem = pCurrentItem->pNextItem;
+        pCurrentItem = pLastUnsentItem = pNextItem;
 
-		if (cumulatedSize > LOG_SIZE_LIMIT) {
-			fprintf(stdout, "Reached message limit, sending this first batch\n");
-			break;
-		}
-	}
-	pFirstItem = pCurrentItem;
-	if (!pCurrentItem) {
-		pLastItem = NULL;
-		logPostingTaskID = 0;
-	}
-	else {
-		logPostingTaskID = CreatorScheduler_ScheduleTask(logsPoster, NULL, 0, false);
-		fprintf(stdout, "Scheduled new batch of logs to be sent\n");
-	}
-	CreatorSemaphore_Release(logsSemaphore, 1);
+        if (cumulatedSize > LOG_SIZE_LIMIT)
+        {
+            fprintf(stdout, "Reached message limit, sending this first batch\n");
+            break;
+        }
+    }
+    pFirstItem = pCurrentItem;
+    if (!pCurrentItem)
+    {
+        pLastItem = NULL;
+        logPostingTaskID = 0;
+    }
+    else
+    {
+        logPostingTaskID = CreatorScheduler_ScheduleTask(logsPoster, NULL, 0, false);
+        fprintf(stdout, "Scheduled new batch of logs to be sent\n");
+    }
+    CreatorSemaphore_Release(logsSemaphore, 1);
 
-	//do this outside of the mutex to avoid re-entrance
-	CreatorAPI api = CreatorJob_GetAPI(memoryManager);
-	CreatorAPI_eventlogsEventLogs(api, logs);
-	if (CreatorJob_IsValid(memoryManager)) {
-		//clearing sent log items
-		CreatorSemaphore_Wait(logsSemaphore, 1);
-		pCurrentItem = pFirstSentItem;
-		while (pCurrentItem != pLastUnsentItem) {
-			pNextItem = pCurrentItem->pNextItem;
-			LogItem_Destroy(pCurrentItem);
-			pCurrentItem = pNextItem;
-		}
-		if (pFirstItem == pFirstSentItem) {
-			pFirstItem = pCurrentItem;
-			if (!pCurrentItem) {
-				pLastItem = NULL;
-			}
-		}
-		CreatorSemaphore_Release(logsSemaphore, 1);
-	}
-	CreatorMemoryManager_Free(&memoryManager);
+    //do this outside of the mutex to avoid re-entrance
+    CreatorAPI api = CreatorJob_GetAPI(memoryManager);
+    CreatorAPI_eventlogsEventLogs(api, logs);
+    if (CreatorJob_IsValid(memoryManager))
+    {
+        //clearing sent log items
+        CreatorSemaphore_Wait(logsSemaphore, 1);
+        pCurrentItem = pFirstSentItem;
+        while (pCurrentItem != pLastUnsentItem)
+        {
+            pNextItem = pCurrentItem->pNextItem;
+            LogItem_Destroy(pCurrentItem);
+            pCurrentItem = pNextItem;
+        }
+        if (pFirstItem == pFirstSentItem)
+        {
+            pFirstItem = pCurrentItem;
+            if (!pCurrentItem)
+            {
+                pLastItem = NULL;
+            }
+        }
+        CreatorSemaphore_Release(logsSemaphore, 1);
+    }
+    CreatorMemoryManager_Free(&memoryManager);
 }

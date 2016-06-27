@@ -29,168 +29,163 @@
 
 struct CreatorListImpl
 {
-	uint Size;
-	uint Used;
-	void **Items;
+    uint Size;
+    uint Used;
+    void **Items;
 };
-
-
 
 CreatorList CreatorList_New(uint initialCapacity)
 {
-	CreatorList result = NULL;
-	result = Creator_MemAlloc(sizeof(struct CreatorListImpl));
-	if (result)
-	{
-		if (initialCapacity == 0)
-			initialCapacity = 10;
-		result->Used = 0;
-		size_t size = sizeof(void*) * initialCapacity;
-		result->Items = Creator_MemAlloc(size);
-		if (result->Items)
-		{
-			memset(result->Items, 0, size);
-			result->Size = initialCapacity;
-		}
-		else
-			result->Size = 0;
-	}
-	return result;
+    CreatorList result = NULL;
+    result = Creator_MemAlloc(sizeof(struct CreatorListImpl));
+    if (result)
+    {
+        if (initialCapacity == 0)
+            initialCapacity = 10;
+        result->Used = 0;
+        size_t size = sizeof(void*) * initialCapacity;
+        result->Items = Creator_MemAlloc(size);
+        if (result->Items)
+        {
+            memset(result->Items, 0, size);
+            result->Size = initialCapacity;
+        }
+        else
+            result->Size = 0;
+    }
+    return result;
 }
-
 
 bool CreatorList_Add(CreatorList self, void *item)
 {
-	bool result = false;
-	if (self)
-	{
-		uint count = self->Used + 1;
-		if (count > self->Size)
-		{
-			void **newItems = Creator_MemRealloc(self->Items, (self->Size + 5) * sizeof(void *));
-			if (newItems)
-			{
-				self->Size += 5;
-				self->Items = newItems;
-			}
-		}
-		if (count <= self->Size)
-		{
-			self->Items[count-1] = item;
-			self->Used = count;
-			result = true;
-		}
-	}
-	return result;
+    bool result = false;
+    if (self)
+    {
+        uint count = self->Used + 1;
+        if (count > self->Size)
+        {
+            void **newItems = Creator_MemRealloc(self->Items, (self->Size + 5) * sizeof(void *));
+            if (newItems)
+            {
+                self->Size += 5;
+                self->Items = newItems;
+            }
+        }
+        if (count <= self->Size)
+        {
+            self->Items[count - 1] = item;
+            self->Used = count;
+            result = true;
+        }
+    }
+    return result;
 }
 
 bool CreatorList_Contains(CreatorList self, void *item)
 {
-	bool result = false;
-	if (self)
-	{
-		uint index;
-		for (index = 0; index < self->Used; index++)
-		{
-			if (self->Items[index] == item)
-			{
-				result = true;
-				break;
-			}
-		}
-	}
-	return result;
+    bool result = false;
+    if (self)
+    {
+        uint index;
+        for (index = 0; index < self->Used; index++)
+        {
+            if (self->Items[index] == item)
+            {
+                result = true;
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 uint CreatorList_GetCount(CreatorList self)
 {
-	uint result = 0;
-	if (self)
-	{
-		result = self->Used;
-	}
-	return result;
+    uint result = 0;
+    if (self)
+    {
+        result = self->Used;
+    }
+    return result;
 }
 
 void *CreatorList_GetItem(CreatorList self, uint index)
 {
-	void *result = NULL;
-	if (self)
-	{
-		if (index < self->Used)
-		{
-			result = self->Items[index];
-		}
-	}
-	return result;
+    void *result = NULL;
+    if (self)
+    {
+        if (index < self->Used)
+        {
+            result = self->Items[index];
+        }
+    }
+    return result;
 }
 
 bool CreatorList_Remove(CreatorList self, void *item)
 {
-	bool result = false;
-	if (self)
-	{
-		uint index;
-		for(index = 0; index < self->Used; index++)
-		{
-			if (self->Items[index] == item)
-			{
-				result = true;
-				break;
-			}
-		}
-		if (result)
-		{
-			self->Used--;
-			uint moveIndex;
-			for(moveIndex = index; moveIndex < self->Used; moveIndex++)
-			{
-				self->Items[moveIndex] = self->Items[moveIndex + 1];
-			}
-		}
-	}
-	return result;
+    bool result = false;
+    if (self)
+    {
+        uint index;
+        for (index = 0; index < self->Used; index++)
+        {
+            if (self->Items[index] == item)
+            {
+                result = true;
+                break;
+            }
+        }
+        if (result)
+        {
+            self->Used--;
+            uint moveIndex;
+            for (moveIndex = index; moveIndex < self->Used; moveIndex++)
+            {
+                self->Items[moveIndex] = self->Items[moveIndex + 1];
+            }
+        }
+    }
+    return result;
 }
 
 void *CreatorList_RemoveAt(CreatorList self, uint index)
 {
-	void *result = NULL;
-	if (self)
-	{
-		if (index < self->Used)
-		{
-			result = self->Items[index];
-			self->Used--;
-			uint moveIndex;
-			for(moveIndex = index; moveIndex < self->Used; moveIndex++)
-			{
-				self->Items[moveIndex] = self->Items[moveIndex + 1];
-			}
-		}
-	}
-	return result;
+    void *result = NULL;
+    if (self)
+    {
+        if (index < self->Used)
+        {
+            result = self->Items[index];
+            self->Used--;
+            uint moveIndex;
+            for (moveIndex = index; moveIndex < self->Used; moveIndex++)
+            {
+                self->Items[moveIndex] = self->Items[moveIndex + 1];
+            }
+        }
+    }
+    return result;
 }
 
 void CreatorList_Free(CreatorList *self, bool freeItems)
 {
-	if (self && *self)
-	{
-		CreatorList list = *self;
-		if (freeItems)
-		{
-			uint index;
-			for(index =0; index < list->Used; index++)
-			{
-				if (list->Items[index])
-				{
-					Creator_MemFree((void **)&list->Items[index]);
-				}
-			}
-		}
-		Creator_MemFree((void **)&list->Items);
-		Creator_MemFree((void **)self);
-	}
+    if (self && *self)
+    {
+        CreatorList list = *self;
+        if (freeItems)
+        {
+            uint index;
+            for (index = 0; index < list->Used; index++)
+            {
+                if (list->Items[index])
+                {
+                    Creator_MemFree((void **)&list->Items[index]);
+                }
+            }
+        }
+        Creator_MemFree((void **)&list->Items);
+        Creator_MemFree((void **)self);
+    }
 }
-
-
 

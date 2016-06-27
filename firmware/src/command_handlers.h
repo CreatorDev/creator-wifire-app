@@ -50,7 +50,6 @@ bool CommandHandlers_ResetToConfigurationMode(void);
 // Return the current datetime as a formatted string. Caller must ensure the return value is freed when done.
 char* CommandHandlers_GetTimeString(void);
 
-
 #endif // __COMMAND_HANDLERS_H_
 
 

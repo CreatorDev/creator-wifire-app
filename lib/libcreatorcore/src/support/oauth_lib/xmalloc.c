@@ -18,24 +18,29 @@
 #include "xmalloc.h"
 #include "creator/core/creator_memalloc.h"
 
-void *xmalloc (size_t size) {
-  return Creator_MemAlloc(size);
+void *xmalloc(size_t size)
+{
+    return Creator_MemAlloc(size);
 }
 
-void *xcalloc (size_t nmemb, size_t size) {
-  return Creator_MemCalloc(nmemb, size);
+void *xcalloc(size_t nmemb, size_t size)
+{
+    return Creator_MemCalloc(nmemb, size);
 }
 
-void *xrealloc (void *ptr, size_t size) {
-  return Creator_MemRealloc(ptr, size);
+void *xrealloc(void *ptr, size_t size)
+{
+    return Creator_MemRealloc(ptr, size);
 }
 
-void xfree (void *buffer) {
-	Creator_MemSafeFree(buffer);
+void xfree(void *buffer)
+{
+    Creator_MemSafeFree(buffer);
 }
 
-char *xstrdup (const char *s) {
-  void *ptr = xmalloc(strlen(s)+1);
-  strcpy (ptr, s);
-  return (char*) ptr;
+char *xstrdup(const char *s)
+{
+    void *ptr = xmalloc(strlen(s) + 1);
+    strcpy(ptr, s);
+    return (char*)ptr;
 }

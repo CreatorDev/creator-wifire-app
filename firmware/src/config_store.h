@@ -73,18 +73,18 @@
 //
 typedef enum
 {
-	WiFiEncryptionType_WEP = 0,
-	WiFiEncryptionType_WPA,
-	WiFiEncryptionType_WPA2,
-	WiFiEncryptionType_Open,
-	WiFiEncryptionType_Max
+    WiFiEncryptionType_WEP = 0,
+    WiFiEncryptionType_WPA,
+    WiFiEncryptionType_WPA2,
+    WiFiEncryptionType_Open,
+    WiFiEncryptionType_Max
 } WiFiEncryptionType;
 
 typedef enum
 {
-	AddressScheme_Dhcp = 0,
-	AddressScheme_StaticIP,
-	AddressScheme_Max
+    AddressScheme_Dhcp = 0,
+    AddressScheme_StaticIP,
+    AddressScheme_Max
 } AddressScheme;
 
 typedef enum
@@ -118,39 +118,39 @@ typedef enum
 #define	CONFIGSETTINGS_PAGEOFFSET			(0)
 typedef struct
 {
-	// Memory Format Information
-	uint8_t				Magic[8];
-	uint32_t			MemFormatVer;
+    // Memory Format Information
+    uint8_t             Magic[8];
+    uint32_t            MemFormatVer;
 
-	// Device Information
-	uint64_t			CpuSerialNumber;
-	char				DeviceName[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		// Null terminated
-	char				DeviceType[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
-	char				MacAddress[MAC_ADDRESS_LENGTH+1];						//  "       "
+    // Device Information
+    uint64_t			CpuSerialNumber;
+    char				DeviceName[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		// Null terminated
+    char				DeviceType[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
+    char				MacAddress[MAC_ADDRESS_LENGTH+1];						//  "       "
 
-	// SoftAP Information
-	char				SoftAPSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
-	char				SoftAPPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];	//  "       "
+    // SoftAP Information
+    char				SoftAPSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
+    char				SoftAPPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];	//  "       "
 
-	// Network Configuration
-	WiFiEncryptionType	Encryption;
-	char				NetworkSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
-	char				NetworkPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];	//  "       "
-	AddressScheme		AddressingScheme;
-	
-	// StaticIP configuration
-	char				StatDNS[IPV4_ADDRESS_LENGTH+1];							//  "       "
-	char				StatIP[IPV4_ADDRESS_LENGTH+1];							//  "       "
-	char				StatNetmask[IPV4_ADDRESS_LENGTH+1];						//  "       "
-	char				StatGateway[IPV4_ADDRESS_LENGTH+1];						//  "       "
+    // Network Configuration
+    WiFiEncryptionType	Encryption;
+    char				NetworkSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
+    char				NetworkPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];	//  "       "
+    AddressScheme		AddressingScheme;
 
-	// Device Control
-	uint8_t				StartInConfigurationMode;
-	uint8_t				NetworkConfigConfigured;    // TODO - review/add device server configured?
+    // StaticIP configuration
+    char				StatDNS[IPV4_ADDRESS_LENGTH+1];							//  "       "
+    char				StatIP[IPV4_ADDRESS_LENGTH+1];							//  "       "
+    char				StatNetmask[IPV4_ADDRESS_LENGTH+1];						//  "       "
+    char				StatGateway[IPV4_ADDRESS_LENGTH+1];						//  "       "
+
+    // Device Control
+    uint8_t				StartInConfigurationMode;
+    uint8_t				NetworkConfigConfigured;    // TODO - review/add device server configured?
     
-	// Housekeeping
-	uint16_t			Padding;
-	uint8_t				Checkbyte;												// Note: Must always be last field in structure
+    // Housekeeping
+    uint16_t			Padding;
+    uint8_t				Checkbyte;												// Note: Must always be last field in structure
 
 } ConfigStruct;
 
@@ -158,39 +158,39 @@ typedef struct
 #define	LOGGINGSETTINGS_PAGEOFFSET      (CONFIGSETTINGS_PAGEOFFSET + sizeof(ConfigStruct) + NVM_STRUCTURE_SPACING_BYTES)
 typedef struct
 {
-	// Memory Format Information
-	uint8_t					Magic[8];
-	uint32_t				MemFormatVer;
+    // Memory Format Information
+    uint8_t					Magic[8];
+    uint32_t				MemFormatVer;
 
-	// Logging Configuration
-	uint32_t				LoggingEnabled;		// Note: could reduce size to uint8 (if other settings are changed in the future)
-	CreatorActivityLogLevel	LoggingLevel;
-	uint16_t				LoggingCategories;
+    // Logging Configuration
+    uint32_t				LoggingEnabled;		// Note: could reduce size to uint8 (if other settings are changed in the future)
+    CreatorActivityLogLevel	LoggingLevel;
+    uint16_t				LoggingCategories;
 
-	// Housekeeping
-	uint16_t				Padding;
-	uint8_t					Checkbyte;												// Note: Must always be last field in structure
+    // Housekeeping
+    uint16_t				Padding;
+    uint8_t					Checkbyte;												// Note: Must always be last field in structure
 
 } LoggingSettingsStruct;
 
 #define	DEVICESERVERSETTINGS_PAGEOFFSET     (LOGGINGSETTINGS_PAGEOFFSET + sizeof(LoggingSettingsStruct) + NVM_STRUCTURE_SPACING_BYTES)
 typedef struct
 {
-	// Memory Format Information
-	uint8_t					Magic[8];
-	uint32_t				MemFormatVer;
+    // Memory Format Information
+    uint8_t					Magic[8];
+    uint32_t				MemFormatVer;
 
     // 	Device server configuration
     ServerSecurityMode  SecurityMode;
-	char				BootstrapURL[BOOTSTRAP_URL_LENGTH+1];                   //  Null terminated
-	char				PublicKey[SECURITY_PUBLIC_KEY_LENGTH+1];                //  "       "
-	char				PrivateKey[SECURITY_PRIVATE_KEY_LENGTH+1];              //  "       "
-	char				Certificate[SECURITY_CERT_LENGTH+1];                    //  "       "
-	char				BootstrapCertChain[SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH+1]; //  "       "
+    char				BootstrapURL[BOOTSTRAP_URL_LENGTH+1];                   //  Null terminated
+    char				PublicKey[SECURITY_PUBLIC_KEY_LENGTH+1];                //  "       "
+    char				PrivateKey[SECURITY_PRIVATE_KEY_LENGTH+1];              //  "       "
+    char				Certificate[SECURITY_CERT_LENGTH+1];                    //  "       "
+    char				BootstrapCertChain[SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH+1]; //  "       "
 
-	// Housekeeping
-	uint16_t				Padding;
-	uint8_t					Checkbyte;												// Note: Must always be last field in structure
+    // Housekeeping
+    uint16_t				Padding;
+    uint8_t					Checkbyte;												// Note: Must always be last field in structure
 
 } DeviceServerConfigStruct;
 

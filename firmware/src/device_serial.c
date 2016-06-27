@@ -27,9 +27,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #ifdef MICROCHIP_PIC32
-	#include <xc.h>
-	#include "system/debug/sys_debug.h"
-	#include "system/console/sys_console.h"
+    #include <xc.h>
+    #include "system/debug/sys_debug.h"
+    #include "system/console/sys_console.h"
 #endif
 
 #include "device_serial.h"
@@ -38,36 +38,36 @@
 uint64_t DeviceSerial_GetCpuSerialNumberUint64(void)
 {
 #ifdef MICROCHIP_PIC32
-	return ((uint64_t) DEVSN1 << 32 | (uint64_t) DEVSN0);
+    return ((uint64_t) DEVSN1 << 32 | (uint64_t) DEVSN0);
 #else
-	return 0;
+    return 0;
 #endif
 }
 
 bool DeviceSerial_GetCpuSerialNumberHexString (char* buffer, uint32_t buffSize)
 {
-	#define HEX_SN_SIZE_CHARS	(16)
+#define HEX_SN_SIZE_CHARS	(16)
 
-	bool result = false;
+    bool result = false;
 #ifdef MICROCHIP_PIC32
-	if (buffer && buffSize >= HEX_SN_SIZE_CHARS+1)
-	{
-		uint8_t  i = 0;
-		for (i = 0; i < HEX_SN_SIZE_CHARS/2; i++)
-			sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", 0xFF);
+    if (buffer && buffSize >= HEX_SN_SIZE_CHARS+1)
+    {
+        uint8_t i = 0;
+        for (i = 0; i < HEX_SN_SIZE_CHARS/2; i++)
+        sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", 0xFF);
 
-		uint64_t serialNumber = ((uint64_t) DEVSN1 << 32 | (uint64_t) DEVSN0);
-		uint8_t* _serialNumber = (uint8_t*) &serialNumber;
-		memset(buffer, 0, sizeof(char) * (HEX_SN_SIZE_CHARS+1) );
-		for (i = 0; i < HEX_SN_SIZE_CHARS/2; i++)
-			sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", *(_serialNumber+i));
+        uint64_t serialNumber = ((uint64_t) DEVSN1 << 32 | (uint64_t) DEVSN0);
+        uint8_t* _serialNumber = (uint8_t*) &serialNumber;
+        memset(buffer, 0, sizeof(char) * (HEX_SN_SIZE_CHARS+1) );
+        for (i = 0; i < HEX_SN_SIZE_CHARS/2; i++)
+        sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", *(_serialNumber+i));
 
-		result = true;
-	}
+        result = true;
+    }
 #else
 #define APP_DEFAULT_DEVICE_SERIAL_NUMBER "123456"
-	sprintf((char*)buffer, APP_DEFAULT_DEVICE_SERIAL_NUMBER);
-	result = true;
+    sprintf((char*) buffer, APP_DEFAULT_DEVICE_SERIAL_NUMBER);
+    result = true;
 #endif
-	return result;
+    return result;
 }

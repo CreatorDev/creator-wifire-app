@@ -38,111 +38,110 @@
 
 bool CreatorConsole_Init()
 {
-	bool sucess = false;
+    bool sucess = false;
 
-	// disable canonical mode using termios (man 3 termios)
-	// this is a POSIX (POSIX.1-2001) way to disable line buffering
-	struct termios tty_attr;
-	if (tcgetattr(0, &tty_attr) == 0)
-	{
-		tty_attr.c_lflag &= ~ICANON;
+    // disable canonical mode using termios (man 3 termios)
+    // this is a POSIX (POSIX.1-2001) way to disable line buffering
+    struct termios tty_attr;
+    if (tcgetattr(0, &tty_attr) == 0)
+    {
+        tty_attr.c_lflag &= ~ICANON;
 
-		/* to make CreatorConsole identical on WiFire and posix we could disable echo
-		 * then re-enable for scanf. Currently code that uses getchar et.al. has
-		 * platform specific workarounds for this */
-		//tty_attr.c_lflag &= ~ECHO;
+        /* to make CreatorConsole identical on WiFire and posix we could disable echo
+         * then re-enable for scanf. Currently code that uses getchar et.al. has
+         * platform specific workarounds for this */
+        //tty_attr.c_lflag &= ~ECHO;
+        if (tcsetattr(0, 0, &tty_attr) == 0)
+            sucess = true;
+    }
 
-		if (tcsetattr(0, 0, &tty_attr) == 0)
-			sucess = true;
-	}
+    if (!sucess)
+    {
+        // fallback for ci20
+        if (system("stty -icanon") == 0)
+            sucess = true;
+    }
 
-	if (!sucess)
-	{
-		// fallback for ci20
-		if (system("stty -icanon") == 0)
-			sucess = true;
-	}
-
-	return sucess;
+    return sucess;
 }
 
 void CreatorConsole_Printf(const char* format, ...)
 {
-	va_list arg_list;
-	char buff[CREATOR_CONSOLE_BUFFER_LEN];
+    va_list arg_list;
+    char buff[CREATOR_CONSOLE_BUFFER_LEN];
 
-	va_start(arg_list, format);
-	vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
+    va_start(arg_list, format);
+    vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
 
-	fputs(buff, stdout);
-	fflush(stdout);
+    fputs(buff, stdout);
+    fflush(stdout);
 
-	va_end(arg_list);
+    va_end(arg_list);
 }
 
 void CreatorConsole_Puts(const char* msg)
 {
-	fputs(msg, stdout);
-	fflush(stdout);
+    fputs(msg, stdout);
+    fflush(stdout);
 }
 
 bool CreatorConsole_Ready()
 {
-	struct pollfd fds;
-	fds.fd = 0;
-	fds.events = POLLIN;
-	return poll(&fds, 1, 0) > 0;
+    struct pollfd fds;
+    fds.fd = 0;
+    fds.events = POLLIN;
+    return poll(&fds, 1, 0) > 0;
 }
 
 char CreatorConsole_Getc()
 {
-	return getchar();
+    return getchar();
 }
 
 void CreatorConsole_Putc(char c)
 {
-	putchar(c);
-	fflush(stdout);
+    putchar(c);
+    fflush(stdout);
 }
 
 int CreatorConsole_Getline(char* line, int bufferLen)
 {
-	fgets(line, bufferLen, stdin);
-	return strnlen(line, bufferLen);
+    fgets(line, bufferLen, stdin);
+    return strnlen(line, bufferLen);
 }
 
 int CreatorConsole_Scanf(const char *format, ...)
 {
-	int rc;
+    int rc;
 
-	va_list args;
-	va_start(args, format);
-	rc = vscanf(format, args);
-	va_end(args);
+    va_list args;
+    va_start(args, format);
+    rc = vscanf(format, args);
+    va_end(args);
 
-	return rc;
+    return rc;
 }
 
 //These are duplicates of the above functions for deprecation.
 
 void SYS_CONSOLE_MESSAGE(const char * message)
 {
-	fputs(message, stdout);
-	fflush(stdout);
+    fputs(message, stdout);
+    fflush(stdout);
 }
 
 void SYS_CONSOLE_PRINT(const char* format, ...)
 {
-	va_list arg_list;
-	char buff[CREATOR_CONSOLE_BUFFER_LEN];
+    va_list arg_list;
+    char buff[CREATOR_CONSOLE_BUFFER_LEN];
 
-	va_start(arg_list, format);
-	vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
+    va_start(arg_list, format);
+    vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
 
-	fputs(buff, stdout);
-	fflush(stdout);
+    fputs(buff, stdout);
+    fflush(stdout);
 
-	va_end(arg_list);
+    va_end(arg_list);
 }
 
 

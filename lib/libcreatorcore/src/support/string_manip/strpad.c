@@ -24,16 +24,20 @@
 #include <stdbool.h>
 
 
-void StringManip_Strpad(char *text, size_t padLength, char padChar) {
-	size_t i;
-	bool bPadding = false;
-	for (i = 0; i < padLength; i++) {
-		if (text[i] == '\0') {
-			bPadding = true;
-		}
-		if (bPadding) {
-			text[i] = padChar;
-		}
-	}
-	text[i] = '\0';
+void StringManip_Strpad(char *text, size_t padLength, char padChar)
+{
+    size_t i;
+    bool bPadding = false;
+    for (i = 0; i < padLength; i++)
+    {
+        if (text[i] == '\0')
+        {
+            bPadding = true;
+        }
+        if (bPadding)
+        {
+            text[i] = padChar;
+        }
+    }
+    text[i] = '\0';
 }

@@ -28,12 +28,12 @@
 
 typedef enum
 {
-	CreatorTLSError_NotSet = 0,
-	CreatorTLSError_None,
-	CreatorTLSError_RecieveBufferEmpty, 		//an error occured, but no-one knows what it was
-	CreatorTLSError_TransmitBufferFull,
-	CreatorTLSError_ConnectionClosed,
-	CreatorTLSError_ConnectionReset
+    CreatorTLSError_NotSet = 0,
+    CreatorTLSError_None,
+    CreatorTLSError_RecieveBufferEmpty,     //an error occurred, but no-one knows what it was
+    CreatorTLSError_TransmitBufferFull,
+    CreatorTLSError_ConnectionClosed,
+    CreatorTLSError_ConnectionReset
 } CreatorTLSError;
 
 void CreatorTLS_Initialise(void);

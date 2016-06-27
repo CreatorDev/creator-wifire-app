@@ -25,18 +25,20 @@
 
 #include "creator/core/creator_memalloc.h"
 
-char *StringManip_InsertAt(const char *src, char c, const char *szInsert) {
-	size_t srcLength = strlen(src);
-	size_t insertLength = strlen(szInsert);
-	char *szResult = Creator_MemAlloc(srcLength + insertLength + 1);
-	if (szResult) {
-		const char *szCPos = strchr(src, c);
-		size_t copyLength = (szCPos)?(size_t)(szCPos - src):srcLength;
+char *StringManip_InsertAt(const char *src, char c, const char *szInsert)
+{
+    size_t srcLength = strlen(src);
+    size_t insertLength = strlen(szInsert);
+    char *szResult = Creator_MemAlloc(srcLength + insertLength + 1);
+    if (szResult)
+    {
+        const char *szCPos = strchr(src, c);
+        size_t copyLength = (szCPos) ? (size_t)(szCPos - src) : srcLength;
 
-		memcpy(szResult, src, copyLength);
-		memcpy(szResult + copyLength, szInsert, insertLength);
-		memcpy(szResult + copyLength + insertLength, src + copyLength, srcLength - copyLength);
-		szResult[srcLength+insertLength] = '\0';
-	}
-	return szResult;
+        memcpy(szResult, src, copyLength);
+        memcpy(szResult + copyLength, szInsert, insertLength);
+        memcpy(szResult + copyLength + insertLength, src + copyLength, srcLength - copyLength);
+        szResult[srcLength + insertLength] = '\0';
+    }
+    return szResult;
 }

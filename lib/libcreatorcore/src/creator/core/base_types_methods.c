@@ -33,84 +33,81 @@ static char *DuplicateCString(const char *text);
 
 CreatorID CreatorID_Duplicate(CreatorID id)
 {
-	return DuplicateCString(id);
+    return DuplicateCString(id);
 }
 
 bool CreatorID_Equals(CreatorID x, CreatorID y)
 {
-	return (x == y) || (x != NULL && y != NULL && strcmp(x, y) == 0);
+    return (x == y) || (x != NULL && y != NULL && strcmp(x, y) == 0);
 }
 
 void CreatorID_Free(CreatorID *id)
 {
-	if (id && *id)
-	{
-		Creator_MemFree((void **)id);
-	}
+    if (id && *id)
+    {
+        Creator_MemFree((void **)id);
+    }
 }
 
 CreatorToken CreatorToken_Duplicate(CreatorToken token)
 {
-	return DuplicateCString(token);
+    return DuplicateCString(token);
 }
 
 bool CreatorToken_Equals(CreatorToken x, CreatorToken y)
 {
-	return (x == y) || (x != NULL && y != NULL && strcmp(x, y) == 0);
+    return (x == y) || (x != NULL && y != NULL && strcmp(x, y) == 0);
 }
 
 void CreatorToken_Free(CreatorToken *token)
 {
-	if (token && *token)
-	{
-		Creator_MemFree((void **)token);
-	}
+    if (token && *token)
+    {
+        Creator_MemFree((void **)token);
+    }
 }
-
 
 char *CreatorString_Duplicate(const char *text)
 {
-	return DuplicateCString(text);
+    return DuplicateCString(text);
 }
-
 
 char *CreatorString_DuplicateWithLength(const char *text, int textLength)
 {
-	char *result = NULL;
-	if (text)
-	{
-		result = (char*)Creator_MemAlloc(textLength+1);
-		if (result)
-		{
-			memcpy(result, text, textLength);
-			result[textLength] = '\0';
-		}
-	}
-	return result;
+    char *result = NULL;
+    if (text)
+    {
+        result = (char*)Creator_MemAlloc(textLength + 1);
+        if (result)
+        {
+            memcpy(result, text, textLength);
+            result[textLength] = '\0';
+        }
+    }
+    return result;
 }
 
 void CreatorString_Free(char **string)
 {
-	if (string && *string)
-	{
-		Creator_MemFree((void **)string);
-	}
+    if (string && *string)
+    {
+        Creator_MemFree((void **)string);
+    }
 }
-
 
 static char *DuplicateCString(const char *text)
 {
-	char *result = NULL;
-	if (text)
-	{
-		size_t strLength = strlen(text);
-		result = (char*)Creator_MemAlloc(strLength+1);
-		if (result)
-		{
-			memcpy(result, text, strLength+1);
-			result[strLength] = '\0';
-		}
-	}
-	return result;
+    char *result = NULL;
+    if (text)
+    {
+        size_t strLength = strlen(text);
+        result = (char*)Creator_MemAlloc(strLength + 1);
+        if (result)
+        {
+            memcpy(result, text, strLength + 1);
+            result[strLength] = '\0';
+        }
+    }
+    return result;
 }
 

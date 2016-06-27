@@ -42,32 +42,32 @@
 
 typedef struct
 {
-	CreatorThread_Callback Runnable;
-	void *RunnableContext;
-	pthread_t ThreadID;
-	pthread_cond_t SleepCondition;
-	pthread_mutex_t SleepMutex;
-	CreatorSemaphore Lock;
-	bool Exited;
-} ThreadInfo;
+    CreatorThread_Callback Runnable;
+    void *RunnableContext;
+    pthread_t ThreadID;
+    pthread_cond_t SleepCondition;
+    pthread_mutex_t SleepMutex;
+    CreatorSemaphore Lock;
+    bool Exited;
+}ThreadInfo;
 
 static CreatorList _Threads = NULL;
 
 typedef struct
 {
-	pthread_t ThreadID;
-	CreatorErrorType Error;
-} ThreadError;
+    pthread_t ThreadID;
+    CreatorErrorType Error;
+}ThreadError;
 
 static CreatorList _ThreadErrors = NULL;
 
 typedef struct
 {
-	pthread_t ThreadID;
+    pthread_t ThreadID;
 //	bool UseOAuth;
 //	bool UseSessionToken;
 //	CreatorClient Client;
-} ThreadRequestSecurity;
+}ThreadRequestSecurity;
 
 static CreatorList _ThreadRequestSecurityList = NULL;
 
@@ -79,66 +79,66 @@ static void *ThreadCallbackWrapper(void *context);
 
 void CreatorThread_ClearLastError(void)
 {
-	if (_ThreadErrors)
-	{
-		pthread_t threadID = GetThreadID(NULL);
-		CreatorSemaphore_Wait(_ThreadLock,1);
-		uint index;
-		for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
-		{
-			ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
-			if (threadError && (threadError->ThreadID == threadID))
-			{
-				CreatorList_RemoveAt(_ThreadErrors, index);
-				Creator_MemFree((void **)&threadError);
-				break;
-			}
-		}
-		CreatorSemaphore_Release(_ThreadLock,1);
-	}
+    if (_ThreadErrors)
+    {
+        pthread_t threadID = GetThreadID(NULL);
+        CreatorSemaphore_Wait(_ThreadLock,1);
+        uint index;
+        for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
+        {
+            ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
+            if (threadError && (threadError->ThreadID == threadID))
+            {
+                CreatorList_RemoveAt(_ThreadErrors, index);
+                Creator_MemFree((void **)&threadError);
+                break;
+            }
+        }
+        CreatorSemaphore_Release(_ThreadLock,1);
+    }
 }
 
 void CreatorThread_Free(CreatorThread *self)
 {
-	if (self && *self)
-	{
-		pthread_t threadID = GetThreadID(NULL);
-		ThreadInfo *threadInfo = (ThreadInfo*)*self;
-		if (_ThreadLock)
-			CreatorSemaphore_Wait(_ThreadLock,1);
-		if (_Threads)
-			CreatorList_Remove(_Threads, threadInfo);
-		if (_ThreadLock)
-			CreatorSemaphore_Release(_ThreadLock,1);
-		if (threadInfo->Lock)
-		{
-			CreatorSemaphore_Wait(threadInfo->Lock,1);
-		}
-		if (!threadInfo->Exited)
-		{
-			if (threadInfo->ThreadID == threadID)
-			{
-				pthread_detach(threadInfo->ThreadID);
-			}
-			else
-			{
-				pthread_cancel(threadInfo->ThreadID);
-				pthread_join(threadInfo->ThreadID, NULL);
-			}
-			threadInfo->Exited = true;
-		}
-		if (threadInfo->Lock)
-		{
-			CreatorSemaphore_Release(threadInfo->Lock,1);
-		}
-		pthread_cond_destroy(&threadInfo->SleepCondition);
-		pthread_mutex_destroy(&threadInfo->SleepMutex);
-		if (threadInfo->Lock)
-		{
-			CreatorSemaphore_Free(&threadInfo->Lock);
-		}
-		Creator_MemFree((void **)self);
-	}
+    if (self && *self)
+    {
+        pthread_t threadID = GetThreadID(NULL);
+        ThreadInfo *threadInfo = (ThreadInfo*)*self;
+        if (_ThreadLock)
+            CreatorSemaphore_Wait(_ThreadLock,1);
+        if (_Threads)
+            CreatorList_Remove(_Threads, threadInfo);
+        if (_ThreadLock)
+            CreatorSemaphore_Release(_ThreadLock,1);
+        if (threadInfo->Lock)
+        {
+            CreatorSemaphore_Wait(threadInfo->Lock,1);
+        }
+        if (!threadInfo->Exited)
+        {
+            if (threadInfo->ThreadID == threadID)
+            {
+                pthread_detach(threadInfo->ThreadID);
+            }
+            else
+            {
+                pthread_cancel(threadInfo->ThreadID);
+                pthread_join(threadInfo->ThreadID, NULL);
+            }
+            threadInfo->Exited = true;
+        }
+        if (threadInfo->Lock)
+        {
+            CreatorSemaphore_Release(threadInfo->Lock,1);
+        }
+        pthread_cond_destroy(&threadInfo->SleepCondition);
+        pthread_mutex_destroy(&threadInfo->SleepMutex);
+        if (threadInfo->Lock)
+        {
+            CreatorSemaphore_Free(&threadInfo->Lock);
+        }
+        Creator_MemFree((void **)self);
+    }
 }
 
 //CreatorClient CreatorThread_GetClient()
@@ -165,29 +165,29 @@ void CreatorThread_Free(CreatorThread *self)
 
 CreatorErrorType CreatorThread_GetLastError(void)
 {
-	CreatorErrorType result = CreatorError_NoError;
-	if (_ThreadErrors)
-	{
-		pthread_t threadID = GetThreadID(NULL);
-		CreatorSemaphore_Wait(_ThreadLock,1);
-		uint index;
-		for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
-		{
-			ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
-			if (threadError && (threadError->ThreadID == threadID))
-			{
-				result = threadError->Error;
-				break;
-			}
-		}
-		CreatorSemaphore_Release(_ThreadLock,1);
-	}
-	return result;
+    CreatorErrorType result = CreatorError_NoError;
+    if (_ThreadErrors)
+    {
+        pthread_t threadID = GetThreadID(NULL);
+        CreatorSemaphore_Wait(_ThreadLock,1);
+        uint index;
+        for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
+        {
+            ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
+            if (threadError && (threadError->ThreadID == threadID))
+            {
+                result = threadError->Error;
+                break;
+            }
+        }
+        CreatorSemaphore_Release(_ThreadLock,1);
+    }
+    return result;
 }
 
 uint CreatorThread_GetThreadID(CreatorThread self)
 {
-	return (uint)GetThreadID(self);
+    return (uint)GetThreadID(self);
 }
 
 //bool CreatorThread_GetUseOAuth(void)
@@ -236,34 +236,34 @@ uint CreatorThread_GetThreadID(CreatorThread self)
 
 void CreatorThread_Initialise(void)
 {
-	if (!_Threads)
-		_Threads = CreatorList_New(5);
-	if (!_ThreadLock)
-		_ThreadLock = CreatorSemaphore_New(1,0);
+    if (!_Threads)
+        _Threads = CreatorList_New(5);
+    if (!_ThreadLock)
+        _ThreadLock = CreatorSemaphore_New(1,0);
 }
 
 void CreatorThread_Join(CreatorThread self)
 {
-	ThreadInfo *threadInfo = (ThreadInfo*)self;
-	if (threadInfo)
-	{
-		if (!threadInfo->Exited)
-		{
-			if (threadInfo->Lock)
-			{
-				CreatorSemaphore_Wait(threadInfo->Lock,1);
-			}
-			if (!threadInfo->Exited)
-			{
-				threadInfo->Exited = true;
-				pthread_join(threadInfo->ThreadID, NULL);
-			}
-			if (threadInfo->Lock)
-			{
-				CreatorSemaphore_Release(threadInfo->Lock,1);
-			}
-		}
-	}
+    ThreadInfo *threadInfo = (ThreadInfo*)self;
+    if (threadInfo)
+    {
+        if (!threadInfo->Exited)
+        {
+            if (threadInfo->Lock)
+            {
+                CreatorSemaphore_Wait(threadInfo->Lock,1);
+            }
+            if (!threadInfo->Exited)
+            {
+                threadInfo->Exited = true;
+                pthread_join(threadInfo->ThreadID, NULL);
+            }
+            if (threadInfo->Lock)
+            {
+                CreatorSemaphore_Release(threadInfo->Lock,1);
+            }
+        }
+    }
 }
 
 //void CreatorThread_LogoutClient(CreatorClient client)
@@ -294,73 +294,73 @@ void CreatorThread_Join(CreatorThread self)
 
 CreatorThread CreatorThread_New(const char *name, uint priority, uint stackSize, CreatorThread_Callback runnable, void *context)
 {
-	if (!_Threads)
-		_Threads = CreatorList_New(5);
-	(void)name;
-	(void)priority;
-	(void)stackSize;
-	ThreadInfo *threadInfo = (ThreadInfo*)Creator_MemAlloc(sizeof(ThreadInfo));
-	if (!threadInfo) {
-		return NULL;
-	}
-	threadInfo->Runnable = runnable;
-	threadInfo->RunnableContext = context;
-	threadInfo->Lock = CreatorSemaphore_New(1,0);
-	threadInfo->Exited = false;
-	pthread_cond_init(&threadInfo->SleepCondition, NULL);
-	pthread_mutex_init(&threadInfo->SleepMutex, NULL);
+    if (!_Threads)
+        _Threads = CreatorList_New(5);
+    (void)name;
+    (void)priority;
+    (void)stackSize;
+    ThreadInfo *threadInfo = (ThreadInfo*)Creator_MemAlloc(sizeof(ThreadInfo));
+    if (!threadInfo) {
+        return NULL;
+    }
+    threadInfo->Runnable = runnable;
+    threadInfo->RunnableContext = context;
+    threadInfo->Lock = CreatorSemaphore_New(1,0);
+    threadInfo->Exited = false;
+    pthread_cond_init(&threadInfo->SleepCondition, NULL);
+    pthread_mutex_init(&threadInfo->SleepMutex, NULL);
 
-	if (pthread_create(&threadInfo->ThreadID, NULL, ThreadCallbackWrapper, threadInfo) != 0)
-	{
-		if (threadInfo->Lock)
-		{
-			CreatorSemaphore_Free(&threadInfo->Lock);
-		}
-		Creator_MemFree((void **)&threadInfo);
-		return NULL;
-	}
-	CreatorSemaphore_Wait(_ThreadLock,1);
-	CreatorList_Add(_Threads, threadInfo);
-	CreatorSemaphore_Release(_ThreadLock,1);
-	return (CreatorThread)threadInfo;
+    if (pthread_create(&threadInfo->ThreadID, NULL, ThreadCallbackWrapper, threadInfo) != 0)
+    {
+        if (threadInfo->Lock)
+        {
+            CreatorSemaphore_Free(&threadInfo->Lock);
+        }
+        Creator_MemFree((void **)&threadInfo);
+        return NULL;
+    }
+    CreatorSemaphore_Wait(_ThreadLock,1);
+    CreatorList_Add(_Threads, threadInfo);
+    CreatorSemaphore_Release(_ThreadLock,1);
+    return (CreatorThread)threadInfo;
 }
 
 void CreatorThread_SetError(CreatorErrorType error)
 {
-	if (error == CreatorError_NoError)
-		CreatorThread_ClearLastError();
-	else
-	{
-		pthread_t threadID = GetThreadID(NULL);
-		if (!_ThreadLock)
-			_ThreadLock = CreatorSemaphore_New(1,0);
-		CreatorSemaphore_Wait(_ThreadLock,1);
-		if (!_ThreadErrors)
-			_ThreadErrors = CreatorList_New(10);
-		uint index;
-		bool found = false;
-		for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
-		{
-			ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
-			if (threadError && (threadError->ThreadID == threadID))
-			{
-				threadError->Error = error;
-				found = true;
-				break;
-			}
-		}
-		if (!found)
-		{
-			ThreadError *threadError = Creator_MemAlloc(sizeof(ThreadError));
-			if (threadError)
-			{
-				threadError->ThreadID = threadID;
-				threadError->Error = error;
-				CreatorList_Add(_ThreadErrors, threadError);
-			}
-		}
-		CreatorSemaphore_Release(_ThreadLock,1);
-	}
+    if (error == CreatorError_NoError)
+        CreatorThread_ClearLastError();
+    else
+    {
+        pthread_t threadID = GetThreadID(NULL);
+        if (!_ThreadLock)
+            _ThreadLock = CreatorSemaphore_New(1,0);
+        CreatorSemaphore_Wait(_ThreadLock,1);
+        if (!_ThreadErrors)
+            _ThreadErrors = CreatorList_New(10);
+        uint index;
+        bool found = false;
+        for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
+        {
+            ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
+            if (threadError && (threadError->ThreadID == threadID))
+            {
+                threadError->Error = error;
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            ThreadError *threadError = Creator_MemAlloc(sizeof(ThreadError));
+            if (threadError)
+            {
+                threadError->ThreadID = threadID;
+                threadError->Error = error;
+                CreatorList_Add(_ThreadErrors, threadError);
+            }
+        }
+        CreatorSemaphore_Release(_ThreadLock,1);
+    }
 }
 
 //void CreatorThread_SetClient(CreatorClient client)
@@ -479,40 +479,40 @@ void CreatorThread_SetError(CreatorErrorType error)
 
 bool CreatorThread_Sleep(CreatorThread self, uint seconds)
 {
-	bool result = false;
-	if (seconds > 0)
-	{
-		ThreadInfo *threadInfo = GetThreadInfo(self);
-		struct timespec sleepDuration;
-		sleepDuration.tv_nsec = 0;
-		if (threadInfo)
-		{
-			struct timeval currentTime;
-			gettimeofday(&currentTime, NULL);
-			sleepDuration.tv_sec = currentTime.tv_sec + seconds;
-			sleepDuration.tv_nsec += (currentTime.tv_usec * 1000);
-			pthread_mutex_lock(&threadInfo->SleepMutex);
-			int waitResult = pthread_cond_timedwait(&threadInfo->SleepCondition, &threadInfo->SleepMutex, &sleepDuration);
-			pthread_mutex_unlock(&threadInfo->SleepMutex);
-			result = (waitResult != ETIMEDOUT);
-		}
-		else
-		{
+    bool result = false;
+    if (seconds > 0)
+    {
+        ThreadInfo *threadInfo = GetThreadInfo(self);
+        struct timespec sleepDuration;
+        sleepDuration.tv_nsec = 0;
+        if (threadInfo)
+        {
+            struct timeval currentTime;
+            gettimeofday(&currentTime, NULL);
+            sleepDuration.tv_sec = currentTime.tv_sec + seconds;
+            sleepDuration.tv_nsec += (currentTime.tv_usec * 1000);
+            pthread_mutex_lock(&threadInfo->SleepMutex);
+            int waitResult = pthread_cond_timedwait(&threadInfo->SleepCondition, &threadInfo->SleepMutex, &sleepDuration);
+            pthread_mutex_unlock(&threadInfo->SleepMutex);
+            result = (waitResult != ETIMEDOUT);
+        }
+        else
+        {
 
-			sleepDuration.tv_sec = seconds;
-			sleepDuration.tv_nsec = 0;
-			struct timespec remaining;
-			errno = 0;
-			while (nanosleep(&sleepDuration, &remaining) == -1)
-			{
-				if (errno == EINTR)
-				{
-					sleepDuration.tv_sec = remaining.tv_sec;
-					sleepDuration.tv_nsec = remaining.tv_nsec;
-				}
-				else
-					break;
-			}
+            sleepDuration.tv_sec = seconds;
+            sleepDuration.tv_nsec = 0;
+            struct timespec remaining;
+            errno = 0;
+            while (nanosleep(&sleepDuration, &remaining) == -1)
+            {
+                if (errno == EINTR)
+                {
+                    sleepDuration.tv_sec = remaining.tv_sec;
+                    sleepDuration.tv_nsec = remaining.tv_nsec;
+                }
+                else
+                    break;
+            }
 
 //			int remaining = sleep(seconds);
 //			while (remaining > 0)
@@ -520,172 +520,172 @@ bool CreatorThread_Sleep(CreatorThread self, uint seconds)
 //				seconds = remaining;
 //				remaining = sleep(seconds);
 //			}
-		}
-	}
-	return result;
+        }
+    }
+    return result;
 }
 
 bool CreatorThread_SleepMilliseconds(CreatorThread self, uint milliseconds)
 {
-	bool result = false;
-	if (milliseconds > 0)
-	{
-		ThreadInfo *threadInfo = GetThreadInfo(self);
-		struct timespec sleepDuration;
-		sleepDuration.tv_nsec =  milliseconds * 1000000;
-		if (threadInfo)
-		{
-			struct timeval currentTime;
-			gettimeofday(&currentTime, NULL);
-			sleepDuration.tv_sec = currentTime.tv_sec;
-			sleepDuration.tv_nsec += (currentTime.tv_usec * 1000);
-			pthread_mutex_lock(&threadInfo->SleepMutex);
-			int waitResult = pthread_cond_timedwait(&threadInfo->SleepCondition, &threadInfo->SleepMutex, &sleepDuration);
-			pthread_mutex_unlock(&threadInfo->SleepMutex);
-			result = (waitResult != ETIMEDOUT);
-		}
-		else
-		{
-			sleepDuration.tv_sec = 0;
-			struct timespec remaining;
-			errno = 0;
-			while (nanosleep(&sleepDuration, &remaining) == -1)
-			{
-				if (errno == EINTR)
-					sleepDuration.tv_nsec = remaining.tv_nsec;
-				else
-					break;
-			}
-		}
-	}
-	return result;
+    bool result = false;
+    if (milliseconds > 0)
+    {
+        ThreadInfo *threadInfo = GetThreadInfo(self);
+        struct timespec sleepDuration;
+        sleepDuration.tv_nsec =  milliseconds * 1000000;
+        if (threadInfo)
+        {
+            struct timeval currentTime;
+            gettimeofday(&currentTime, NULL);
+            sleepDuration.tv_sec = currentTime.tv_sec;
+            sleepDuration.tv_nsec += (currentTime.tv_usec * 1000);
+            pthread_mutex_lock(&threadInfo->SleepMutex);
+            int waitResult = pthread_cond_timedwait(&threadInfo->SleepCondition, &threadInfo->SleepMutex, &sleepDuration);
+            pthread_mutex_unlock(&threadInfo->SleepMutex);
+            result = (waitResult != ETIMEDOUT);
+        }
+        else
+        {
+            sleepDuration.tv_sec = 0;
+            struct timespec remaining;
+            errno = 0;
+            while (nanosleep(&sleepDuration, &remaining) == -1)
+            {
+                if (errno == EINTR)
+                    sleepDuration.tv_nsec = remaining.tv_nsec;
+                else
+                    break;
+            }
+        }
+    }
+    return result;
 }
 
 bool CreatorThread_SleepTicks(CreatorThread self, uint ticks)
 {
-	bool result = false;
-	if (ticks > 0)
-	{
-		ThreadInfo *threadInfo = GetThreadInfo(self);
-		struct timespec sleepDuration;
-		sleepDuration.tv_nsec = ticks;
-		if (threadInfo)
-		{
-			struct timeval currentTime;
-			gettimeofday(&currentTime, NULL);
-			sleepDuration.tv_sec = currentTime.tv_sec;
-			sleepDuration.tv_nsec += (currentTime.tv_usec * 1000);
-			pthread_mutex_lock(&threadInfo->SleepMutex);
-			int waitResult = pthread_cond_timedwait(&threadInfo->SleepCondition, &threadInfo->SleepMutex, &sleepDuration);
-			pthread_mutex_unlock(&threadInfo->SleepMutex);
-			result = (waitResult != ETIMEDOUT);
-		}
-		else
-		{
-			sleepDuration.tv_sec = 0;
-			struct timespec remaining;
-			while (nanosleep(&sleepDuration, &remaining) == -1)
-			{
-				if (errno == EINTR)
-					sleepDuration.tv_nsec = remaining.tv_nsec;
-				else
-					break;
-			}
-		}
-	}
-	return result;
+    bool result = false;
+    if (ticks > 0)
+    {
+        ThreadInfo *threadInfo = GetThreadInfo(self);
+        struct timespec sleepDuration;
+        sleepDuration.tv_nsec = ticks;
+        if (threadInfo)
+        {
+            struct timeval currentTime;
+            gettimeofday(&currentTime, NULL);
+            sleepDuration.tv_sec = currentTime.tv_sec;
+            sleepDuration.tv_nsec += (currentTime.tv_usec * 1000);
+            pthread_mutex_lock(&threadInfo->SleepMutex);
+            int waitResult = pthread_cond_timedwait(&threadInfo->SleepCondition, &threadInfo->SleepMutex, &sleepDuration);
+            pthread_mutex_unlock(&threadInfo->SleepMutex);
+            result = (waitResult != ETIMEDOUT);
+        }
+        else
+        {
+            sleepDuration.tv_sec = 0;
+            struct timespec remaining;
+            while (nanosleep(&sleepDuration, &remaining) == -1)
+            {
+                if (errno == EINTR)
+                    sleepDuration.tv_nsec = remaining.tv_nsec;
+                else
+                    break;
+            }
+        }
+    }
+    return result;
 }
 
 
 void CreatorThread_Shutdown(void)
 {
-	if (_ThreadErrors)
-		 CreatorList_Free(&_ThreadErrors, true);
-	if (_ThreadRequestSecurityList)
-		 CreatorList_Free(&_ThreadRequestSecurityList, true);
-	if (_Threads)
-		 CreatorList_Free(&_Threads, false);
-	if (_ThreadLock)
-		 CreatorSemaphore_Free(&_ThreadLock);
+    if (_ThreadErrors)
+         CreatorList_Free(&_ThreadErrors, true);
+    if (_ThreadRequestSecurityList)
+         CreatorList_Free(&_ThreadRequestSecurityList, true);
+    if (_Threads)
+         CreatorList_Free(&_Threads, false);
+    if (_ThreadLock)
+         CreatorSemaphore_Free(&_ThreadLock);
 }
 
 void CreatorThread_Wakeup(CreatorThread self)
 {
-	ThreadInfo *threadInfo = (ThreadInfo*)self;
-	pthread_mutex_lock(&threadInfo->SleepMutex);
-	pthread_cond_signal(&threadInfo->SleepCondition);
-	pthread_mutex_unlock(&threadInfo->SleepMutex);
+    ThreadInfo *threadInfo = (ThreadInfo*)self;
+    pthread_mutex_lock(&threadInfo->SleepMutex);
+    pthread_cond_signal(&threadInfo->SleepCondition);
+    pthread_mutex_unlock(&threadInfo->SleepMutex);
 }
 
 pthread_t GetThreadID(CreatorThread self)
 {
-	pthread_t result;
-	if (self)
-	{
-		ThreadInfo *threadInfo = (ThreadInfo*)self;
-		result = threadInfo->ThreadID;
-	}
-	else
-	{
-		result = pthread_self();
-	}
-	return result;
+    pthread_t result;
+    if (self)
+    {
+        ThreadInfo *threadInfo = (ThreadInfo*)self;
+        result = threadInfo->ThreadID;
+    }
+    else
+    {
+        result = pthread_self();
+    }
+    return result;
 }
 
 
 static ThreadInfo *GetThreadInfo(CreatorThread self)
 {
-	ThreadInfo *result = NULL;
-	if (self)
-	{
-		result = (ThreadInfo*)self;
-	}
-	else
-	{
-		if (_Threads)
-		{
-			pthread_t threadID = GetThreadID(NULL);
-			uint index;
-			CreatorSemaphore_Wait(_ThreadLock,1);
-			for(index = 0; index < CreatorList_GetCount(_Threads); index++)
-			{
-				ThreadInfo *threadInfo = CreatorList_GetItem(_Threads, index);
-				if (threadInfo && (threadInfo->ThreadID == threadID))
-				{
-					result = threadInfo;
-					break;
-				}
-			}
-			CreatorSemaphore_Release(_ThreadLock,1);
-		}
-	}
-	return result;
+    ThreadInfo *result = NULL;
+    if (self)
+    {
+        result = (ThreadInfo*)self;
+    }
+    else
+    {
+        if (_Threads)
+        {
+            pthread_t threadID = GetThreadID(NULL);
+            uint index;
+            CreatorSemaphore_Wait(_ThreadLock,1);
+            for(index = 0; index < CreatorList_GetCount(_Threads); index++)
+            {
+                ThreadInfo *threadInfo = CreatorList_GetItem(_Threads, index);
+                if (threadInfo && (threadInfo->ThreadID == threadID))
+                {
+                    result = threadInfo;
+                    break;
+                }
+            }
+            CreatorSemaphore_Release(_ThreadLock,1);
+        }
+    }
+    return result;
 }
 
 static void *ThreadCallbackWrapper(void *context)
 {
-	ThreadInfo *threadInfo = (ThreadInfo*)context;
-	threadInfo->Runnable(threadInfo, threadInfo->RunnableContext);
-	if (threadInfo)
-	{
-		if (!threadInfo->Exited)
-		{
-			if (threadInfo->Lock)
-			{
-				CreatorSemaphore_Wait(threadInfo->Lock,1);
-			}
-			if (!threadInfo->Exited)
-			{
-				threadInfo->Exited = true;
-				pthread_detach(threadInfo->ThreadID);
-			}
-			if (threadInfo->Lock)
-			{
-				CreatorSemaphore_Release(threadInfo->Lock,1);
-			}
-		}
-	}
-	return NULL;
+    ThreadInfo *threadInfo = (ThreadInfo*)context;
+    threadInfo->Runnable(threadInfo, threadInfo->RunnableContext);
+    if (threadInfo)
+    {
+        if (!threadInfo->Exited)
+        {
+            if (threadInfo->Lock)
+            {
+                CreatorSemaphore_Wait(threadInfo->Lock,1);
+            }
+            if (!threadInfo->Exited)
+            {
+                threadInfo->Exited = true;
+                pthread_detach(threadInfo->ThreadID);
+            }
+            if (threadInfo->Lock)
+            {
+                CreatorSemaphore_Release(threadInfo->Lock,1);
+            }
+        }
+    }
+    return NULL;
 }
 
 #endif

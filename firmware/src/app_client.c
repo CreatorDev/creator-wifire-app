@@ -4,12 +4,12 @@
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  following conditions are met:
-	 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the
-		following disclaimer.
-	 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
-		following disclaimer in the documentation and/or other materials provided with the distribution.
-	 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote
-		products derived from this software without specific prior written permission.
+     1. Redistributions of source code must retain the above copyright notice, this list of conditions and the
+        following disclaimer.
+     2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+        following disclaimer in the documentation and/or other materials provided with the distribution.
+     3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote
+        products derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
@@ -64,12 +64,10 @@ static DeviceObject device[DEVICE_INSTANCES];
 static LEDObject leds[LED_INSTANCES];
 static LEDObject prevLeds[LED_INSTANCES];
 
-
 static void ClientProcess(CreatorThread thread, void *context);
 static void ClientSetup(void);
 static void CreateDevice(AwaStaticClient * awaClient);
 static void CreateLeds(AwaStaticClient * awaClient);
-
 
 void Client_Initialise(void)
 {
@@ -79,7 +77,7 @@ void Client_Initialise(void)
 
     _AwaClient = AwaStaticClient_New();
     Client_SetLogLevel(ConfigStore_GetLoggingLevel());
-    
+
 //    AwaStaticClient_SetEndPointName(_AwaClient, "WiFire");
     AwaStaticClient_SetEndPointName(_AwaClient, ConfigStore_GetDeviceName());       // TODO - use clientID from cert
 //    AwaStaticClient_SetBootstrapServerURI(_AwaClient, "coap://127.0.0.1:15685");
@@ -87,11 +85,11 @@ void Client_Initialise(void)
     AwaStaticClient_SetBootstrapServerURI(_AwaClient, ConfigStore_GetBootstrapURL());
     AwaStaticClient_SetCoAPListenAddressPort(_AwaClient, "0.0.0.0", 6000);          // TODO - support port config
     AwaStaticClient_Init(_AwaClient);
-    
+
     CreateDevice(_AwaClient);
     CreateLeds(_AwaClient);
     Creator_Log(CreatorLogLevel_Info, "Client init done");
-    
+
     _ClientThread = CreatorThread_New("Lwm2mClient", 1, 4096, ClientProcess, NULL);
 }
 
@@ -113,12 +111,12 @@ void UpdateLEDs(void)
         if (prevLeds[index].OnOff != leds[index].OnOff)
         {
             prevLeds[index].OnOff = leds[index].OnOff;
-            UIControl_SetLEDMode(index+1, UILEDMode_Manual);    // TODO - refactor to remove index ?
+            UIControl_SetLEDMode(index + 1, UILEDMode_Manual);    // TODO - refactor to remove index ?
             if (prevLeds[index].OnOff)
-                UIControl_SetLEDState(index+1, UILEDState_On);
+                UIControl_SetLEDState(index + 1, UILEDState_On);
             else
-                UIControl_SetLEDState(index+1, UILEDState_Off);
-            Creator_Log(CreatorLogLevel_Info, "Set LED%d %s", index+1, prevLeds[index].OnOff ? "On" : "Off");
+                UIControl_SetLEDState(index + 1, UILEDState_Off);
+            Creator_Log(CreatorLogLevel_Info, "Set LED%d %s", index + 1, prevLeds[index].OnOff ? "On" : "Off");
         }
     }
 }
@@ -152,7 +150,7 @@ static void CreateDevice(AwaStaticClient * awaClient)
     AwaStaticClient_SetResourceStorageWithPointer(awaClient, 3, 17, &device[0].DeviceType, sizeof(device[0].DeviceType), sizeof(device[0]));
     AwaStaticClient_DefineResource(awaClient, 3, 19, "SoftwareVersion", AwaResourceType_String, 0, 1, AwaResourceOperations_ReadOnly);
     AwaStaticClient_SetResourceStorageWithPointer(awaClient, 3, 19, &device[0].SoftwareVersion, sizeof(device[0].SoftwareVersion), sizeof(device[0]));
-    
+
     // Get initial values
     AppInfo *appInfo = AppConfig_GetAppInfo();
     snprintf(softwareVersion, LABEL_SIZE, "%s (%s)", appInfo->ApplicationVersion, appInfo->ApplicationVersionDate);
@@ -190,7 +188,7 @@ static void CreateLeds(AwaStaticClient * awaClient)
         AwaStaticClient_CreateObjectInstance(awaClient, 3311, instance);
         AwaStaticClient_CreateResource(awaClient, 3311, instance, IPSO_LIGHT_CONTROL_ON_OFF);
         leds[instance].OnOff = true;
-        
+
         prevLeds[instance].OnOff = true;
     }
 }
@@ -202,22 +200,21 @@ LEDObject * Client_GetLeds(void)
 
 void Client_SetLogLevel(CreatorActivityLogLevel level)
 {
-    switch (level)
-    {
-    case CreatorActivityLogLevel_Error:
-        AwaStaticClient_SetLogLevel(AwaLogLevel_Error);
-        break;
-    case CreatorActivityLogLevel_Warning:
-        AwaStaticClient_SetLogLevel(AwaLogLevel_Warning);
-        break;
-    case CreatorActivityLogLevel_Information:
-        AwaStaticClient_SetLogLevel(AwaLogLevel_Verbose);
-        break;
-    case CreatorActivityLogLevel_Debug:
-        AwaStaticClient_SetLogLevel(AwaLogLevel_Debug);
-        break;
-    default:
-        CreatorConsole_Printf("Unknown LogLevel: %d\r\n", level);
-        break;
+    switch (level) {
+        case CreatorActivityLogLevel_Error:
+            AwaStaticClient_SetLogLevel(AwaLogLevel_Error);
+            break;
+        case CreatorActivityLogLevel_Warning:
+            AwaStaticClient_SetLogLevel(AwaLogLevel_Warning);
+            break;
+        case CreatorActivityLogLevel_Information:
+            AwaStaticClient_SetLogLevel(AwaLogLevel_Verbose);
+            break;
+        case CreatorActivityLogLevel_Debug:
+            AwaStaticClient_SetLogLevel(AwaLogLevel_Debug);
+            break;
+        default:
+            CreatorConsole_Printf("Unknown LogLevel: %d\r\n", level);
+            break;
     }
 }

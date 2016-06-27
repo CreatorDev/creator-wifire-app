@@ -48,12 +48,12 @@ extern "C" {
 
 typedef enum
 {
-	CreatorCommonMessaging_CallbackEventType_Response,
-	CreatorCommonMessaging_CallbackEventType_Header,
-	CreatorCommonMessaging_CallbackEventType_HeaderEnd,
-	CreatorCommonMessaging_CallbackEventType_Data,
-	CreatorCommonMessaging_CallbackEventType_Finished,
-	CreatorCommonMessaging_CallbackEventType_NetworkFailure
+    CreatorCommonMessaging_CallbackEventType_Response,
+    CreatorCommonMessaging_CallbackEventType_Header,
+    CreatorCommonMessaging_CallbackEventType_HeaderEnd,
+    CreatorCommonMessaging_CallbackEventType_Data,
+    CreatorCommonMessaging_CallbackEventType_Finished,
+    CreatorCommonMessaging_CallbackEventType_NetworkFailure
 } CreatorCommonMessaging_CallbackEventType;
 
 typedef bool (*CreatorCommonMessaging_ProtocolCallBack)(CreatorCommonMessaging_CallbackEventType callbackEvent, char *headerName, char *value, int length, void *context);
@@ -62,13 +62,13 @@ typedef bool (*CreatorCommonMessaging_ProtocolCallBack)(CreatorCommonMessaging_C
 
 typedef struct
 {
-	uint32 ConnectionSourceAddress;
-	uint32 ConnectionDestinationAddress;
-	ushort ConnectionSourcePort;
-	ushort ConnectionDestinationPort;
-	bool IsKeepAliveRequired;
-	uchar ConnectionTransportType;
-	char *TLSCertificateData;
+    uint32 ConnectionSourceAddress;
+    uint32 ConnectionDestinationAddress;
+    ushort ConnectionSourcePort;
+    ushort ConnectionDestinationPort;
+    bool IsKeepAliveRequired;
+    uchar ConnectionTransportType;
+    char *TLSCertificateData;
 } CreatorCommonMessaging_ConnectionInformation;
 
 #ifdef __cplusplus

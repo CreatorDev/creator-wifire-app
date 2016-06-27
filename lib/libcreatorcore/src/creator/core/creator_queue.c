@@ -35,196 +35,191 @@
 
 struct CreatorQueueImpl
 {
-	uint Size;
-	uint Used;
-	uint Head;
-	uint Tail;
-	CreatorSemaphore QueueLock;
-	void **Items;
-	CreatorSemaphore WaitForItem;
+    uint Size;
+    uint Used;
+    uint Head;
+    uint Tail;
+    CreatorSemaphore QueueLock;
+    void **Items;
+    CreatorSemaphore WaitForItem;
 };
-
-
 
 CreatorQueue CreatorQueue_New(unsigned initialCapacity)
 {
-	CreatorQueue result = NULL;
-	result = Creator_MemAlloc(sizeof(struct CreatorQueueImpl));
-	if (result)
-	{
-		if (initialCapacity == 0)
-			initialCapacity = 10;
-		result->Used = 0;
-		result->Head = 0;
-		result->Tail = 0;
-		result->WaitForItem = NULL;
-		result->QueueLock = CreatorSemaphore_New(1,0);
-		if (result->QueueLock)
-		{
-			size_t size = sizeof(void*) * initialCapacity;
-			result->Items = Creator_MemAlloc(size);
-			if (result->Items)
-			{
-				memset(result->Items, 0, size);
-				result->Size = initialCapacity;
-			}
-			else
-				result->Size = 0;
-		}
-		else
-		{
-			Creator_MemFree((void **)&result);
-		}
-	}
-	return result;
+    CreatorQueue result = NULL;
+    result = Creator_MemAlloc(sizeof(struct CreatorQueueImpl));
+    if (result)
+    {
+        if (initialCapacity == 0)
+            initialCapacity = 10;
+        result->Used = 0;
+        result->Head = 0;
+        result->Tail = 0;
+        result->WaitForItem = NULL;
+        result->QueueLock = CreatorSemaphore_New(1, 0);
+        if (result->QueueLock)
+        {
+            size_t size = sizeof(void*) * initialCapacity;
+            result->Items = Creator_MemAlloc(size);
+            if (result->Items)
+            {
+                memset(result->Items, 0, size);
+                result->Size = initialCapacity;
+            }
+            else
+                result->Size = 0;
+        }
+        else
+        {
+            Creator_MemFree((void **)&result);
+        }
+    }
+    return result;
 }
 
 CreatorQueue CreatorQueue_NewBlocking(unsigned initialCapacity)
 {
-	CreatorQueue result = CreatorQueue_New(initialCapacity);
-	if (result)
-	{
-		result->WaitForItem = CreatorSemaphore_New(1,1);
-		if (!result->WaitForItem)
-		{
-			CreatorQueue_Free(&result);
-		}
-	}
-	return result;
+    CreatorQueue result = CreatorQueue_New(initialCapacity);
+    if (result)
+    {
+        result->WaitForItem = CreatorSemaphore_New(1, 1);
+        if (!result->WaitForItem)
+        {
+            CreatorQueue_Free(&result);
+        }
+    }
+    return result;
 }
 
 bool CreatorQueue_Enqueue(CreatorQueue self, void* item)
 {
-	bool result = false;
-	if (self)
-	{
-		CreatorSemaphore_Wait(self->QueueLock, 1);
-		int count = self->Used + 1;
-		if (count > self->Size)
-		{
-			if (self->Head < self->Tail)
-			{
-				void* *newItems = Creator_MemRealloc(self->Items, (self->Size + 5) * sizeof(void*));
-				if (newItems)
-				{
-					self->Size += 5;
-					self->Items = newItems;
-				}
-			}
-			else
-			{
-				void* *newItems = Creator_MemAlloc((self->Size + 5) * sizeof(void*));
-				if (newItems)
-				{
-					uint elementsInTopPart = (self->Size-self->Head);
-					memcpy(newItems,self->Items + self->Head, elementsInTopPart * sizeof(void*));
-					memcpy(newItems + elementsInTopPart,self->Items, self->Tail * sizeof(void*));
-					self->Head = 0;
-					self->Tail = self->Size;
-					self->Size += 5;
-					Creator_MemFree((void **)&self->Items);
-					self->Items = newItems;
-				}
-			}
-		}
-		if (count <= self->Size)
-		{
-			self->Items[self->Tail] = item;
-			self->Used = count;
-			self->Tail = (self->Tail + 1) % self->Size;
-			result = true;
-		}
-		CreatorSemaphore_Release(self->QueueLock, 1);
-		if (self->WaitForItem)
-			CreatorSemaphore_Release(self->WaitForItem, 1);
-	}
-	return result;
+    bool result = false;
+    if (self)
+    {
+        CreatorSemaphore_Wait(self->QueueLock, 1);
+        int count = self->Used + 1;
+        if (count > self->Size)
+        {
+            if (self->Head < self->Tail)
+            {
+                void* *newItems = Creator_MemRealloc(self->Items, (self->Size + 5) * sizeof(void*));
+                if (newItems)
+                {
+                    self->Size += 5;
+                    self->Items = newItems;
+                }
+            }
+            else
+            {
+                void* *newItems = Creator_MemAlloc((self->Size + 5) * sizeof(void*));
+                if (newItems)
+                {
+                    uint elementsInTopPart = (self->Size - self->Head);
+                    memcpy(newItems, self->Items + self->Head, elementsInTopPart * sizeof(void*));
+                    memcpy(newItems + elementsInTopPart, self->Items, self->Tail * sizeof(void*));
+                    self->Head = 0;
+                    self->Tail = self->Size;
+                    self->Size += 5;
+                    Creator_MemFree((void **)&self->Items);
+                    self->Items = newItems;
+                }
+            }
+        }
+        if (count <= self->Size)
+        {
+            self->Items[self->Tail] = item;
+            self->Used = count;
+            self->Tail = (self->Tail + 1) % self->Size;
+            result = true;
+        }
+        CreatorSemaphore_Release(self->QueueLock, 1);
+        if (self->WaitForItem)
+            CreatorSemaphore_Release(self->WaitForItem, 1);
+    }
+    return result;
 }
-
 
 void* CreatorQueue_Dequeue(CreatorQueue self)
 {
-	void*  result = NULL;
-	if (self)
-	{
-		bool dequeuedItem = false;
-		do
-		{
-			CreatorSemaphore_Wait(self->QueueLock, 1);
-			if (self->Used > 0)
-			{
-				result = self->Items[self->Head];
-				self->Used = self->Used - 1;
-				self->Head = (self->Head + 1) % self->Size;
-				dequeuedItem = true;
-			}
-			CreatorSemaphore_Release(self->QueueLock, 1);
-			if (self->WaitForItem && !dequeuedItem)
-			{
-				CreatorSemaphore_Wait(self->WaitForItem, 1);
-			}
-		} while (self->WaitForItem && !dequeuedItem);
-	}
-	return result;
+    void* result = NULL;
+    if (self)
+    {
+        bool dequeuedItem = false;
+        do
+        {
+            CreatorSemaphore_Wait(self->QueueLock, 1);
+            if (self->Used > 0)
+            {
+                result = self->Items[self->Head];
+                self->Used = self->Used - 1;
+                self->Head = (self->Head + 1) % self->Size;
+                dequeuedItem = true;
+            }
+            CreatorSemaphore_Release(self->QueueLock, 1);
+            if (self->WaitForItem && !dequeuedItem)
+            {
+                CreatorSemaphore_Wait(self->WaitForItem, 1);
+            }
+        } while (self->WaitForItem && !dequeuedItem);
+    }
+    return result;
 }
-
 
 void* CreatorQueue_DequeueWaitFor(CreatorQueue self, uint milliseconds)
 {
-	void*  result = NULL;
-	if (self)
-	{
-		bool dequeuedItem = false;
-		int count = 0;
-		do
-		{
-			CreatorSemaphore_Wait(self->QueueLock, 1);
-			if (self->Used > 0)
-			{
-				result = self->Items[self->Head];
-				self->Used = self->Used - 1;
-				self->Head = (self->Head + 1) % self->Size;
-				dequeuedItem = true;
-			}
-			CreatorSemaphore_Release(self->QueueLock, 1);
-			if (self->WaitForItem && !dequeuedItem && (count == 0))
-			{
-				CreatorSemaphore_WaitFor(self->WaitForItem, 1, milliseconds);
-			}
-			count++;
-		} while (self->WaitForItem && !dequeuedItem && (count < 2));
-	}
-	return result;
+    void* result = NULL;
+    if (self)
+    {
+        bool dequeuedItem = false;
+        int count = 0;
+        do
+        {
+            CreatorSemaphore_Wait(self->QueueLock, 1);
+            if (self->Used > 0)
+            {
+                result = self->Items[self->Head];
+                self->Used = self->Used - 1;
+                self->Head = (self->Head + 1) % self->Size;
+                dequeuedItem = true;
+            }
+            CreatorSemaphore_Release(self->QueueLock, 1);
+            if (self->WaitForItem && !dequeuedItem && (count == 0))
+            {
+                CreatorSemaphore_WaitFor(self->WaitForItem, 1, milliseconds);
+            }
+            count++;
+        } while (self->WaitForItem && !dequeuedItem && (count < 2));
+    }
+    return result;
 }
-
 
 int CreatorQueue_GetCount(CreatorQueue self)
 {
-	int result = 0;
-	if (self)
-	{
-		CreatorSemaphore_Wait(self->QueueLock, 1);
-		result = self->Used;
-		CreatorSemaphore_Release(self->QueueLock, 1);
-	}
-	return result;
+    int result = 0;
+    if (self)
+    {
+        CreatorSemaphore_Wait(self->QueueLock, 1);
+        result = self->Used;
+        CreatorSemaphore_Release(self->QueueLock, 1);
+    }
+    return result;
 }
 
 void CreatorQueue_Free(CreatorQueue *self)
 {
-	CreatorQueue queue = *self;
-	if (queue)
-	{
-		if (queue->WaitForItem)
-		{
-			CreatorSemaphore waitForItem = queue->WaitForItem;
-			queue->WaitForItem = NULL;
-			CreatorSemaphore_Release(waitForItem, 1);
-			CreatorThread_SleepMilliseconds(NULL,1);
-			CreatorSemaphore_Free(&waitForItem);
-		}
-		CreatorSemaphore_Free(&queue->QueueLock);
-		Creator_MemFree((void **)&queue->Items);
-		Creator_MemFree((void **)self);
-	}
+    CreatorQueue queue = *self;
+    if (queue)
+    {
+        if (queue->WaitForItem)
+        {
+            CreatorSemaphore waitForItem = queue->WaitForItem;
+            queue->WaitForItem = NULL;
+            CreatorSemaphore_Release(waitForItem, 1);
+            CreatorThread_SleepMilliseconds(NULL, 1);
+            CreatorSemaphore_Free(&waitForItem);
+        }
+        CreatorSemaphore_Free(&queue->QueueLock);
+        Creator_MemFree((void **)&queue->Items);
+        Creator_MemFree((void **)self);
+    }
 }

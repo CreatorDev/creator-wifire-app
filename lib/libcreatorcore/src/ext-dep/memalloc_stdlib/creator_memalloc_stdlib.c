@@ -30,43 +30,43 @@
 
 void *Creator_MemAlloc(size_t size)
 {
-	void *result = malloc(size);
-	//Creator_Log(CreatorLogLevel_Debug, "Allocating %ld bytes to %p", size, result);
-	Creator_Assert(result != NULL, "Allocation of %ld bytes failed", size);
-	return result;
+    void *result = malloc(size);
+    //Creator_Log(CreatorLogLevel_Debug, "Allocating %ld bytes to %p", size, result);
+    Creator_Assert(result != NULL, "Allocation of %ld bytes failed", size);
+    return result;
 }
 
 void *Creator_MemCalloc(size_t blockCount, size_t blockSize)
 {
-	void *result = calloc(blockCount, blockSize);
-	Creator_Assert(result != NULL, "Allocation of %ld bytes failed", blockCount * blockSize);
-	return result;
+    void *result = calloc(blockCount, blockSize);
+    Creator_Assert(result != NULL, "Allocation of %ld bytes failed", blockCount * blockSize);
+    return result;
 }
 
 void *Creator_MemRealloc(void *buffer, size_t size)
 {
-	void *result = realloc(buffer, size);
-	//Creator_Log(CreatorLogLevel_Debug, "Reallocating %p with %ld bytes as %p", pBuf, size, result);
-	Creator_Assert(result != NULL, "(Re)Allocation of %ld bytes failed", size);
-	return result;
+    void *result = realloc(buffer, size);
+    //Creator_Log(CreatorLogLevel_Debug, "Reallocating %p with %ld bytes as %p", pBuf, size, result);
+    Creator_Assert(result != NULL, "(Re)Allocation of %ld bytes failed", size);
+    return result;
 }
 
 void Creator_MemFree(void **buffer)
 {
-	//Creator_Log(CreatorLogLevel_Debug, "Freeing %p", pBuf);
-	if (*buffer)
-        {
-		free(*buffer);
-		*buffer = NULL;
-	}
+    //Creator_Log(CreatorLogLevel_Debug, "Freeing %p", pBuf);
+    if (*buffer)
+    {
+        free(*buffer);
+        *buffer = NULL;
+    }
 }
 
 void Creator_MemSafeFree(void *buffer)
 {
-	if (buffer)
-	{
-		free(buffer);
-	}
+    if (buffer)
+    {
+        free(buffer);
+    }
 }
 
 #endif

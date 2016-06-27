@@ -28,14 +28,15 @@
 
 void Creator_Assert(int assertion, const char *message, ...)
 {
-	if (!assertion) {
-		Creator_Log(CreatorLogLevel_Error, "Assert failed");
-		va_list vl;
-		va_start(vl, message);
-		Creator_Logv(CreatorLogLevel_Error, message, vl);
-		va_end(vl);
-		while(1)
-		{
-		}
-	}
+    if (!assertion)
+    {
+        Creator_Log(CreatorLogLevel_Error, "Assert failed");
+        va_list vl;
+        va_start(vl, message);
+        Creator_Logv(CreatorLogLevel_Error, message, vl);
+        va_end(vl);
+        while (1)
+        {
+        }
+    }
 }

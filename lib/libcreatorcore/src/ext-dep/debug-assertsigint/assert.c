@@ -31,14 +31,16 @@
 
 #include "creator/core/creator_debug.h"
 
-void Creator_Assert(int assertion, const char *message, ...) {
-	if (!assertion) {
-		Creator_Log(CreatorLogLevel_Error, "Assert failed");
-		va_list vl;
-		va_start(vl, message);
-		Creator_Logv(CreatorLogLevel_Error, message, vl);
-		va_end(vl);
+void Creator_Assert(int assertion, const char *message, ...)
+{
+    if (!assertion)
+    {
+        Creator_Log(CreatorLogLevel_Error, "Assert failed");
+        va_list vl;
+        va_start(vl, message);
+        Creator_Logv(CreatorLogLevel_Error, message, vl);
+        va_end(vl);
 
-		kill(getpid(), SIGINT);
-	}
+        kill(getpid(), SIGINT);
+    }
 }

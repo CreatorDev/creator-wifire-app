@@ -31,85 +31,85 @@
 
 CreatorSemaphore CreatorSemaphore_New(uint tokensTotal, uint tokensTaken)
 {
-	sem_t *result;
-	Creator_Assert(tokensTaken <= tokensTotal, "Bad initial number of tokens");
-	if (tokensTaken > tokensTotal)
-	{
-		tokensTaken = tokensTotal;
-	}
+    sem_t *result;
+    Creator_Assert(tokensTaken <= tokensTotal, "Bad initial number of tokens");
+    if (tokensTaken > tokensTotal)
+    {
+        tokensTaken = tokensTotal;
+    }
 
-	result = Creator_MemAlloc(sizeof(sem_t));
-	if (result)
-	{
-		int response = sem_init(result, 0, tokensTotal - tokensTaken);
-		if (response != 0)
-		{
-			Creator_MemFree((void **)&result);
-		}
-	}
-	return result;
+    result = Creator_MemAlloc(sizeof(sem_t));
+    if (result)
+    {
+        int response = sem_init(result, 0, tokensTotal - tokensTaken);
+        if (response != 0)
+        {
+            Creator_MemFree((void **)&result);
+        }
+    }
+    return result;
 }
 
 void CreatorSemaphore_Wait(CreatorSemaphore self, uint tokens)
 {
-	if (self)
-	{
-		sem_t *semaphore = (sem_t*)self;
-		uint index;
-		for (index = 0; index < tokens; ++index)
-		{
-			sem_wait(semaphore);
-		}
-	}
+    if (self)
+    {
+        sem_t *semaphore = (sem_t*)self;
+        uint index;
+        for (index = 0; index < tokens; ++index)
+        {
+            sem_wait(semaphore);
+        }
+    }
 }
 
 bool CreatorSemaphore_WaitFor(CreatorSemaphore self, uint tokens, uint milliseconds)
 {
-	bool result = true;
-	if (self)
-	{
-		sem_t *semaphore = (sem_t*)self;
-		uint index;
-		uint seconds = milliseconds / 1000;
-		milliseconds = milliseconds % 1000;
-		struct timespec sleepDuration;
-		sleepDuration.tv_sec = Creator_GetTime(NULL) + seconds;
-		sleepDuration.tv_nsec =  milliseconds * 1000000;
-		for (index = 0; index < tokens; ++index)
-		{
-			if (sem_timedwait(semaphore, &sleepDuration) != 0)
-			{
-				if (index > 0)
-					CreatorSemaphore_Release(semaphore, index-1);
-				result =  false;
-				break;
-			}
-		}
-	}
-	return result;
+    bool result = true;
+    if (self)
+    {
+        sem_t *semaphore = (sem_t*)self;
+        uint index;
+        uint seconds = milliseconds / 1000;
+        milliseconds = milliseconds % 1000;
+        struct timespec sleepDuration;
+        sleepDuration.tv_sec = Creator_GetTime(NULL) + seconds;
+        sleepDuration.tv_nsec =  milliseconds * 1000000;
+        for (index = 0; index < tokens; ++index)
+        {
+            if (sem_timedwait(semaphore, &sleepDuration) != 0)
+            {
+                if (index > 0)
+                    CreatorSemaphore_Release(semaphore, index-1);
+                result =  false;
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 void CreatorSemaphore_Release(CreatorSemaphore self, uint tokens)
 {
-	if (self)
-	{
-		sem_t *semaphore = (sem_t*)self;
-		uint index;
-		for (index = 0; index < tokens; ++index)
-		{
-			sem_post(semaphore);
-		}
-	}
+    if (self)
+    {
+        sem_t *semaphore = (sem_t*)self;
+        uint index;
+        for (index = 0; index < tokens; ++index)
+        {
+            sem_post(semaphore);
+        }
+    }
 }
 
 void CreatorSemaphore_Free(CreatorSemaphore *self)
 {
-	if (self && *self)
-	{
-		sem_t *semaphore = (sem_t*)*self;
-		sem_destroy(semaphore);
-		Creator_MemFree((void **)self);
-	}
+    if (self && *self)
+    {
+        sem_t *semaphore = (sem_t*)*self;
+        sem_destroy(semaphore);
+        Creator_MemFree((void **)self);
+    }
 }
 
 #endif

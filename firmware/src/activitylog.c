@@ -40,46 +40,46 @@ static CreatorActivityLogCategory _SystemLoggingMode = CreatorActivityLogCategor
 
 void Creator_ActivityLogSystemMode(CreatorActivityLogCategory category)
 {
-	if (category == CreatorActivityLogCategory_Startup || category == CreatorActivityLogCategory_SystemRuntime)
-		_SystemLoggingMode = category;
+    if (category == CreatorActivityLogCategory_Startup || category == CreatorActivityLogCategory_SystemRuntime)
+        _SystemLoggingMode = category;
 }
 
 void Creator_ActivityLogWrite(CreatorActivityLogLevel level, CreatorActivityLogCategory category, int errorCode, char *szMessage, ...)
 {
     // TODO - replace with Creator_log...
-	va_list vl;
-	va_start(vl, szMessage);
-	Creator_ActivityLogWriteVargs(level, category, errorCode, szMessage, vl);
-	va_end(vl);
+    va_list vl;
+    va_start(vl, szMessage);
+    Creator_ActivityLogWriteVargs(level, category, errorCode, szMessage, vl);
+    va_end(vl);
 }
 
 void Creator_ActivityLogWriteVargs(CreatorActivityLogLevel level, CreatorActivityLogCategory category, int errorCode, char *szMessage, va_list vl)
 {
-	bool writeLogEntry = false;
-	bool showDebug = false;
+    bool writeLogEntry = false;
+    bool showDebug = false;
 
-	if (ConfigStore_GetLoggingEnabled())
-	{
-		CreatorActivityLogLevel loggingLevel = ConfigStore_GetLoggingLevel();
-		uint16 loggingCategories = ConfigStore_GetLoggingCategories();
-		if (level <= loggingLevel)
-		{
-			showDebug = true;
+    if (ConfigStore_GetLoggingEnabled())
+    {
+        CreatorActivityLogLevel loggingLevel = ConfigStore_GetLoggingLevel();
+        uint16 loggingCategories = ConfigStore_GetLoggingCategories();
+        if (level <= loggingLevel)
+        {
+            showDebug = true;
 
-			// Map sysRuntime to startup during system startup mode
-			if (category == CreatorActivityLogCategory_SystemRuntime)
-				category = _SystemLoggingMode;
-			if ((1 << (uint16) category) & loggingCategories)
-				writeLogEntry = true;
-		}
-	}
+            // Map sysRuntime to startup during system startup mode
+            if (category == CreatorActivityLogCategory_SystemRuntime)
+                category = _SystemLoggingMode;
+            if ((1 << (uint16) category) & loggingCategories)
+                writeLogEntry = true;
+        }
+    }
 
-	if (showDebug)
-	{
-		ActivityLog log;
-		memset(log.Message, 0, ACTIVITYLOG_MESSAGE_LENGTH);
-		vsnprintf(log.Message, ACTIVITYLOG_MESSAGE_LENGTH, szMessage, vl);
-		CreatorConsole_Puts(log.Message);
-		CreatorConsole_Puts("\r\n");
-	}
+    if (showDebug)
+    {
+        ActivityLog log;
+        memset(log.Message, 0, ACTIVITYLOG_MESSAGE_LENGTH);
+        vsnprintf(log.Message, ACTIVITYLOG_MESSAGE_LENGTH, szMessage, vl);
+        CreatorConsole_Puts(log.Message);
+        CreatorConsole_Puts("\r\n");
+    }
 }

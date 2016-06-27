@@ -43,122 +43,121 @@ static bool _ConsoleInitialised = false;
 
 bool CreatorConsole_Init()
 {
-	serialHandle = CreatorSerial_Init(CreatorConsole_UART, CreatorConsole_Baud);
-	_ConsoleInitialised = true;
-	return true;
+    serialHandle = CreatorSerial_Init(CreatorConsole_UART, CreatorConsole_Baud);
+    _ConsoleInitialised = true;
+    return true;
 }
 
 void CreatorConsole_Printf(const char* format, ...)
 {
-	if (_ConsoleInitialised)
-	{
-		va_list arg_list;
-		char buff[CREATOR_CONSOLE_BUFFER_LEN];
+    if (_ConsoleInitialised)
+    {
+        va_list arg_list;
+        char buff[CREATOR_CONSOLE_BUFFER_LEN];
 
-		va_start(arg_list, format);
-		vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
+        va_start(arg_list, format);
+        vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
 
-		CreatorSerial_Puts(serialHandle, buff);
+        CreatorSerial_Puts(serialHandle, buff);
 
-		va_end(arg_list);
-	}
+        va_end(arg_list);
+    }
 }
 
 void CreatorConsole_Puts(const char* msg)
 {
-	if (_ConsoleInitialised)
-	{	
-		CreatorSerial_Puts(serialHandle, msg);
-	}
+    if (_ConsoleInitialised)
+    {
+        CreatorSerial_Puts(serialHandle, msg);
+    }
 }
 
 bool CreatorConsole_Ready()
 {
-	bool result = false;	
-	if (_ConsoleInitialised)
-	{
-		result = CreatorSerial_Ready(serialHandle);
-	}
-	return result;
+    bool result = false;
+    if (_ConsoleInitialised)
+    {
+        result = CreatorSerial_Ready(serialHandle);
+    }
+    return result;
 }
 
 char CreatorConsole_Getc()
 {
-	char result = '\0';
-	if (_ConsoleInitialised)
-	{
-		result =CreatorSerial_Getc(serialHandle);
-	}
-	return result;	
+    char result = '\0';
+    if (_ConsoleInitialised)
+    {
+        result = CreatorSerial_Getc(serialHandle);
+    }
+    return result;
 }
 
 void CreatorConsole_Putc(char c)
 {
-	if (_ConsoleInitialised)
-	{
-		CreatorSerial_Putc(serialHandle, c);
-	}
+    if (_ConsoleInitialised)
+    {
+        CreatorSerial_Putc(serialHandle, c);
+    }
 }
 
 int CreatorConsole_Getline(char* line, int bufferLen)
 {
-	int result = 0;
-	if (_ConsoleInitialised)
-	{
-		result = CreatorSerial_Getline(serialHandle, line, bufferLen);
-	}
-	return result;
+    int result = 0;
+    if (_ConsoleInitialised)
+    {
+        result = CreatorSerial_Getline(serialHandle, line, bufferLen);
+    }
+    return result;
 }
 
 int CreatorConsole_Scanf(const char *format, ...)
 {
-	int result = 0;
-	if (_ConsoleInitialised)
-	{
-		// no supported way to pass on variadic args, so this code gets repeated here
-		int i=0;
-		char buff[CREATOR_CONSOLE_BUFFER_LEN];
-		va_list arg_list;
-		va_start(arg_list, format);
-		while(i < CREATOR_CONSOLE_BUFFER_LEN)
-		{
-			buff[i] = CreatorSerial_Getc(serialHandle);
-			CreatorSerial_Putc(serialHandle, buff[i]);
-			if(buff[i] == '\n' || buff[i] == '\r')
-				break;
-			i++;
-		}
-		result = vsscanf(buff, format, arg_list);
-		va_end(arg_list);
-	}
-	return result;
+    int result = 0;
+    if (_ConsoleInitialised)
+    {
+        // no supported way to pass on variadic args, so this code gets repeated here
+        int i = 0;
+        char buff[CREATOR_CONSOLE_BUFFER_LEN];
+        va_list arg_list;
+        va_start(arg_list, format);
+        while (i < CREATOR_CONSOLE_BUFFER_LEN)
+        {
+            buff[i] = CreatorSerial_Getc(serialHandle);
+            CreatorSerial_Putc(serialHandle, buff[i]);
+            if (buff[i] == '\n' || buff[i] == '\r')
+                break;
+            i++;
+        }
+        result = vsscanf(buff, format, arg_list);
+        va_end(arg_list);
+    }
+    return result;
 
 }
-
 
 //These are duplicates of the above functions for deprecation.
 
 void SYS_CONSOLE_MESSAGE(const char * message)
 {
-	if (_ConsoleInitialised)
-	{
-		CreatorSerial_Puts(serialHandle, message);
-	}
+    if (_ConsoleInitialised)
+    {
+        CreatorSerial_Puts(serialHandle, message);
+    }
 }
 
 void SYS_CONSOLE_PRINT(const char* format, ...)
 {
-	if (_ConsoleInitialised)
-	{
-		va_list arg_list;
-		char buff[CREATOR_CONSOLE_BUFFER_LEN];
+    if (_ConsoleInitialised)
+    {
+        va_list arg_list;
+        char buff[CREATOR_CONSOLE_BUFFER_LEN];
 
-		va_start(arg_list, format);
-		vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
+        va_start(arg_list, format);
+        vsnprintf(buff, CREATOR_CONSOLE_BUFFER_LEN, format, arg_list);
 
-		CreatorSerial_Puts(serialHandle, buff);
+        CreatorSerial_Puts(serialHandle, buff);
 
-		va_end(arg_list);
-	}
+        va_end(arg_list);
+    }
 }
 

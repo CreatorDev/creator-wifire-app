@@ -28,96 +28,105 @@
 #include "creator/core/creator_memalloc.h"
 #include "creator/core/creator_debug.h"
 
-
 struct DataBufferImpl
 {
-	char *pBuffer;
-	size_t dataSize;
-	size_t bufferSize;
-	bool bCorrupt;
+    char *pBuffer;
+    size_t dataSize;
+    size_t bufferSize;
+    bool bCorrupt;
 };
 
 static void DataBuffer_Resize(DataBuffer *pBuffer, size_t newMinSize);
 
-
 DataBuffer *DataBuffer_New()
 {
-	DataBuffer *pResult = Creator_MemAlloc(sizeof(DataBuffer));
-	if (pResult) {
-		pResult->pBuffer = NULL;
-		pResult->dataSize = 0;
-		pResult->bufferSize = 0;
-		pResult->bCorrupt = false;
-	}
-	return pResult;
+    DataBuffer *pResult = Creator_MemAlloc(sizeof(DataBuffer));
+    if (pResult)
+    {
+        pResult->pBuffer = NULL;
+        pResult->dataSize = 0;
+        pResult->bufferSize = 0;
+        pResult->bCorrupt = false;
+    }
+    return pResult;
 }
 
 bool DataBuffer_Write(DataBuffer *pBuffer, const void *pData, size_t dataSize)
 {
-	if (!pBuffer) {
-		return false;
-	}
-	if (pBuffer->dataSize + dataSize > pBuffer->bufferSize) {
-		DataBuffer_Resize(pBuffer, pBuffer->dataSize + dataSize);
-	}
-	if (!pBuffer->bCorrupt) {
-		memcpy(pBuffer->pBuffer + pBuffer->dataSize, pData, dataSize);
-		pBuffer->dataSize += dataSize;
-		return true;
-	}
-	return false;
+    if (!pBuffer)
+    {
+        return false;
+    }
+    if (pBuffer->dataSize + dataSize > pBuffer->bufferSize)
+    {
+        DataBuffer_Resize(pBuffer, pBuffer->dataSize + dataSize);
+    }
+    if (!pBuffer->bCorrupt)
+    {
+        memcpy(pBuffer->pBuffer + pBuffer->dataSize, pData, dataSize);
+        pBuffer->dataSize += dataSize;
+        return true;
+    }
+    return false;
 }
 
 bool DataBuffer_WriteCString(DataBuffer *pBuffer, const char *szData)
 {
-	if (!pBuffer) {
-		return false;
-	}
-	size_t dataSize = (szData)?strlen(szData):0;
-	//FIXME optimize this impl
-	return DataBuffer_Write(pBuffer, szData, dataSize);
+    if (!pBuffer)
+    {
+        return false;
+    }
+    size_t dataSize = (szData) ? strlen(szData) : 0;
+    //FIXME optimize this impl
+    return DataBuffer_Write(pBuffer, szData, dataSize);
 }
 
 void *DataBuffer_GetBufferData(DataBuffer *pBuffer, bool bTakeOwnership)
 {
-	if (!pBuffer || pBuffer->bCorrupt) {
-		return NULL;
-	}
-	if (bTakeOwnership) {
-		void *pResult = pBuffer->pBuffer;
-		pBuffer->pBuffer = NULL;
-		pBuffer->bufferSize = 0;
-		pBuffer->dataSize = 0;
-		return pResult;
-	}
-	else if (pBuffer->dataSize > 0) {
-		void *pResult = Creator_MemAlloc(pBuffer->dataSize);
-		if (pResult) {
-			memcpy(pResult, pBuffer->pBuffer, pBuffer->dataSize);
-		}
-		return pResult;
-	}
-	return NULL;
+    if (!pBuffer || pBuffer->bCorrupt)
+    {
+        return NULL;
+    }
+    if (bTakeOwnership)
+    {
+        void *pResult = pBuffer->pBuffer;
+        pBuffer->pBuffer = NULL;
+        pBuffer->bufferSize = 0;
+        pBuffer->dataSize = 0;
+        return pResult;
+    }
+    else if (pBuffer->dataSize > 0)
+    {
+        void *pResult = Creator_MemAlloc(pBuffer->dataSize);
+        if (pResult)
+        {
+            memcpy(pResult, pBuffer->pBuffer, pBuffer->dataSize);
+        }
+        return pResult;
+    }
+    return NULL;
 }
 
 size_t DataBuffer_GetDataSize(DataBuffer *pBuffer)
 {
-	if (!pBuffer || pBuffer->bCorrupt) {
-		return 0;
-	}
-	return pBuffer->dataSize;
+    if (!pBuffer || pBuffer->bCorrupt)
+    {
+        return 0;
+    }
+    return pBuffer->dataSize;
 }
 
 void DataBuffer_Free(DataBuffer **self)
 {
-	if (self && *self)
-	{
-		DataBuffer *buffer = *self;
-		if (buffer->pBuffer) {
-			Creator_MemFree((void **)&buffer->pBuffer);
-		}
-		Creator_MemFree((void **)self);
-	}
+    if (self && *self)
+    {
+        DataBuffer *buffer = *self;
+        if (buffer->pBuffer)
+        {
+            Creator_MemFree((void **)&buffer->pBuffer);
+        }
+        Creator_MemFree((void **)self);
+    }
 }
 
 #define BUFFER_MINIMUM_SIZE (2048)
@@ -125,23 +134,28 @@ void DataBuffer_Free(DataBuffer **self)
 
 static void DataBuffer_Resize(DataBuffer *pBuffer, size_t newMinSize)
 {
-	if (pBuffer->bCorrupt) {
-		return ;
-	}
-	Creator_Assert(pBuffer->bufferSize < newMinSize, "Calling DataBuffer_Resize unnecessarily");
-	size_t newSize = MAX(BUFFER_MINIMUM_SIZE, MAX(newMinSize, pBuffer->bufferSize * 2));
-	char *pNewBuffer;
-	if (pBuffer->bufferSize) {
-		pNewBuffer = Creator_MemRealloc(pBuffer->pBuffer, newSize);
-	}
-	else {
-		pNewBuffer = Creator_MemAlloc(newSize);
-	}
-	if (pNewBuffer) {
-		pBuffer->pBuffer = pNewBuffer;
-		pBuffer->bufferSize = newSize;
-	}
-	else {
-		pBuffer->bCorrupt = true;
-	}
+    if (pBuffer->bCorrupt)
+    {
+        return;
+    }
+    Creator_Assert(pBuffer->bufferSize < newMinSize, "Calling DataBuffer_Resize unnecessarily");
+    size_t newSize = MAX(BUFFER_MINIMUM_SIZE, MAX(newMinSize, pBuffer->bufferSize * 2));
+    char *pNewBuffer;
+    if (pBuffer->bufferSize)
+    {
+        pNewBuffer = Creator_MemRealloc(pBuffer->pBuffer, newSize);
+    }
+    else
+    {
+        pNewBuffer = Creator_MemAlloc(newSize);
+    }
+    if (pNewBuffer)
+    {
+        pBuffer->pBuffer = pNewBuffer;
+        pBuffer->bufferSize = newSize;
+    }
+    else
+    {
+        pBuffer->bCorrupt = true;
+    }
 }

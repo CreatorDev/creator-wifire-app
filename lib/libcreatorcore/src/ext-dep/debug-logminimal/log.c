@@ -38,13 +38,13 @@ static CreatorLogLevel _LoggingLevel = CreatorLogLevel_Debug;	// default
 
 bool CreatorLog_Initialise()
 {
-	return true;
+    return true;
 }
 
 void Creator_Log(CreatorLogLevel level, const char *message, ...)
 {
-	if (level <= _LoggingLevel)
-	{
+    if (level <= _LoggingLevel)
+    {
         va_list vl;
         va_start(vl, message);
         Creator_Logv(level, message, vl);
@@ -54,8 +54,8 @@ void Creator_Log(CreatorLogLevel level, const char *message, ...)
 
 void Creator_LogRaw(CreatorLogLevel level, const char *message, ...)
 {
-	if (level <= _LoggingLevel)
-	{
+    if (level <= _LoggingLevel)
+    {
         va_list vl;
         va_start(vl, message);
         Creator_LogvRaw(level, message, vl);
@@ -65,36 +65,36 @@ void Creator_LogRaw(CreatorLogLevel level, const char *message, ...)
 
 void Creator_Logv(CreatorLogLevel level, const char *message, va_list argList)
 {
-	if (level <= _LoggingLevel)
-	{
-		char buf[SYS_CONSOLE_BUFFER_LEN];
-		vsnprintf(buf, SYS_CONSOLE_BUFFER_LEN, message, argList);
-		CreatorConsole_Puts(buf);
-		CreatorConsole_Puts("\r\n");
-	}
+    if (level <= _LoggingLevel)
+    {
+        char buf[SYS_CONSOLE_BUFFER_LEN];
+        vsnprintf(buf, SYS_CONSOLE_BUFFER_LEN, message, argList);
+        CreatorConsole_Puts(buf);
+        CreatorConsole_Puts("\r\n");
+    }
 }
 
 void Creator_LogvRaw(CreatorLogLevel level, const char *message, va_list argList)
 {
-	if (level <= _LoggingLevel)
-	{
-		char buf[SYS_CONSOLE_BUFFER_LEN];
-		vsnprintf(buf, SYS_CONSOLE_BUFFER_LEN, message, argList);
-		CreatorConsole_Puts(buf);
-	}
+    if (level <= _LoggingLevel)
+    {
+        char buf[SYS_CONSOLE_BUFFER_LEN];
+        vsnprintf(buf, SYS_CONSOLE_BUFFER_LEN, message, argList);
+        CreatorConsole_Puts(buf);
+    }
 }
 
 void Creator_LogMessage(CreatorLogLevel level, const char *message)
 {
-	if (level <= _LoggingLevel)
-	{
-		CreatorConsole_Puts(message);
-	}
+    if (level <= _LoggingLevel)
+    {
+        CreatorConsole_Puts(message);
+    }
 }
 
 void CreatorLog_SetLevel(CreatorLogLevel level)
 {
-	_LoggingLevel = level;
+    _LoggingLevel = level;
 }
 
 void CreatorLog_Shutdown()

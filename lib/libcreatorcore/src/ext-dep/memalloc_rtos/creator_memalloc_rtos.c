@@ -32,66 +32,66 @@
 
 static inline void Creator_MemLock(void)
 {
-	vTaskSuspendAll();
+    vTaskSuspendAll();
 }
 
 static inline void Creator_MemUnLock(void)
 {
-	xTaskResumeAll();
+    xTaskResumeAll();
 }
 
 void *Creator_MemAlloc(size_t size)
 {
-	void *result;
-	Creator_MemLock();
-	result = malloc(size);
-	Creator_MemUnLock();
+    void *result;
+    Creator_MemLock();
+    result = malloc(size);
+    Creator_MemUnLock();
 
-	Creator_Assert(result != NULL, "Allocation of %ld bytes failed", size);
-	return result;
+    Creator_Assert(result != NULL, "Allocation of %ld bytes failed", size);
+    return result;
 }
 
 void *Creator_MemCalloc(size_t blockCount, size_t blockSize)
 {
-	void *result;
-	Creator_MemLock();
-	result = calloc(blockCount, blockSize);
-	Creator_MemUnLock();
+    void *result;
+    Creator_MemLock();
+    result = calloc(blockCount, blockSize);
+    Creator_MemUnLock();
 
-	Creator_Assert(result != NULL, "Allocation of %ld bytes failed", blockCount * blockSize);
-	return result;
+    Creator_Assert(result != NULL, "Allocation of %ld bytes failed", blockCount * blockSize);
+    return result;
 }
 
 void *Creator_MemRealloc(void *buffer, size_t size)
 {
-	void *result;
-	Creator_MemLock();
-	result = realloc(buffer, size);
-	Creator_MemUnLock();
+    void *result;
+    Creator_MemLock();
+    result = realloc(buffer, size);
+    Creator_MemUnLock();
 
-	Creator_Assert(result != NULL, "(Re)Allocation of %ld bytes failed", size);
-	return result;
+    Creator_Assert(result != NULL, "(Re)Allocation of %ld bytes failed", size);
+    return result;
 }
 
 void Creator_MemFree(void **buffer)
 {
-	if (*buffer)
-	{
-		Creator_MemLock();
-		free(*buffer);
-		Creator_MemUnLock();
-		*buffer = NULL;
-	}
+    if (*buffer)
+    {
+        Creator_MemLock();
+        free(*buffer);
+        Creator_MemUnLock();
+        *buffer = NULL;
+    }
 }
 
 void Creator_MemSafeFree(void *buffer)
 {
-	if (buffer)
-	{
-		Creator_MemLock();
-		free(buffer);
-		Creator_MemUnLock();
-	}
+    if (buffer)
+    {
+        Creator_MemLock();
+        free(buffer);
+        Creator_MemUnLock();
+    }
 }
 
 #endif

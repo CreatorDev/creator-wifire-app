@@ -36,9 +36,9 @@
 // Dynamic string implementation datatype
 typedef struct
 {
-        char* Str;					// Pointer to allocated buffer
-        unsigned int StrSize;		// dynamically allocated buffer size
-        unsigned int Length;		// Portion of the buffer that is utilised
+    char* Str;					// Pointer to allocated buffer
+    unsigned int StrSize;		// dynamically allocated buffer size
+    unsigned int Length;		// Portion of the buffer that is utilised
 } StringBuilderImpl;
 
 
@@ -55,138 +55,131 @@ typedef StringBuilderImpl* DynamicString;
 
 const char* StringBuilder_GetCString(StringBuilder dynString)
 {
-	DynamicString string = (DynamicString) dynString;
-	if (string && string->Str)
-	{
-		return (const char*) string->Str;
-	}
-	return NULL;
+    DynamicString string = (DynamicString) dynString;
+    if (string && string->Str)
+    {
+        return (const char*) string->Str;
+    }
+    return NULL;
 }
-
 
 int StringBuilder_GetLength(StringBuilder dynString)
 {
-	int result = -1;
-	DynamicString string = (DynamicString) dynString;
-	if (string)
-	{
-		result = string->Length;
-	}
-	return result;
+    int result = -1;
+    DynamicString string = (DynamicString) dynString;
+    if (string)
+    {
+        result = string->Length;
+    }
+    return result;
 }
-
 
 StringBuilder StringBuilder_Append(StringBuilder dynString, const char* str)
 {
-	DynamicString string = (DynamicString) dynString;
-	if (string && str)
-	{
-		unsigned int addedLength = strlen((char*) str);
+    DynamicString string = (DynamicString) dynString;
+    if (string && str)
+    {
+        unsigned int addedLength = strlen((char*) str);
 
-		if(addedLength == 0)
-			return dynString;
+        if (addedLength == 0)
+            return dynString;
 
-		if ((string->Length + addedLength + 1) <= string->StrSize)
-		{
-			memcpy(string->Str + string->Length, str, sizeof(char) * addedLength+1);	// include the null character from 'str'
-			string->Length += addedLength;
-		}
-		else
-		{
-			// Scale the buffer
-			unsigned iterations = 1;
+        if ((string->Length + addedLength + 1) <= string->StrSize)
+        {
+            memcpy(string->Str + string->Length, str, sizeof(char) * addedLength + 1);	// include the null character from 'str'
+            string->Length += addedLength;
+        }
+        else
+        {
+            // Scale the buffer
+            unsigned iterations = 1;
 
-			while ( (string->StrSize*GROWTH_FACTOR*iterations) <= (string->Length+addedLength+1) )
-				iterations++;
+            while ((string->StrSize * GROWTH_FACTOR * iterations) <= (string->Length + addedLength + 1))
+                iterations++;
 
+            // Grow the string
+            unsigned int newStrSize = (GROWTH_FACTOR * iterations) * string->StrSize;
+            char *newBuf = (char*) Creator_MemAlloc(sizeof(char) * newStrSize);
+            if (newBuf)
+            {
+                memcpy(newBuf, string->Str, string->StrSize);
+                memset(newBuf + string->StrSize, 0, newStrSize - string->StrSize);
+                memcpy(newBuf + string->Length, str, addedLength + 1);
 
-			// Grow the string
-			unsigned int newStrSize = (GROWTH_FACTOR*iterations) * string->StrSize;
-			char *newBuf = (char*) Creator_MemAlloc(sizeof(char) * newStrSize);
-			if (newBuf)
-			{
-				memcpy(newBuf, string->Str, string->StrSize);
-				memset(newBuf + string->StrSize, 0, newStrSize - string->StrSize);
-				memcpy(newBuf + string->Length, str, addedLength + 1);
+                string->StrSize = newStrSize;
+                string->Length += addedLength;
+                Creator_MemFree((void **) &string->Str);
+                string->Str = newBuf;
+            }
+        }
+    }
 
-				string->StrSize = newStrSize;
-				string->Length += addedLength;
-				Creator_MemFree((void **) &string->Str);
-				string->Str = newBuf;
-			}
-		}
-	}
-
-	return (StringBuilder) string;
+    return (StringBuilder) string;
 }
-
 
 StringBuilder StringBuilder_AppendInt(StringBuilder dynString, int value)
 {
-	DynamicString string = (DynamicString) dynString;
-	if (string)
-	{
-		// 32-bits gives a 10-digit number + 1 for the null-terminator
-		char str[11];
-		memset(str, 0 ,sizeof(str) );
-		sprintf((char*) str, (const char*) "%d", value);
-		string = StringBuilder_Append(string, str);
-	}
-	return (StringBuilder) string;
+    DynamicString string = (DynamicString) dynString;
+    if (string)
+    {
+        // 32-bits gives a 10-digit number + 1 for the null-terminator
+        char str[11];
+        memset(str, 0, sizeof(str));
+        sprintf((char*) str, (const char*) "%d", value);
+        string = StringBuilder_Append(string, str);
+    }
+    return (StringBuilder) string;
 }
-
 
 StringBuilder StringBuilder_Clear(StringBuilder dynString)
 {
-	DynamicString string = (DynamicString) dynString;
+    DynamicString string = (DynamicString) dynString;
 
-	if (string)
-	{
-		if (string->Str)
-		{
-			memset(string->Str, 0, sizeof(char) * string->StrSize);
-			string->Length = 0;
-		}
-	}
-	return string;
+    if (string)
+    {
+        if (string->Str)
+        {
+            memset(string->Str, 0, sizeof(char) * string->StrSize);
+            string->Length = 0;
+        }
+    }
+    return string;
 }
-
 
 StringBuilder StringBuilder_New(unsigned int initialSize)
 {
-	StringBuilder result = 0;
-	unsigned int initSize = initialSize ? initialSize : INITIAL_SIZE;
+    StringBuilder result = 0;
+    unsigned int initSize = initialSize ? initialSize : INITIAL_SIZE;
 
-	DynamicString newString = Creator_MemAlloc(sizeof(StringBuilderImpl));
+    DynamicString newString = Creator_MemAlloc(sizeof(StringBuilderImpl));
     if (newString)
     {
-		newString->Str = Creator_MemAlloc(sizeof(char) * initSize);
-		if (newString->Str)
-		{
-			memset(newString->Str, 0, sizeof(char) * initSize);
-			newString->Length = 0;
-			newString->StrSize = sizeof(char) * initSize;
-			result = (StringBuilder) newString;
-		}
-		else
-		{
-			Creator_MemFree((void **) &newString);
-		}
-	}
+        newString->Str = Creator_MemAlloc(sizeof(char) * initSize);
+        if (newString->Str)
+        {
+            memset(newString->Str, 0, sizeof(char) * initSize);
+            newString->Length = 0;
+            newString->StrSize = sizeof(char) * initSize;
+            result = (StringBuilder) newString;
+        }
+        else
+        {
+            Creator_MemFree((void **) &newString);
+        }
+    }
 
-	return result;
+    return result;
 }
-
 
 void StringBuilder_Free(StringBuilder *dynString)
 {
-	DynamicString string = (DynamicString) *dynString;
-	if (string && string->Str)
-	{
-		Creator_MemFree((void **) &string->Str);
-		string->Length = 0;
-		string->StrSize = 0;
+    DynamicString string = (DynamicString) *dynString;
+    if (string && string->Str)
+    {
+        Creator_MemFree((void **) &string->Str);
+        string->Length = 0;
+        string->StrSize = 0;
 
-		Creator_MemFree((void **) dynString);
-	}
+        Creator_MemFree((void **) dynString);
+    }
 }

@@ -69,20 +69,19 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 int main ( void )
 {
-	/* Initialize all MPLAB Harmony modules, including application(s). */
-	SYS_Initialize ( NULL );
+    /* Initialize all MPLAB Harmony modules, including application(s). */
+    SYS_Initialize(NULL);
 
+    while (true)
+    {
+        /* Maintain state machines of all polled MPLAB Harmony modules. */
+        SYS_Tasks();
 
-	while ( true )
-	{
-		/* Maintain state machines of all polled MPLAB Harmony modules. */
-		SYS_Tasks ( );
+    }
 
-	}
+    /* Execution should not come here during normal operation */
 
-	/* Execution should not come here during normal operation */
-
-	return ( EXIT_FAILURE );
+    return (EXIT_FAILURE);
 }
 
 

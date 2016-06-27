@@ -36,54 +36,51 @@ extern "C" {
 
 typedef enum
 {
-	XMLParserState_Error = -1,
-	XMLParserState_Unknown = 0,
-	XMLParserState_Init,					// Indicates the parser is ready (initialised), but hasn't started running
-	XMLParserState_Idle,					// Indicates the parser is not parsing an element
-	XMLParserState_Running,					// Indicates parser is running through an element (has started)
-	XMLParserState_StartTag,				// Indicates we have received the start character '<' of a tag
-	XMLParserState_Prolog,					// Indicates we are currently processing a prolog
-	XMLParserState_StartElement,			// Indicates we got a '<' and the next char was not '?' to indicate prolog
-	XMLParserState_ParsingElement,			// Indicates we got a start-element tag already
-	XMLParserState_AttributeName,			// Indicates we are currently processing the name of an attribute
-	XMLParserState_AttributeValue,			// Indicates we are currently processing the value of an attribute
-	XMLParserState_ElementData,
-	XMLParserState_EndElementData,
-	XMLParserState_EndElement,
-	XMLParserState_Comment,
-	XMLParserState_Done,
+    XMLParserState_Error = -1,
+    XMLParserState_Unknown = 0,
+    XMLParserState_Init,					// Indicates the parser is ready (initialised), but hasn't started running
+    XMLParserState_Idle,					// Indicates the parser is not parsing an element
+    XMLParserState_Running,					// Indicates parser is running through an element (has started)
+    XMLParserState_StartTag,				// Indicates we have received the start character '<' of a tag
+    XMLParserState_Prolog,					// Indicates we are currently processing a prolog
+    XMLParserState_StartElement,			// Indicates we got a '<' and the next char was not '?' to indicate prolog
+    XMLParserState_ParsingElement,			// Indicates we got a start-element tag already
+    XMLParserState_AttributeName,			// Indicates we are currently processing the name of an attribute
+    XMLParserState_AttributeValue,			// Indicates we are currently processing the value of an attribute
+    XMLParserState_ElementData,
+    XMLParserState_EndElementData,
+    XMLParserState_EndElement,
+    XMLParserState_Comment,
+    XMLParserState_Done,
 
-	XMLParserState__Max
+    XMLParserState__Max
 } XMLParserState;
 
 
 typedef enum
 {
-	XMLParserErrorType_Unknown = -1,
-	XMLParserErrorType_None = 0,
+    XMLParserErrorType_Unknown = -1,
+    XMLParserErrorType_None = 0,
 
-	XMLParserErrorType__Max
+    XMLParserErrorType__Max
 } XMLParserErrorType;
 
 typedef struct XMLParser_attr
 {
-	char							*Name;
-	char							*Value;
-	struct XMLParser_attr			*Next;
-	struct XMLParser_attr			*Last;
-
-	char							AttributeDelimiter;						// Used for keeping track of the type of delimiter used for this attribute value
+    char							*Name;
+    char							*Value;
+    struct XMLParser_attr			*Next;
+    struct XMLParser_attr			*Last;
+    char							AttributeDelimiter;						// Used for keeping track of the type of delimiter used for this attribute value
 
 } XMLParser_attribute;
 
 typedef struct
 {
-	char							*ElementName;
-
-	XMLParser_attribute				*_Attribute;								// Temporary internal storage for attribute under construnction
-
-	XMLParser_attribute				*AttributeList;
-	unsigned int					AttributeCount;
+    char							*ElementName;
+    XMLParser_attribute				*_Attribute;								// Temporary internal storage for attribute under construnction
+    XMLParser_attribute				*AttributeList;
+    unsigned int					AttributeCount;
 
 } XMLParser_elementInfo;
 
@@ -98,30 +95,30 @@ typedef void (*XMLParser_EndOfChunkHandler) (void *userData);
 
 typedef struct
 {
-	void							*UserData;
-	XMLParserState					State;
-	XMLParserErrorType				ErrorType;
-	bool							GotProlog;
+    void							*UserData;
+    XMLParserState					State;
+    XMLParserErrorType				ErrorType;
+    bool							GotProlog;
 
-	/* User Callbacks */
-	XMLParser_StartElementHandler	StartHandler;
-	XMLParser_CharacterDataHandler	CharDataHandler;
-	XMLParser_EndElementHandler		EndHandler;
-	XMLParser_EndOfChunkHandler		EndOfChunkHandler;
+    /* User Callbacks */
+    XMLParser_StartElementHandler	StartHandler;
+    XMLParser_CharacterDataHandler	CharDataHandler;
+    XMLParser_EndElementHandler		EndHandler;
+    XMLParser_EndOfChunkHandler		EndOfChunkHandler;
 
-	/* Current Element information */
-	XMLParser_elementInfo			CurrentElement;
+    /* Current Element information */
+    XMLParser_elementInfo			CurrentElement;
 
-	/* Dynamic String for general purpose storage */
-	char							*DynamicString;
-	unsigned int 					DynamicStringSize;
-	unsigned int 					DynamicStringUsed;
+    /* Dynamic String for general purpose storage */
+    char							*DynamicString;
+    unsigned int 					DynamicStringSize;
+    unsigned int 					DynamicStringUsed;
 
-	/* Character history */
-	char							CharHistoryBuffer[CHARHISTORY_LENGTH+1];
-	int								HistoryBuffLen;
+    /* Character history */
+    char							CharHistoryBuffer[CHARHISTORY_LENGTH+1];
+    int								HistoryBuffLen;
 
-	uint					DocIndex;
+    uint					        DocIndex;
 } XMLParser_ContextStruct;
 
 typedef XMLParser_ContextStruct *XMLParser_Context;

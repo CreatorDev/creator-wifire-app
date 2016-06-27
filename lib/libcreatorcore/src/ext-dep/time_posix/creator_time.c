@@ -30,12 +30,12 @@
 
 time_t Creator_GetTime(time_t *timer)
 {
-	return time(timer);
+    return time(timer);
 }
 
 void Creator_SetTime(time_t time)
 {
-	(void)time;
+    (void)time;
 }
 
 #endif

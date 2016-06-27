@@ -31,125 +31,122 @@
 const char *DEFAULT_DOMAIN = ".creatorworld.com";
 char *DEFAULT_CA_CERT_CHAIN = NULL;
 
-
 typedef struct DomainCertImpl
 {
-	char *Domain;
-	char *Certificate;
+    char *Domain;
+    char *Certificate;
 }*DomainCert;
 
 static CreatorList _Certificates = NULL;
 
-
 DomainCert CreatorCert_FindCertificate(const char *domain)
 {
-	DomainCert result = NULL;
-	if (_Certificates)
-	{
-		uint index;
-		for (index = 0; index < CreatorList_GetCount(_Certificates); index++)
-		{
-			DomainCert domainCert = (DomainCert)CreatorList_GetItem(_Certificates, index);
-			if (domainCert)
-			{
-				if (strcasecmp(domain, domainCert->Domain) == 0)
-				{
-					result = domainCert;
-					break;
-				}
-			}
-		}
-	}
-	return result;
+    DomainCert result = NULL;
+    if (_Certificates)
+    {
+        uint index;
+        for (index = 0; index < CreatorList_GetCount(_Certificates); index++)
+        {
+            DomainCert domainCert = (DomainCert)CreatorList_GetItem(_Certificates, index);
+            if (domainCert)
+            {
+                if (strcasecmp(domain, domainCert->Domain) == 0)
+                {
+                    result = domainCert;
+                    break;
+                }
+            }
+        }
+    }
+    return result;
 }
-
 
 char *CreatorCert_GetCertificate(const char *domain)
 {
-	char *result = NULL;
-	if (domain)
-	{
-		DomainCert domainCert = CreatorCert_FindCertificate(domain);
-		if (!domainCert)
-		{
-			char *parentDomain = strchr(domain,'.');
-			domainCert = CreatorCert_FindCertificate(parentDomain);
-		}
-		if (domainCert)
-		{
-			result = domainCert->Certificate;
-		}
-	}
-	return result;
+    char *result = NULL;
+    if (domain)
+    {
+        DomainCert domainCert = CreatorCert_FindCertificate(domain);
+        if (!domainCert)
+        {
+            char *parentDomain = strchr(domain, '.');
+            domainCert = CreatorCert_FindCertificate(parentDomain);
+        }
+        if (domainCert)
+        {
+            result = domainCert->Certificate;
+        }
+    }
+    return result;
 }
 
 bool CreatorCert_Initialise(void)
 {
-	bool result = false;
-	_Certificates = CreatorList_New(5);
-	if (_Certificates)
-	{
-		DomainCert domainCert = (DomainCert)Creator_MemAlloc(sizeof(struct DomainCertImpl));
-		if (domainCert)
-		{
-			domainCert->Domain = (char *)DEFAULT_DOMAIN;
-			domainCert->Certificate = (char *)DEFAULT_CA_CERT_CHAIN;
-			CreatorList_Add(_Certificates, (void *)domainCert);
-			result = true;
-		}
-	}
-	return result;
+    bool result = false;
+    _Certificates = CreatorList_New(5);
+    if (_Certificates)
+    {
+        DomainCert domainCert = (DomainCert)Creator_MemAlloc(sizeof(struct DomainCertImpl));
+        if (domainCert)
+        {
+            domainCert->Domain = (char *)DEFAULT_DOMAIN;
+            domainCert->Certificate = (char *)DEFAULT_CA_CERT_CHAIN;
+            CreatorList_Add(_Certificates, (void *)domainCert);
+            result = true;
+        }
+    }
+    return result;
 }
 
 bool CreatorCert_SetCertificate(const char *domain, const char *certificate)
 {
-	bool result = false;
-	if (domain && *domain == '*')
-	{
-		domain = strchr(domain,'.');
-	}
-	if (domain)
-	{
-		DomainCert domainCert = CreatorCert_FindCertificate(domain);
-		if (domainCert)
-		{
-			if (domainCert->Certificate && domainCert->Certificate != DEFAULT_CA_CERT_CHAIN)
-				Creator_MemFree((void **)&domainCert->Certificate);
-			domainCert->Certificate = CreatorString_Duplicate(certificate);
-		}
-		else
-		{
-			domainCert = (DomainCert)Creator_MemAlloc(sizeof(struct DomainCertImpl));
-			if (domainCert)
-			{
-				domainCert->Domain = CreatorString_Duplicate(domain);
-				domainCert->Certificate = CreatorString_Duplicate(certificate);
-				CreatorList_Add(_Certificates, (void *)domainCert);
-				result = true;
-			}
-		}
-	}
-	return result;
+    bool result = false;
+    if (domain && *domain == '*')
+    {
+        domain = strchr(domain, '.');
+    }
+    if (domain)
+    {
+        DomainCert domainCert = CreatorCert_FindCertificate(domain);
+        if (domainCert)
+        {
+            if (domainCert->Certificate && domainCert->Certificate != DEFAULT_CA_CERT_CHAIN)
+                Creator_MemFree((void **)&domainCert->Certificate);
+            domainCert->Certificate = CreatorString_Duplicate(certificate);
+        }
+        else
+        {
+            domainCert = (DomainCert)Creator_MemAlloc(sizeof(struct DomainCertImpl));
+            if (domainCert)
+            {
+                domainCert->Domain = CreatorString_Duplicate(domain);
+                domainCert->Certificate = CreatorString_Duplicate(certificate);
+                CreatorList_Add(_Certificates, (void *)domainCert);
+                result = true;
+            }
+        }
+    }
+    return result;
 }
 
 void CreatorCert_Shutdown(void)
 {
-	if (_Certificates)
-	{
-		uint index;
-		for (index = 0; index < CreatorList_GetCount(_Certificates); index++)
-		{
-			DomainCert domainCert = (DomainCert)CreatorList_GetItem(_Certificates, index);
-			if (domainCert)
-			{
-				if (domainCert->Domain && domainCert->Domain != DEFAULT_DOMAIN)
-					Creator_MemFree((void **)&domainCert->Domain);
-				if (domainCert->Certificate && domainCert->Certificate != DEFAULT_CA_CERT_CHAIN)
-					Creator_MemFree((void **)&domainCert->Certificate);
-				Creator_MemFree((void **)&domainCert);
-			}
-		}
-		CreatorList_Free(&_Certificates, false);
-	}
+    if (_Certificates)
+    {
+        uint index;
+        for (index = 0; index < CreatorList_GetCount(_Certificates); index++)
+        {
+            DomainCert domainCert = (DomainCert)CreatorList_GetItem(_Certificates, index);
+            if (domainCert)
+            {
+                if (domainCert->Domain && domainCert->Domain != DEFAULT_DOMAIN)
+                    Creator_MemFree((void **)&domainCert->Domain);
+                if (domainCert->Certificate && domainCert->Certificate != DEFAULT_CA_CERT_CHAIN)
+                    Creator_MemFree((void **)&domainCert->Certificate);
+                Creator_MemFree((void **)&domainCert);
+            }
+        }
+        CreatorList_Free(&_Certificates, false);
+    }
 }
 

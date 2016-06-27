@@ -52,7 +52,6 @@ bool CreatorHTTPQuery_AppendPathSuffixInt(CreatorHTTPQuery self, int value);
  */
 char *CreatorHTTPQuery_GenerateUrl(CreatorHTTPQuery self);
 
-
 /**
  * Returns a dynamically-allocated string containing url path
  *
@@ -70,9 +69,6 @@ char *CreatorHTTPQuery_GetBaseUrl(CreatorHTTPQuery self);
  */
 char *CreatorHTTPQuery_GetQueryParameter(CreatorHTTPQuery self, const char *param);
 
-//CreatorObject CreatorHTTPQuery_HTTPRequest(CreatorMemoryManager memoryManager, CreatorHTTPQuery query, CreatorHTTPMethod method, CreatorObject data, CreatorType returnType);
-//bool CreatorHTTPQuery_HTTPRequestWithStatusResponse(CreatorMemoryManager memoryManager, CreatorHTTPQuery query, CreatorHTTPMethod method,CreatorObject data);
-
 CreatorHTTPQuery CreatorHTTPQuery_New(void);
 CreatorHTTPQuery CreatorHTTPQuery_NewFromUrl(const char *url);
 
@@ -81,7 +77,6 @@ void CreatorHTTPQuery_SetBaseUrl(CreatorHTTPQuery self, const char *szBaseUrl);
 void CreatorHTTPQuery_SetQueryParameter(CreatorHTTPQuery self, const char *param, const char *paramValue);
 
 void CreatorHTTPQuery_Free(CreatorHTTPQuery *self);
-
 
 #ifdef __cplusplus
 }

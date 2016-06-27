@@ -35,62 +35,61 @@
 
 bool CreatorLog_Initialise()
 {
-	return true;
+    return true;
 }
-
 
 void Creator_Log(CreatorLogLevel level, const char *message, ...)
 {
-	va_list vl;
-	va_start(vl, message);
-	Creator_Logv(level, message, vl);
-	va_end(vl);
+    va_list vl;
+    va_start(vl, message);
+    Creator_Logv(level, message, vl);
+    va_end(vl);
 }
 
 void Creator_Logv(CreatorLogLevel level, const char *message, va_list vl)
 {
-	FILE * out = stderr;
-	char *messageType = "WHAT?: ";
-	switch (level)
-	{
-		case CreatorLogLevel_Debug:
-			messageType = "DEBUG: ";
-			out = stdout;
-			break;
-		case CreatorLogLevel_Info:
-			messageType = "INFO : ";
-			out = stdout;
-			break;
-		case CreatorLogLevel_Warning:
-			messageType = "WARN : ";
-			out = stderr;
-			break;
-		case CreatorLogLevel_Error:
-			messageType = "ERROR: ";
-			out = stderr;
-			break;
-		case CreatorLogLevel_None:
-			break;
+    FILE * out = stderr;
+    char *messageType = "WHAT?: ";
+    switch (level)
+    {
+        case CreatorLogLevel_Debug:
+            messageType = "DEBUG: ";
+            out = stdout;
+            break;
+        case CreatorLogLevel_Info:
+            messageType = "INFO : ";
+            out = stdout;
+            break;
+        case CreatorLogLevel_Warning:
+            messageType = "WARN : ";
+            out = stderr;
+            break;
+        case CreatorLogLevel_Error:
+            messageType = "ERROR: ";
+            out = stderr;
+            break;
+        case CreatorLogLevel_None:
+            break;
 	}
 
-	char time[128];
-	time_t t;
-	struct tm *tmTime;
+    char time[128];
+    time_t t;
+    struct tm *tmTime;
 
-	t = CreatorServerTime_GetServerTime();
-	tmTime = localtime(&t);
-	if (tmTime == NULL)
-	{
-		time[0] = '\0';
-	}
-	else if (strftime(time, sizeof(time), "%d/%m/%Y %H:%M:%S", tmTime) == 0)
-	{
-		time[0] = '\0';
-	}
+    t = CreatorServerTime_GetServerTime();
+    tmTime = localtime(&t);
+    if (tmTime == NULL)
+    {
+        time[0] = '\0';
+    }
+    else if (strftime(time, sizeof(time), "%d/%m/%Y %H:%M:%S", tmTime) == 0)
+    {
+        time[0] = '\0';
+    }
 
-	fprintf(out, "%s, %s", time, messageType);
-	vfprintf(out, message, vl);
-	fprintf(out, "\n");
+    fprintf(out, "%s, %s", time, messageType);
+    vfprintf(out, message, vl);
+    fprintf(out, "\n");
 }
 
 void CreatorLog_SetLevel(CreatorLogLevel level)

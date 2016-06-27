@@ -4,12 +4,12 @@
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  following conditions are met:
-	 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the
-		following disclaimer.
-	 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
-		following disclaimer in the documentation and/or other materials provided with the distribution.
-	 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote
-		products derived from this software without specific prior written permission.
+     1. Redistributions of source code must retain the above copyright notice, this list of conditions and the
+        following disclaimer.
+     2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+        following disclaimer in the documentation and/or other materials provided with the distribution.
+     3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote
+        products derived from this software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
@@ -58,52 +58,52 @@ void BSP_VBUSSwitchDisable(void)
 char *CommandHandlers_GetTimeString(void)
 {
 #define DATETIME_FIELD_LENGTH (21)
-	char *datetime = Creator_MemAlloc(sizeof (char) * DATETIME_FIELD_LENGTH);
-	if (datetime)
-	{
-		time_t currentDateTime;
-		Creator_GetTime(&currentDateTime);
-		struct tm *_currentDateTime = gmtime(&currentDateTime);
-		memset(datetime, '\0', DATETIME_FIELD_LENGTH);
-		if (strftime((char *) datetime, DATETIME_FIELD_LENGTH, "%Y-%m-%dT%H:%M:%SZ", _currentDateTime) != 0)
-		{
-			// success
-		}
-	}
-	return datetime;
+    char *datetime = Creator_MemAlloc(sizeof(char) * DATETIME_FIELD_LENGTH);
+    if (datetime)
+    {
+        time_t currentDateTime;
+        Creator_GetTime(&currentDateTime);
+        struct tm *_currentDateTime = gmtime(&currentDateTime);
+        memset(datetime, '\0', DATETIME_FIELD_LENGTH);
+        if (strftime((char *) datetime, DATETIME_FIELD_LENGTH, "%Y-%m-%dT%H:%M:%SZ", _currentDateTime) != 0)
+        {
+            // success
+        }
+    }
+    return datetime;
 }
 
 static void ResetTimeoutTask(CreatorTaskID taskID, void *clientArg)
 {
-	CreatorConsole_Puts("Forcing restart...");
-	CreatorThread_SleepMilliseconds(NULL, 200);
-	AppConfig_SoftwareReset(_ResetToConfigurationMode);
+    CreatorConsole_Puts("Forcing restart...");
+    CreatorThread_SleepMilliseconds(NULL, 200);
+    AppConfig_SoftwareReset(_ResetToConfigurationMode);
 }
 
 bool CommandHandlers_ResetHandler(bool resetToConfigurationMode)
 {
-	CreatorScheduler_ScheduleTask(ResetTimeoutTask, NULL, 10, false);
+    CreatorScheduler_ScheduleTask(ResetTimeoutTask, NULL, 10, false);
 
-	if (AppConfig_IsDeviceOnline())
-	{
-		_ResetToConfigurationMode = resetToConfigurationMode;
-		_ResetPending = true;
-	}
-	else
-	{
-		AppConfig_SoftwareReset(resetToConfigurationMode);
-	}
-	return true;
+    if (AppConfig_IsDeviceOnline())
+    {
+        _ResetToConfigurationMode = resetToConfigurationMode;
+        _ResetPending = true;
+    }
+    else
+    {
+        AppConfig_SoftwareReset(resetToConfigurationMode);
+    }
+    return true;
 }
 
 bool CommandHandlers_IsResetPending(void)
 {
-	return _ResetPending;
+    return _ResetPending;
 }
 
 bool CommandHandlers_ResetToConfigurationMode(void)
 {
-	return _ResetToConfigurationMode;
+    return _ResetToConfigurationMode;
 }
 
 

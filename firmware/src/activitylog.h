@@ -32,40 +32,39 @@
 
 typedef enum
 {
-	CreatorActivityLogLevel_None = 0,
-	CreatorActivityLogLevel_Error,
-	CreatorActivityLogLevel_Warning,
-	CreatorActivityLogLevel_Information,
-	CreatorActivityLogLevel_Debug,
-	CreatorActivityLogLevel_Max
+    CreatorActivityLogLevel_None = 0,
+    CreatorActivityLogLevel_Error,
+    CreatorActivityLogLevel_Warning,
+    CreatorActivityLogLevel_Information,
+    CreatorActivityLogLevel_Debug,
+    CreatorActivityLogLevel_Max
 } CreatorActivityLogLevel;
 
 typedef enum
 {
-	CreatorActivityLogCategory_HardwareBoot = 0,
-	CreatorActivityLogCategory_Startup,
-	CreatorActivityLogCategory_SystemRuntime,
-	CreatorActivityLogCategory_App,
-	CreatorActivityLogCategory_Shutdown,
-	CreatorActivityLogCategory_Max
+    CreatorActivityLogCategory_HardwareBoot = 0,
+    CreatorActivityLogCategory_Startup,
+    CreatorActivityLogCategory_SystemRuntime,
+    CreatorActivityLogCategory_App,
+    CreatorActivityLogCategory_Shutdown,
+    CreatorActivityLogCategory_Max
 } CreatorActivityLogCategory;
-
 
 typedef struct
 {
-	uint32	Timestamp;			// Epoch seconds since Jan 1 1970
-	uint8	Category;
-	uint8	LogLevel;
-	uint16	ErrorCode;
-	char	Message[ACTIVITYLOG_MESSAGE_LENGTH];	// null terminated
+    uint32 Timestamp;			// Epoch seconds since Jan 1 1970
+    uint8 Category;
+    uint8 LogLevel;
+    uint16 ErrorCode;
+    char Message[ACTIVITYLOG_MESSAGE_LENGTH];	// null terminated
 } ActivityLog;
 
 typedef struct
 {
-	int		RequestCount;		// maximum ActivityLog records to read
-	int		NextIndex;		// next index to read (modified by read), -1 = start from first
-	bool		ReadDescending;		// true = descending: read newest first, false = ascending: read oldest first
-	ActivityLog	*ReadLog;		// must have enough room for requestCount records
+    int RequestCount;		// maximum ActivityLog records to read
+    int NextIndex;		// next index to read (modified by read), -1 = start from first
+    bool ReadDescending;		// true = descending: read newest first, false = ascending: read oldest first
+    ActivityLog *ReadLog;		// must have enough room for requestCount records
 } ActivityLogRequest;
 
 /**

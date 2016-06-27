@@ -33,11 +33,9 @@
 #endif
 #include <string.h>
 
+#include "creator/core/base_types.h"
 #include "creator/core/core.h"
 #include "creator/core/creator_task_scheduler.h"
-#include "creator/core/client_private.h"
-//#include "creator/core/xml_serialisation.h"
-//#include "creator/core/http_private.h"
 #include "creator_http.h"
 #include "creator/core/creator_debug.h"
 #include "creator/core/creator_nvs.h"
@@ -65,71 +63,69 @@ static bool _IsInitialised = false;
 
 char *CreatorCore_GetVersion(void)
 {
-	return TOSTRING(LIB_VERSION);
+    return TOSTRING(LIB_VERSION);
 }
-
 
 char *CreatorCore_GetVersionDate(void)
 {
-	return TOSTRING(LIB_VERSIONDATE);
+    return TOSTRING(LIB_VERSIONDATE);
 }
-
 
 bool CreatorCore_Initialise()
 {
-	//FIXME this should probably be done in the main, not in our library
+    //FIXME this should probably be done in the main, not in our library
 #ifdef POSIX
-	Creator_SetRandomSeed(Creator_GetTime(NULL)*getpid());
+    Creator_SetRandomSeed(Creator_GetTime(NULL)*getpid());
 #else
-	Creator_SetRandomSeed(Creator_GetTime(NULL));
+    Creator_SetRandomSeed(Creator_GetTime(NULL));
 #endif
-	return CreatorCore_InitialiseLibOnly();
+    return CreatorCore_InitialiseLibOnly();
 }
 
 bool CreatorCore_InitialiseLibOnly()
 {
-	//NB Creator_Assert can be used here, as it would fail only if it's been initialized
-	Creator_Assert(!_IsInitialised, "CreatorCore_Shutdown must be called before CreatorCore_Initialise is called again");
-	if (!_IsInitialised)
-	{
-		_IsInitialised = true;
-		bool bSuccess = true;
-		bool bLogStarted = true;
+    //NB Creator_Assert can be used here, as it would fail only if it's been initialized
+    Creator_Assert(!_IsInitialised, "CreatorCore_Shutdown must be called before CreatorCore_Initialise is called again");
+    if (!_IsInitialised)
+    {
+        _IsInitialised = true;
+        bool bSuccess = true;
+        bool bLogStarted = true;
 
-		CreatorThread_Initialise();
-		CreatorTimer_Initialise();
-		bSuccess &= CreatorCert_Initialise();
-		bSuccess &= bLogStarted = CreatorLog_Initialise();
-		bSuccess &= CreatorNVS_Initialise();
-		bSuccess &= CreatorScheduler_Initialise();
-		CreatorHTTP_Initialise();
+        CreatorThread_Initialise();
+        CreatorTimer_Initialise();
+        bSuccess &= CreatorCert_Initialise();
+        bSuccess &= bLogStarted = CreatorLog_Initialise();
+        bSuccess &= CreatorNVS_Initialise();
+        bSuccess &= CreatorScheduler_Initialise();
+        CreatorHTTP_Initialise();
 
-		if (!bSuccess)
-		{
-			if (bLogStarted)
-			{
-				Creator_Log(CreatorLogLevel_Error, "libcreator core initialization failed!");
-			}
-			CreatorCore_Shutdown();
-		}
+        if (!bSuccess)
+        {
+            if (bLogStarted)
+            {
+                Creator_Log(CreatorLogLevel_Error, "libcreator core initialization failed!");
+            }
+            CreatorCore_Shutdown();
+        }
 
-		return bSuccess;
-	}
-	return false;
+        return bSuccess;
+    }
+    return false;
 }
 
 void CreatorCore_Shutdown()
 {
-	if (_IsInitialised)
-	{
-		CreatorScheduler_Shutdown();
-		CreatorNVS_Shutdown();
-		CreatorLog_Shutdown();
-		CreatorHTTP_Shutdown();
-		CreatorCert_Shutdown();
-		CreatorTimer_Shutdown();
-		CreatorThread_Shutdown();
-		_IsInitialised = false;
-	}
+    if (_IsInitialised)
+    {
+        CreatorScheduler_Shutdown();
+        CreatorNVS_Shutdown();
+        CreatorLog_Shutdown();
+        CreatorHTTP_Shutdown();
+        CreatorCert_Shutdown();
+        CreatorTimer_Shutdown();
+        CreatorThread_Shutdown();
+        _IsInitialised = false;
+    }
 }
 

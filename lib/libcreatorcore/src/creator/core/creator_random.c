@@ -24,20 +24,20 @@ static int _Seed = 0;
 
 int Creator_GetRandom()
 {
-	long int hi, lo, x;
-	int seed = _Seed;
-	if (seed == 0)
-		seed = 1;
-	hi = seed / 127773;
-	lo = seed % 127773;
-	x = 16807 * lo - 2836 * hi;
-	if (x < 0)
-		x += 0x7fffffff;
-	_Seed  = seed = (int)x;
-	return seed;
+    long int hi, lo, x;
+    int seed = _Seed;
+    if (seed == 0)
+        seed = 1;
+    hi = seed / 127773;
+    lo = seed % 127773;
+    x = 16807 * lo - 2836 * hi;
+    if (x < 0)
+        x += 0x7fffffff;
+    _Seed = seed = (int)x;
+    return seed;
 }
 
 void Creator_SetRandomSeed(int seed)
 {
-	_Seed = seed;
+    _Seed = seed;
 }

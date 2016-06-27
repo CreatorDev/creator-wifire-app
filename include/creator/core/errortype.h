@@ -35,67 +35,67 @@ extern "C" {
  */
 typedef enum
 {
-	//! no error
-	CreatorError_NoError, 										//0
-	//! an internal error occured, this is a bug that should be reported to libcreator developers
-	CreatorError_Internal, 										//1
-	//! there is not enough memory to fulfill this operation
-	CreatorError_Memory, 											//2
-	//! the requested method is not supported on this object
-	CreatorError_MethodUnavailable, 								//3
-	//! one of the method argument was invalid
-	CreatorError_InvalidArgument,								//4
-	//! the resource that was requested in not available
-	CreatorError_ResourceNotFound,								//5
-	//! failure to connect to the server
-	CreatorError_Network, 										//6
-	//! the CreatorCient doesn't have the credentials to access this resource
-	CreatorError_Unauthorised,									//7
-	//! the submitted data is in conflict with existing data on the webservice. look up the HTML documentation for more details
-	CreatorError_Conflict,										//8
-	//! the resource you're trying to access existed but has been removed
-	CreatorError_Removed,											//9
-	//! the server suffered an internal error
-	CreatorError_Server,											//10
-	//! the webservice cannot fulfill the request at the moment
-	CreatorError_ServerBusy,										//11
-	//! the timed out while waiting for this request
-	CreatorError_Timeout,									//12
-	//! the CreatorClient is not logged in, there is no current user or device
-	CreatorError_Anonymous,										//13
-	//! failure to store data in the local filesystem
-	CreatorError_LocalStorage,									//14
-	//! the server and client are not compatible, check that the client is up to date
-	CreatorError_VersionConflict,								//15
-	//! the object you're trying to use has been modified concurrently, get a new copy
-	CreatorError_ConcurrentModification,							//16
+    //! no error
+    CreatorError_NoError,                                   //0
+    //! an internal error occured, this is a bug that should be reported to libcreator developers
+    CreatorError_Internal,                                  //1
+    //! there is not enough memory to fulfill this operation
+    CreatorError_Memory,                                    //2
+    //! the requested method is not supported on this object
+    CreatorError_MethodUnavailable,                         //3
+    //! one of the method argument was invalid
+    CreatorError_InvalidArgument,                           //4
+    //! the resource that was requested in not available
+    CreatorError_ResourceNotFound,                          //5
+    //! failure to connect to the server
+    CreatorError_Network,                                   //6
+    //! the CreatorCient doesn't have the credentials to access this resource
+    CreatorError_Unauthorised,                              //7
+    //! the submitted data is in conflict with existing data on the webservice. look up the HTML documentation for more details
+    CreatorError_Conflict,                                  //8
+    //! the resource you're trying to access existed but has been removed
+    CreatorError_Removed,                                   //9
+    //! the server suffered an internal error
+    CreatorError_Server,                                    //10
+    //! the webservice cannot fulfill the request at the moment
+    CreatorError_ServerBusy,                                //11
+    //! the timed out while waiting for this request
+    CreatorError_Timeout,                                   //12
+    //! the CreatorClient is not logged in, there is no current user or device
+    CreatorError_Anonymous,                                 //13
+    //! failure to store data in the local filesystem
+    CreatorError_LocalStorage,                              //14
+    //! the server and client are not compatible, check that the client is up to date
+    CreatorError_VersionConflict,                           //15
+    //! the object you're trying to use has been modified concurrently, get a new copy
+    CreatorError_ConcurrentModification,                    //16
 
-	/* BadRequest errors */
-	CreatorError_BadRequest_Min,									//17
-	CreatorError_BadRequestInvalidFields						//17
-		= CreatorError_BadRequest_Min,
-	CreatorError_BadRequestInvalidPin,							//18
-	CreatorError_BadRequestInsufficientFunds,					//19
-	CreatorError_BadRequestProductNotFound,					//20
-	CreatorError_BadRequestProductNotAvailable,				//21
-	CreatorError_BadRequestCardNotSupported,					//22
-	CreatorError_BadRequestInvalidCardnumber,					//23
-	CreatorError_BadRequestInvalidCardExpiryDate,			//24
-	CreatorError_BadRequestSubscriptioninvalidForUser,		//25
-	CreatorError_BadRequestSubscriptionAlreadyTrialled,		//26
-	CreatorError_BadRequestSubscriptionCannotBeTrialled,		//27
-	CreatorError_BadRequestSubscriptionCannotBeRenewed,		//28
-	CreatorError_BadRequestDuplicateEmail,						//29
-	CreatorError_BadRequestAccountNotFound,					//30
-	CreatorError_BadRequestVoucherNotValid,					//31
-	CreatorError_BadRequestVoucherAlreadyBeingProcessed,		//32
-	CreatorError_BadRequestContentFolderLimitReached,		//33
-	CreatorError_BadRequest_Unknown,							//34
+    /* BadRequest errors */
+    CreatorError_BadRequest_Min,                            //17
+    CreatorError_BadRequestInvalidFields                    //17
+        = CreatorError_BadRequest_Min,
+    CreatorError_BadRequestInvalidPin,                      //18
+    CreatorError_BadRequestInsufficientFunds,               //19
+    CreatorError_BadRequestProductNotFound,                 //20
+    CreatorError_BadRequestProductNotAvailable,             //21
+    CreatorError_BadRequestCardNotSupported,                //22
+    CreatorError_BadRequestInvalidCardnumber,               //23
+    CreatorError_BadRequestInvalidCardExpiryDate,           //24
+    CreatorError_BadRequestSubscriptioninvalidForUser,      //25
+    CreatorError_BadRequestSubscriptionAlreadyTrialled,     //26
+    CreatorError_BadRequestSubscriptionCannotBeTrialled,    //27
+    CreatorError_BadRequestSubscriptionCannotBeRenewed,     //28
+    CreatorError_BadRequestDuplicateEmail,                  //29
+    CreatorError_BadRequestAccountNotFound,                 //30
+    CreatorError_BadRequestVoucherNotValid,                 //31
+    CreatorError_BadRequestVoucherAlreadyBeingProcessed,    //32
+    CreatorError_BadRequestContentFolderLimitReached,       //33
+    CreatorError_BadRequest_Unknown,                        //34
 
-	//! the client is not time-synchronized with the server, \ref CreatorClient_SynchronizeServerTime must be called explicitely
-	CreatorError_ServerTimeSync,									//35
-	//! the client session token is not valid, \ref CreatorClient_RenewSession must be called explicitely
-	CreatorError_ExpiredSession,									//36
+    //! the client is not time-synchronized with the server, \ref CreatorClient_SynchronizeServerTime must be called explicitely
+    CreatorError_ServerTimeSync,                            //35
+    //! the client session token is not valid, \ref CreatorClient_RenewSession must be called explicitely
+    CreatorError_ExpiredSession,                            //36
 } CreatorErrorType;
 
 

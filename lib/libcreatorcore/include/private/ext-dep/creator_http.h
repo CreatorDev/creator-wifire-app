@@ -30,11 +30,11 @@
 
 typedef enum
 {
-	CreatorHTTPError_NotSet = 0,
-	CreatorHTTPError_None,
-	CreatorHTTPError_Unspecified, 		//an error occured, but no-one knows what it was
-	CreatorHTTPError_Timeout,
-	CreatorHTTPError_NetworkFailure
+    CreatorHTTPError_NotSet = 0,
+    CreatorHTTPError_None,
+    CreatorHTTPError_Unspecified,       //an error occurred, but no-one knows what it was
+    CreatorHTTPError_Timeout,
+    CreatorHTTPError_NetworkFailure
 } CreatorHTTPError;
 
 

@@ -37,14 +37,13 @@ struct _TreeNode;
 
 typedef struct
 {
-	struct TreeNodeImpl* Parent;			// Link to parent
-	struct TreeNodeImpl** Children;			// Dynamic array of links to children
-	uint32_t ChildCount;					// Number of children
-	uint32_t ChildSlots;					// Number of potential children before reallocing
-
-	char	*Name;							// Node name
-	uint8 	*Value;							// Node value
-	uint32_t ChildID;						// The ID of this child (relative to its parent node). 0 = invalid, 1 ... n = valid
+    struct TreeNodeImpl* Parent;			// Link to parent
+    struct TreeNodeImpl** Children;			// Dynamic array of links to children
+    uint32_t ChildCount;					// Number of children
+    uint32_t ChildSlots;					// Number of potential children before reallocing
+    char	*Name;							// Node name
+    uint8 	*Value;							// Node value
+    uint32_t ChildID;						// The ID of this child (relative to its parent node). 0 = invalid, 1 ... n = valid
 
 } TreeNodeImpl;
 
@@ -59,75 +58,71 @@ static TreeNode* currentTreeNode = NULL;
 // Local functions
 //
 
-
 /* DOM XML-parser setup and callback functions */
 void HTTP_xmlDOMBuilder_StartElementHandler(void *userData, const char *nodeName, const char **atts);
 void HTTP_xmlDOMBuilder_EndElementHandler(void *userData, const char *nodeName);
 void HTTP_xmlDOMBuilder_CharDataHandler(void *userData, const char *s, int len);
 
 
-
-
 bool TreeNode_AddChild(TreeNode node, TreeNode child)
 {
-	bool result = false;
-	_treeNode _node = (_treeNode) node;
-	if(_node && child)
-	{
-		// Check whether we need to resize the children list to add a new child
-		if(_node->ChildSlots <= _node->ChildCount)
-		{
-			TreeNodeImpl **oldChildrenList = (TreeNodeImpl**) _node->Children;
+    bool result = false;
+    _treeNode _node = (_treeNode)node;
+    if (_node && child)
+    {
+        // Check whether we need to resize the children list to add a new child
+        if (_node->ChildSlots <= _node->ChildCount)
+        {
+            TreeNodeImpl **oldChildrenList = (TreeNodeImpl**)_node->Children;
 
-			// Double list capacity
-			uint32_t newChildrenListSize = sizeof(TreeNode) * (_node->ChildSlots*2);
-			_node->Children = (struct TreeNodeImpl**) Creator_MemAlloc(newChildrenListSize);
-			if(_node->Children)
-			{
+            // Double list capacity
+            uint32_t newChildrenListSize = sizeof(TreeNode) * (_node->ChildSlots * 2);
+            _node->Children = (struct TreeNodeImpl**)Creator_MemAlloc(newChildrenListSize);
+            if (_node->Children)
+            {
                 _node->ChildSlots = (_node->ChildSlots * 2);
-				memset(_node->Children, 0, newChildrenListSize);
-				memcpy(_node->Children, oldChildrenList, _node->ChildCount*sizeof(TreeNode));
-				Creator_MemFree((void **) &oldChildrenList);
-			}
-			else
-			{
-				_node->Children = (struct TreeNodeImpl**) oldChildrenList;
+                memset(_node->Children, 0, newChildrenListSize);
+                memcpy(_node->Children, oldChildrenList, _node->ChildCount * sizeof(TreeNode));
+                Creator_MemFree((void **)&oldChildrenList);
+            }
+            else
+            {
+                _node->Children = (struct TreeNodeImpl**)oldChildrenList;
                 goto error;
-			}
+            }
 
-		}
+        }
 
-		// Add the new child to the list		
-		_node->Children[_node->ChildCount] = child;
-		_node->ChildCount++;
-		((_treeNode)child)->ChildID = _node->ChildCount;
+        // Add the new child to the list
+        _node->Children[_node->ChildCount] = child;
+        _node->ChildCount++;
+        ((_treeNode)child)->ChildID = _node->ChildCount;
 
         // Make sure the Parent pointer is set so that
         // Tree_Delete will also free the root node.
         ((_treeNode)child)->Parent = (struct TreeNodeImpl *)_node;
 
-		result = true;
-	}
-error:
-	return result;
+        result = true;
+    }
+    error: return result;
 }
 
 bool Tree_DetachNode(TreeNode node)
 {
     bool result = false;
-    _treeNode _node = (_treeNode) node;
+    _treeNode _node = (_treeNode)node;
     if (_node)
     {
-        _treeNode _parent = (_treeNode) _node->Parent;
+        _treeNode _parent = (_treeNode)_node->Parent;
         if (_parent)
         {
             // Detach the node from its parent's children and move all the children down to fill its place, then decrease the parent's child count
             _parent->Children[_node->ChildID - 1] = NULL;
 
             int i;
-            for (i = _node->ChildID-1; i < _parent->ChildCount-1; i++)
+            for (i = _node->ChildID - 1; i < _parent->ChildCount - 1; i++)
             {
-                _parent->Children[i] = _parent->Children[i+1];
+                _parent->Children[i] = _parent->Children[i + 1];
                 if (_parent->Children[i] != NULL)
                 {
                     ((_treeNode)_parent->Children[i])->ChildID--;
@@ -144,53 +139,52 @@ bool Tree_DetachNode(TreeNode node)
 
 bool TreeNode_AppendValue(const TreeNode node, const uint8_t* value, const uint32_t length)
 {
-	bool result = false;
-	_treeNode _node = (_treeNode) node;
-	if(_node && value)
-	{
-		if(_node->Value)
-		{
-			int currentLength = strlen((const char*)_node->Value);
-			uint8* newBuffer = (uint8*)Creator_MemRealloc(_node->Value,currentLength+1+length);
-			if (newBuffer)
-			{
-				memcpy(&newBuffer[currentLength],value, length);
-				newBuffer[currentLength+length] = '\0';
-				_node->Value = newBuffer;
-				result = true;
-			}
-		}
-		else
-		{
-			_node->Value = (uint8 *)CreatorString_DuplicateWithLength((char *)value, length);
-			if (_node->Value)
-				result = true;
-		}
-	}
-	return result;
+    bool result = false;
+    _treeNode _node = (_treeNode)node;
+    if (_node && value)
+    {
+        if (_node->Value)
+        {
+            int currentLength = strlen((const char*)_node->Value);
+            uint8* newBuffer = (uint8*)Creator_MemRealloc(_node->Value, currentLength + 1 + length);
+            if (newBuffer)
+            {
+                memcpy(&newBuffer[currentLength], value, length);
+                newBuffer[currentLength + length] = '\0';
+                _node->Value = newBuffer;
+                result = true;
+            }
+        }
+        else
+        {
+            _node->Value = (uint8 *)CreatorString_DuplicateWithLength((char *)value, length);
+            if (_node->Value)
+                result = true;
+        }
+    }
+    return result;
 }
-
 
 TreeNode TreeNode_Create(void)
 {
-	_treeNode node = (_treeNode) Creator_MemAlloc(sizeof(TreeNodeImpl));
-	if(node)
-	{
-		memset(node, 0 , sizeof(TreeNodeImpl));
+    _treeNode node = (_treeNode)Creator_MemAlloc(sizeof(TreeNodeImpl));
+    if (node)
+    {
+        memset(node, 0, sizeof(TreeNodeImpl));
 
-		node->ChildSlots = INITIAL_TREENODE_CHILD_SLOTS;
-		node->Children = (struct TreeNodeImpl**) Creator_MemAlloc(sizeof(struct TreeNodeImpl*)*node->ChildSlots);
-		if(node->Children)
-		{
-			memset(node->Children, 0, sizeof(TreeNodeImpl*) * node->ChildSlots);
-		}
-		else
-		{
-			node->ChildSlots = 0;
-			node->Children  = NULL;
-		}
-	}
-	return node;
+        node->ChildSlots = INITIAL_TREENODE_CHILD_SLOTS;
+        node->Children = (struct TreeNodeImpl**)Creator_MemAlloc(sizeof(struct TreeNodeImpl*) * node->ChildSlots);
+        if (node->Children)
+        {
+            memset(node->Children, 0, sizeof(TreeNodeImpl*) * node->ChildSlots);
+        }
+        else
+        {
+            node->ChildSlots = 0;
+            node->Children = NULL;
+        }
+    }
+    return node;
 }
 
 TreeNode TreeNode_CopyTreeNode(TreeNode node)
@@ -215,29 +209,29 @@ TreeNode TreeNode_CopyTreeNode(TreeNode node)
 bool TreeNode_DeleteSingle(TreeNode node)
 {
     // Not a recursive delete -- *only* deletes this node
-	// Links to its children will be lost if they have not been
-	// 'remembered' externally
-	bool result = false;
-	_treeNode _node = (_treeNode) node;
-	if (_node)
-	{
-		if(_node->Name)
-			Creator_MemFree((void **)&_node->Name);
-		if(_node->Value)
-			Creator_MemFree((void **)&_node->Value);
+    // Links to its children will be lost if they have not been
+    // 'remembered' externally
+    bool result = false;
+    _treeNode _node = (_treeNode)node;
+    if (_node)
+    {
+        if (_node->Name)
+            Creator_MemFree((void **)&_node->Name);
+        if (_node->Value)
+            Creator_MemFree((void **)&_node->Value);
 
-		if(_node->Children)
-			Creator_MemFree((void **)&_node->Children);
+        if (_node->Children)
+            Creator_MemFree((void **)&_node->Children);
 
-		Creator_MemFree((void **)&_node);
-		result = true;
-	}
-	return result;
+        Creator_MemFree((void **)&_node);
+        result = true;
+    }
+    return result;
 }
 
 int TreeNode_GetChildCount(TreeNode node)
 {
-    _treeNode _node = (_treeNode) node;
+    _treeNode _node = (_treeNode)node;
     if (node)
     {
         return _node->ChildCount;
@@ -247,7 +241,7 @@ int TreeNode_GetChildCount(TreeNode node)
 
 int TreeNode_GetID(TreeNode node)
 {
-    _treeNode _node = (_treeNode) node;
+    _treeNode _node = (_treeNode)node;
     if (_node)
     {
         return _node->ChildID;
@@ -257,203 +251,197 @@ int TreeNode_GetID(TreeNode node)
 
 TreeNode TreeNode_GetChild(TreeNode node, uint32_t index)
 {
-	TreeNode child = NULL;
-	_treeNode _node = (_treeNode) node;
+    TreeNode child = NULL;
+    _treeNode _node = (_treeNode)node;
     if (_node && index < _node->ChildCount)
-	{
-		child = _node->Children[index];
-	}
-	return child;
+    {
+        child = _node->Children[index];
+    }
+    return child;
 }
-
 
 const char* TreeNode_GetName(const TreeNode node)
 {
-	_treeNode _node = (_treeNode) node;
-	if (_node && _node->Name)
-	{
-		return (const char*) _node->Name;
-	}
-	return NULL;
+    _treeNode _node = (_treeNode)node;
+    if (_node && _node->Name)
+    {
+        return (const char*)_node->Name;
+    }
+    return NULL;
 }
-
 
 TreeNode TreeNode_GetParent(const TreeNode node)
 {
-	TreeNode parent = NULL;
-	_treeNode _node = (_treeNode) node;
-	if (_node)
-		parent = _node->Parent;
-	return parent;
+    TreeNode parent = NULL;
+    _treeNode _node = (_treeNode)node;
+    if (_node)
+        parent = _node->Parent;
+    return parent;
 }
-
 
 const uint8* TreeNode_GetValue(const TreeNode node)
 {
-	_treeNode _node = (_treeNode) node;
-	if (_node && _node->Value)
-	{
-		return (const uint8*) _node->Value;
-	}
-	return NULL;
+    _treeNode _node = (_treeNode)node;
+    if (_node && _node->Value)
+    {
+        return (const uint8*)_node->Value;
+    }
+    return NULL;
 }
 
 bool TreeNode_HasParent(const TreeNode node)
 {
-	bool result = false;
-	_treeNode _node = (_treeNode) node;
+    bool result = false;
+    _treeNode _node = (_treeNode)node;
 
-	if(_node && _node->Parent)
-		result = true;
+    if (_node && _node->Parent)
+        result = true;
 
-	return result;
+    return result;
 }
 
 TreeNode TreeNode_Navigate(const TreeNode rootNode, const char* path)
 {
-	_treeNode currentNode = rootNode;
-	bool pathError = false;
-	_treeNode _node = (_treeNode) rootNode;
+    _treeNode currentNode = rootNode;
+    bool pathError = false;
+    _treeNode _node = (_treeNode)rootNode;
 
-	// Validate inputs (Check rootNode & path are not null)
-	// Assuming path is null-terminated	
-	if(rootNode && path)
-	{
-		char* _path = (char*) Creator_MemAlloc(sizeof(char) * (strlen((const char*) path)+1) );
-		if(_path)
-		{
-			// Design note: Need to make a copy of path ('_path') as Microchip's implementation
-			// of strtok() appears to try to modify the string it's working on
-			memset((void*)_path, 0, (sizeof(char) * (strlen((const char*) path)+1) ));
-			memcpy((void*) _path, (void*) path, sizeof(char) * strlen((const char*) path) );
+    // Validate inputs (Check rootNode & path are not null)
+    // Assuming path is null-terminated
+    if (rootNode && path)
+    {
+        char* _path = (char*)Creator_MemAlloc(sizeof(char) * (strlen((const char*)path) + 1));
+        if (_path)
+        {
+            // Design note: Need to make a copy of path ('_path') as Microchip's implementation
+            // of strtok() appears to try to modify the string it's working on
+            memset((void*)_path, 0, (sizeof(char) * (strlen((const char*)path) + 1)));
+            memcpy((void*)_path, (void*)path, sizeof(char) * strlen((const char*)path));
 
-			// Check for path separator '/' character
-			if (strchr((const char*) _path, '/') == NULL)
-			{
-				if (strcmp((const char*) _node->Name, (const char*) _path) != 0)
-					currentNode = NULL;
-			}
-			else
-			{
-				// Tokenise path and ensure first pathElement matches
-				char *pathElement = strtok((char*) _path, (const char*) "/");
-				if(strcmp((const char*) currentNode->Name, (const char*) pathElement) == 0)
-				{
-					bool childFound = false;
-					do
-					{
-						// Then, get next path-token and find a match for a child node's name
-						pathElement = strtok(0, "/");
-						if(pathElement)
-						{
-							childFound = false;
-							uint32_t childIndex = 0;
-							for(childIndex = 0; childIndex < currentNode->ChildCount; childIndex++)
-							{
-								// For each token, check if a child's node name matches the next token in the path
-								_treeNode thisChild = (_treeNode) currentNode->Children[childIndex];
-								if(strcmp((const char*) thisChild->Name, pathElement) == 0)
-								{
-									currentNode = thisChild;
-									childFound = true;
-									break;
-								}
-							}
+            // Check for path separator '/' character
+            if (strchr((const char*)_path, '/') == NULL)
+            {
+                if (strcmp((const char*)_node->Name, (const char*)_path) != 0)
+                    currentNode = NULL;
+            }
+            else
+            {
+                // Tokenise path and ensure first pathElement matches
+                char *pathElement = strtok((char*)_path, (const char*)"/");
+                if (strcmp((const char*)currentNode->Name, (const char*)pathElement) == 0)
+                {
+                    bool childFound = false;
+                    do
+                    {
+                        // Then, get next path-token and find a match for a child node's name
+                        pathElement = strtok(0, "/");
+                        if (pathElement)
+                        {
+                            childFound = false;
+                            uint32_t childIndex = 0;
+                            for (childIndex = 0; childIndex < currentNode->ChildCount; childIndex++)
+                            {
+                                // For each token, check if a child's node name matches the next token in the path
+                                _treeNode thisChild = (_treeNode)currentNode->Children[childIndex];
+                                if (strcmp((const char*)thisChild->Name, pathElement) == 0)
+                                {
+                                    currentNode = thisChild;
+                                    childFound = true;
+                                    break;
+                                }
+                            }
 
-							if(!childFound)
-							{
-								currentNode = NULL;
-								pathError = true;
-							}
-						}
-					} while(pathElement && !pathError);
-					if(pathError)
-						currentNode = NULL;
-				} 
-				else
-				{
-					currentNode = NULL;
-				}
-			}
-			Creator_MemFree((void **) &_path);
-		}
-		else
-		{
-			currentNode = NULL;
-		}
-	}
-	return (TreeNode) currentNode;
+                            if (!childFound)
+                            {
+                                currentNode = NULL;
+                                pathError = true;
+                            }
+                        }
+                    } while (pathElement && !pathError);
+                    if (pathError)
+                        currentNode = NULL;
+                }
+                else
+                {
+                    currentNode = NULL;
+                }
+            }
+            Creator_MemFree((void **)&_path);
+        }
+        else
+        {
+            currentNode = NULL;
+        }
+    }
+    return (TreeNode)currentNode;
 }
-
 
 bool TreeNode_SetName(const TreeNode node, const char* name, const uint32_t length)
 {
-	bool result = false;
-	_treeNode _node = (_treeNode) node;
-	if(_node && name)
-	{
-		if(_node->Name)
-			Creator_MemFree((void **) &_node->Name);
+    bool result = false;
+    _treeNode _node = (_treeNode)node;
+    if (_node && name)
+    {
+        if (_node->Name)
+            Creator_MemFree((void **)&_node->Name);
 
-		_node->Name = Creator_MemAlloc(sizeof(char) * (length+1));
-		if(_node->Name)
-		{
-			if(length > 0)
-				memcpy(_node->Name, name, length);
-			
-			_node->Name[length] = '\0';
-			result = true;
-		}
-	}
-	return result;
+        _node->Name = Creator_MemAlloc(sizeof(char) * (length + 1));
+        if (_node->Name)
+        {
+            if (length > 0)
+                memcpy(_node->Name, name, length);
+
+            _node->Name[length] = '\0';
+            result = true;
+        }
+    }
+    return result;
 }
-
 
 bool TreeNode_SetParent(const TreeNode node, const TreeNode parent)
 {
-	bool result = false;
-	_treeNode _node = (_treeNode) node;
-	if(_node)
-	{		
-		_node->Parent = parent;
-		result = true;
-	}
-	return result;
+    bool result = false;
+    _treeNode _node = (_treeNode)node;
+    if (_node)
+    {
+        _node->Parent = parent;
+        result = true;
+    }
+    return result;
 }
-
 
 bool TreeNode_SetValue(const TreeNode node, const uint8* value, const uint32_t length)
 {
-	bool result = false;
-	_treeNode _node = (_treeNode) node;
-	if(_node && value)
-	{
-		if(_node->Value)
-			Creator_MemFree((void **) &_node->Value);
+    bool result = false;
+    _treeNode _node = (_treeNode)node;
+    if (_node && value)
+    {
+        if (_node->Value)
+            Creator_MemFree((void **)&_node->Value);
 
-		_node->Value = Creator_MemAlloc(sizeof(uint8) * (length+1));
-		if(_node->Value)
-		{
-			if(length > 0)
-				memcpy(_node->Value, value, length);
-			
-			_node->Value[length] = '\0';
-			result = true;
-		}
-	}
-	return result;
+        _node->Value = Creator_MemAlloc(sizeof(uint8) * (length + 1));
+        if (_node->Value)
+        {
+            if (length > 0)
+                memcpy(_node->Value, value, length);
+
+            _node->Value[length] = '\0';
+            result = true;
+        }
+    }
+    return result;
 }
 
 TreeNode Tree_Copy(TreeNode node)
 {
-    _treeNode _node = (_treeNode) node;
+    _treeNode _node = (_treeNode)node;
     _treeNode _newNode = NULL;
 
     if (_node)
     {
         _newNode = TreeNode_CopyTreeNode(node);
 
-        if(_node->ChildCount)
+        if (_node->ChildCount)
         {
             uint32_t childIndex;
             for (childIndex = 0; childIndex < _node->ChildCount; childIndex++)
@@ -476,67 +464,64 @@ TreeNode Tree_Copy(TreeNode node)
 
 bool Tree_Delete(TreeNode node)
 {
-	bool result = false;
-	_treeNode _rootNode = (_treeNode) node;
+    bool result = false;
+    _treeNode _rootNode = (_treeNode)node;
 
-	if (_rootNode)
-	{
-		_treeNode currentNode = _rootNode;
-		while(currentNode)
-		{
-			// Find the end node of a branch
-			while(currentNode->ChildCount)
-			{
-				uint32_t childIndex;
-				for(childIndex = 0; childIndex < currentNode->ChildSlots; childIndex++)
-				{
-					if(currentNode->Children && currentNode->Children[childIndex])
-					{
-						currentNode = (_treeNode) currentNode->Children[childIndex];
-						childIndex = currentNode->ChildSlots + 1; // Exit 'for' loop
-					}
-				}
-			}
+    if (_rootNode)
+    {
+        _treeNode currentNode = _rootNode;
+        while (currentNode)
+        {
+            // Find the end node of a branch
+            while (currentNode->ChildCount)
+            {
+                uint32_t childIndex;
+                for (childIndex = 0; childIndex < currentNode->ChildSlots; childIndex++)
+                {
+                    if (currentNode->Children && currentNode->Children[childIndex])
+                    {
+                        currentNode = (_treeNode)currentNode->Children[childIndex];
+                        childIndex = currentNode->ChildSlots + 1; // Exit 'for' loop
+                    }
+                }
+            }
 
-			
+            //
+            // Should be at bottom of a branch
+            // (next, free the node)
 
-			//
-			// Should be at bottom of a branch
-			// (next, free the node)
+            // If the currentNode has a parent, break the parent's link to the node
+            if (currentNode->Parent)
+            {
+                _treeNode parentNode = (_treeNode)currentNode->Parent;
+                parentNode->Children[currentNode->ChildID - 1] = NULL;
+                if (((_treeNode)currentNode->Parent)->ChildCount > 0)
+                    ((_treeNode)currentNode->Parent)->ChildCount--;
+                currentNode->ChildID = 0;	// The node is no longer a child-node
+            }
+            // else, must be the 'root' node
 
-			// If the currentNode has a parent, break the parent's link to the node
-			if(currentNode->Parent)
-			{
-                _treeNode parentNode = (_treeNode) currentNode->Parent;
-                parentNode->Children[currentNode->ChildID-1] = NULL;
-				if (((_treeNode) currentNode->Parent)->ChildCount > 0)
-					((_treeNode) currentNode->Parent)->ChildCount--;
-				 currentNode->ChildID = 0;	// The node is no longer a child-node
-			}
-			// else, must be the 'root' node
-			
-			// Free the curentNode's name, value & 'children' array
-			if(currentNode->Name)
-				Creator_MemFree((void **) &currentNode->Name);
-			if(currentNode->Value)
-				Creator_MemFree((void **) &currentNode->Value);
-			if(currentNode->Children)
-				Creator_MemFree((void **) &currentNode->Children);
+            // Free the curentNode's name, value & 'children' array
+            if (currentNode->Name)
+                Creator_MemFree((void **)&currentNode->Name);
+            if (currentNode->Value)
+                Creator_MemFree((void **)&currentNode->Value);
+            if (currentNode->Children)
+                Creator_MemFree((void **)&currentNode->Children);
 
-			 // Move currentNode up to its parent before freeing this node
-			_treeNode tempNode = currentNode;
-			currentNode = (_treeNode) currentNode->Parent;
-			if(tempNode)
-				Creator_MemFree((void **) &tempNode);
+            // Move currentNode up to its parent before freeing this node
+            _treeNode tempNode = currentNode;
+            currentNode = (_treeNode)currentNode->Parent;
+            if (tempNode)
+                Creator_MemFree((void **)&tempNode);
 
-			// Rinse and repeat, now that we're at the new end of the old branch
-		}
-		result = true;
-	}
+            // Rinse and repeat, now that we're at the new end of the old branch
+        }
+        result = true;
+    }
 
-	return result;
+    return result;
 }
-
 
 // Parse an xml document
 // -- Creates and sets up an xml parser context
@@ -547,79 +532,77 @@ bool Tree_Delete(TreeNode node)
 // whole doc should be set to true if the entire xml doc is contained in the string pointed to by doc
 TreeNode TreeNode_ParseXML(uint8* doc, uint32_t length, bool wholeDoc)
 {
-	TreeNode root = NULL;
-	if (doc)
-	{
-		if(length)
-		{
-			XMLParser_Context bodyParser = XMLParser_Create();
-			XMLParser_SetStartHandler(bodyParser, HTTP_xmlDOMBuilder_StartElementHandler);
-			XMLParser_SetCharDataHandler(bodyParser, HTTP_xmlDOMBuilder_CharDataHandler);
-			XMLParser_SetEndHandler(bodyParser, HTTP_xmlDOMBuilder_EndElementHandler);
-			XMLParser_SetUserData(bodyParser, &root);
-			if (XMLParser_Parse(bodyParser, (const char*) doc, length, wholeDoc))
-			{
-				// Parsed ok
-			}
-			else
-			{
-				// Parsing failed
-				// Clean up tree
-				Tree_Delete(root);
-				root = NULL;
-			}
-			XMLParser_Destroy (bodyParser);
-			currentTreeNode = NULL;
-		}
-	}
-	return root;
+    TreeNode root = NULL;
+    if (doc)
+    {
+        if (length)
+        {
+            XMLParser_Context bodyParser = XMLParser_Create();
+            XMLParser_SetStartHandler(bodyParser, HTTP_xmlDOMBuilder_StartElementHandler);
+            XMLParser_SetCharDataHandler(bodyParser, HTTP_xmlDOMBuilder_CharDataHandler);
+            XMLParser_SetEndHandler(bodyParser, HTTP_xmlDOMBuilder_EndElementHandler);
+            XMLParser_SetUserData(bodyParser, &root);
+            if (XMLParser_Parse(bodyParser, (const char*)doc, length, wholeDoc))
+            {
+                // Parsed ok
+            }
+            else
+            {
+                // Parsing failed
+                // Clean up tree
+                Tree_Delete(root);
+                root = NULL;
+            }
+            XMLParser_Destroy(bodyParser);
+            currentTreeNode = NULL;
+        }
+    }
+    return root;
 }
 
 void HTTP_xmlDOMBuilder_StartElementHandler(void *userData, const char *nodeName, const char **atts)
 {
-	TreeNode newNode = TreeNode_Create();
-	if(newNode)
-	{
-		if(nodeName)
-		{
-			uint32_t namelength = strlen(nodeName);
+    TreeNode newNode = TreeNode_Create();
+    if (newNode)
+    {
+        if (nodeName)
+        {
+            uint32_t namelength = strlen(nodeName);
 
-			if(!TreeNode_SetName(newNode, nodeName, namelength))
-			{
-				TreeNode_DeleteSingle(newNode);
-			}
-		}
-		// Check if this is the root node
-		if(currentTreeNode == NULL)
-			*(TreeNode*)userData = newNode;
+            if (!TreeNode_SetName(newNode, nodeName, namelength))
+            {
+                TreeNode_DeleteSingle(newNode);
+            }
+        }
+        // Check if this is the root node
+        if (currentTreeNode == NULL)
+            *(TreeNode*)userData = newNode;
 
-		// Connect the new node up to its parent
-		TreeNode_AddChild(currentTreeNode, newNode);
+        // Connect the new node up to its parent
+        TreeNode_AddChild(currentTreeNode, newNode);
 
-		currentTreeNode = newNode;
-	}
+        currentTreeNode = newNode;
+    }
 }
-
 
 void HTTP_xmlDOMBuilder_EndElementHandler(void *userData, const char *nodeName)
 {
-	// Return back up the tree
-	currentTreeNode = TreeNode_GetParent(currentTreeNode);
+    // Return back up the tree
+    currentTreeNode = TreeNode_GetParent(currentTreeNode);
 }
-
 
 void HTTP_xmlDOMBuilder_CharDataHandler(void *userData, const char *s, int len)
 {
-	if(currentTreeNode)
-	{
-		if(s)
-		{
-			TreeNode_AppendValue(currentTreeNode, (const uint8*) s, len);
-		}
-		else
-		{
-			// No value for this node (keep as NULL);
-		}
-	}
+    if (currentTreeNode)
+    {
+        if (s)
+        {
+            TreeNode_AppendValue(currentTreeNode, (const uint8*)s, len);
+        }
+        else
+        {
+            // No value for this node (keep as NULL);
+        }
+    }
 }
 

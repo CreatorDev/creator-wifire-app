@@ -45,41 +45,39 @@
 
 typedef enum
 {
-	UILEDState_Off = 0,
-	UILEDState_On
+    UILEDState_Off = 0,
+    UILEDState_On
 } UILEDState;
 
 typedef enum
 {
-	UILEDMode_Manual = 0,					// Manually controlled (the ui controller module will not modify the LED's state)
-	UILEDMode_Off,
-	UILEDMode_On,
-	UILEDMode_FlashStartOn,
-	UILEDMode_FlashStartOff,
-	UILEDMode_Max,
+    UILEDMode_Manual = 0,					// Manually controlled (the ui controller module will not modify the LED's state)
+    UILEDMode_Off,
+    UILEDMode_On,
+    UILEDMode_FlashStartOn,
+    UILEDMode_FlashStartOff,
+    UILEDMode_Max,
 } UILEDMode;
 
 
 typedef enum
 {
-	AppUIState_None = 0,
-	AppUIState_SoftApHardwareError,
-	AppUIState_SoftApNotConnected,
-	AppUIState_SoftApConnected,
-	AppUIState_SoftApNotConfigured,
-	AppUIState_SoftApConfigured,
-	AppUIState_AppInitConnectingToNetwork,
-	AppUIState_AppInitConnectedToNetwork,
-	AppUIState_AppInitConnectingToServer,
-	AppUIState_AppConnectedToServer,
-	AppUIState_AppHardwareError,
-	AppUIState_Max
+    AppUIState_None = 0,
+    AppUIState_SoftApHardwareError,
+    AppUIState_SoftApNotConnected,
+    AppUIState_SoftApConnected,
+    AppUIState_SoftApNotConfigured,
+    AppUIState_SoftApConfigured,
+    AppUIState_AppInitConnectingToNetwork,
+    AppUIState_AppInitConnectedToNetwork,
+    AppUIState_AppInitConnectingToServer,
+    AppUIState_AppConnectedToServer,
+    AppUIState_AppHardwareError,
+    AppUIState_Max
 
 } AppUIState;
 
-
 void UIControl_UIStep(void);
-
 
 // APIs
 void UIControl_ClearLEDs(void);

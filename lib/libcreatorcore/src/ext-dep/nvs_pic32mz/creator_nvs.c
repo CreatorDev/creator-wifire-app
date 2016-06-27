@@ -41,7 +41,6 @@ static DRV_NVM_COMMAND_HANDLE _NVMBufferHandle;
 
 static uint8 __attribute__((coherent)) _NVSCache[DRV_NVM_PAGE_SIZE];
 
-
 #define NVS_MAGIC_NUMBER (uint64_t) 0x0101020305080D15
 
 // Creator NV key-value configuration
@@ -52,220 +51,218 @@ static uint8 __attribute__((coherent)) _NVSCache[DRV_NVM_PAGE_SIZE];
 // Creator NV key-value configuration (keyname is null terminated)
 typedef struct
 {
-	size_t ValueLength;
-	char Key[CONFIG_STORE_KEYNAME_LENGTH+1];
-	uint8 Value[CONFIG_STORE_KEYVALUE_LENGTH];
-} ConfigCreatorKeyValue;
+    size_t ValueLength;
+    char Key[CONFIG_STORE_KEYNAME_LENGTH+1];
+    uint8 Value[CONFIG_STORE_KEYVALUE_LENGTH];
+}ConfigCreatorKeyValue;
 
 //ConfigCreatorKeyValue	_CreatorKeyValue[CONFIG_STORE_KEY_NUMBER];
-ConfigCreatorKeyValue	*_CreatorKeyValue = NULL;
+ConfigCreatorKeyValue *_CreatorKeyValue = NULL;
 
 bool CreatorNVS_Initialise(void)
 {
-	bool result = false;
-	if (_NVSLock)
-		result = true;
-	else
-	{
-		/* Attempt to create a semaphore. */
-		_NVSLock = CreatorSemaphore_New(1,1);
-		if (_NVSLock)
-		{
-			_NVMHandle = DRV_NVM_Open(DRV_NVM_INDEX_0, DRV_IO_INTENT_READWRITE);
-			if (DRV_HANDLE_INVALID == _NVMHandle)
-			{
-				SYS_ASSERT(DRV_HANDLE_INVALID != _NVMHandle, "Error during initialisation of ConfigStore");
-			}
-			else
-			{
-				bool successfulRead = false;
-				
-				DRV_NVM_Read(_NVMHandle, &_NVMBufferHandle, _NVSCache, NVS_BASE_ADDRESS, DRV_NVM_PAGE_SIZE);
-				if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
-				{
-					SYS_ASSERT(false, "Driver Read Failed");
-					result = false;
-				}
-				else
-				{
-					while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
+    bool result = false;
+    if (_NVSLock)
+    result = true;
+    else
+    {
+        /* Attempt to create a semaphore. */
+        _NVSLock = CreatorSemaphore_New(1,1);
+        if (_NVSLock)
+        {
+            _NVMHandle = DRV_NVM_Open(DRV_NVM_INDEX_0, DRV_IO_INTENT_READWRITE);
+            if (DRV_HANDLE_INVALID == _NVMHandle)
+            {
+                SYS_ASSERT(DRV_HANDLE_INVALID != _NVMHandle, "Error during initialisation of ConfigStore");
+            }
+            else
+            {
+                bool successfulRead = false;
 
-					successfulRead = *((uint64_t*)_NVSCache) == NVS_MAGIC_NUMBER;
-				}
-				if (!successfulRead)
-				{
-					*((uint64_t*)_NVSCache) = NVS_MAGIC_NUMBER;
-					memset(_NVSCache + 8, 0, DRV_NVM_PAGE_SIZE-8);
-				}
-				_CreatorKeyValue = (ConfigCreatorKeyValue	*)(_NVSCache + 8);
-				
-				CreatorSemaphore_Release(_NVSLock,1);
-				result = true;
-			}
-		}
-	}
-	return result;
+                DRV_NVM_Read(_NVMHandle, &_NVMBufferHandle, _NVSCache, NVS_BASE_ADDRESS, DRV_NVM_PAGE_SIZE);
+                if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
+                {
+                    SYS_ASSERT(false, "Driver Read Failed");
+                    result = false;
+                }
+                else
+                {
+                    while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
+
+                    successfulRead = *((uint64_t*)_NVSCache) == NVS_MAGIC_NUMBER;
+                }
+                if (!successfulRead)
+                {
+                    *((uint64_t*)_NVSCache) = NVS_MAGIC_NUMBER;
+                    memset(_NVSCache + 8, 0, DRV_NVM_PAGE_SIZE-8);
+                }
+                _CreatorKeyValue = (ConfigCreatorKeyValue *)(_NVSCache + 8);
+
+                CreatorSemaphore_Release(_NVSLock,1);
+                result = true;
+            }
+        }
+    }
+    return result;
 }
 
 bool NVS_Read(size_t offset, void *value, size_t size)
 {
-	bool result = false;
-	if (CreatorSemaphore_WaitFor(_NVSLock, 1, MAX_SEMAPHORE_WAIT_TIME_MS))
-	{
-		memcpy(value, _NVSCache + offset, size);
-		result = true;
-		CreatorSemaphore_Release(_NVSLock,1);
-	}
-	return result;
+    bool result = false;
+    if (CreatorSemaphore_WaitFor(_NVSLock, 1, MAX_SEMAPHORE_WAIT_TIME_MS))
+    {
+        memcpy(value, _NVSCache + offset, size);
+        result = true;
+        CreatorSemaphore_Release(_NVSLock,1);
+    }
+    return result;
 }
 
 bool CreatorNVS_Read(size_t offset, void *value, size_t size)
 {
-	return NVS_Read(APPSTART_OFFSET + offset, value, size);
+    return NVS_Read(APPSTART_OFFSET + offset, value, size);
 }
 
 bool NVS_Write(size_t offset, const void *value, size_t size)
 {
-	bool result = false;
-	bool skipErase = false;
-	if (size == DRV_NVM_ROW_SIZE && (offset % DRV_NVM_ROW_SIZE) == 0)
-		skipErase = true;	// assume row can be written without erase (used by ActivityLog)
+    bool result = false;
+    bool skipErase = false;
+    if (size == DRV_NVM_ROW_SIZE && (offset % DRV_NVM_ROW_SIZE) == 0)
+    skipErase = true;	// assume row can be written without erase (used by ActivityLog)
 
-	if (CreatorSemaphore_WaitFor(_NVSLock, 1, MAX_SEMAPHORE_WAIT_TIME_MS))
-	{
-		memcpy((void*)_NVSCache + offset, value, size);
-		if (!skipErase)
-			 DRV_NVM_Erase(_NVMHandle, &_NVMBufferHandle, NVS_BASE_ADDRESS, 1); //DRV_NVM_PAGE_SIZE
-		if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
-		{
-			result = false;
-			SYS_ASSERT(false, "Erase failed when saving configuration");
-		}
-		else
-		{
-			if (!skipErase)
-			{
-				while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
-				DRV_NVM_Write(_NVMHandle, &_NVMBufferHandle, (uint8 *)_NVSCache, NVS_BASE_ADDRESS, DRV_NVM_PAGE_SIZE/DRV_NVM_ROW_SIZE);
-			}
-			else
-			{				
-				DRV_NVM_Write(_NVMHandle, &_NVMBufferHandle, (uint8 *)_NVSCache + offset, (NVS_BASE_ADDRESS + (offset/DRV_NVM_ROW_SIZE)), 1);//DRV_NVM_ROW_SIZE
-			}
-			if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
-			{
-				result = false;
-				SYS_ASSERT(false, "Write failed when saving configuration");
-			}
-			else
-			{
-				while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
-				result = true;
-			}
-		}
-		CreatorSemaphore_Release(_NVSLock,1);
-	}
-	return result;
+    if (CreatorSemaphore_WaitFor(_NVSLock, 1, MAX_SEMAPHORE_WAIT_TIME_MS))
+    {
+        memcpy((void*)_NVSCache + offset, value, size);
+        if (!skipErase)
+        DRV_NVM_Erase(_NVMHandle, &_NVMBufferHandle, NVS_BASE_ADDRESS, 1); //DRV_NVM_PAGE_SIZE
+        if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
+        {
+            result = false;
+            SYS_ASSERT(false, "Erase failed when saving configuration");
+        }
+        else
+        {
+            if (!skipErase)
+            {
+                while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
+                DRV_NVM_Write(_NVMHandle, &_NVMBufferHandle, (uint8 *)_NVSCache, NVS_BASE_ADDRESS, DRV_NVM_PAGE_SIZE/DRV_NVM_ROW_SIZE);
+            }
+            else
+            {
+                DRV_NVM_Write(_NVMHandle, &_NVMBufferHandle, (uint8 *)_NVSCache + offset, (NVS_BASE_ADDRESS + (offset/DRV_NVM_ROW_SIZE)), 1); //DRV_NVM_ROW_SIZE
+            }
+            if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
+            {
+                result = false;
+                SYS_ASSERT(false, "Write failed when saving configuration");
+            }
+            else
+            {
+                while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
+                result = true;
+            }
+        }
+        CreatorSemaphore_Release(_NVSLock,1);
+    }
+    return result;
 }
 
 bool CreatorNVS_Write(size_t offset, const void *value, size_t size)
 {
-	return NVS_Write(APPSTART_OFFSET + offset, value, size);
+    return NVS_Write(APPSTART_OFFSET + offset, value, size);
 }
-
 
 static ConfigCreatorKeyValue *GetCreatorKeyValuePair(const char *keyName)
 {
-	ConfigCreatorKeyValue *result = NULL;
-	if (keyName)
-	{
-		int i;
-		ConfigCreatorKeyValue *keyValuePair;
-		for (i = 0; i < CONFIG_STORE_KEY_NUMBER; i++)
-		{
-			// TODO - case independent compare?
-			keyValuePair = &_CreatorKeyValue[i];
-			if (*keyValuePair->Key && (strcmp(keyName, keyValuePair->Key) == 0))
-			{
-				// Keyname found
-				if (*keyValuePair->Value)
-					result = keyValuePair;
-				break;
-			}
-		}
-	}
-	return result;
+    ConfigCreatorKeyValue *result = NULL;
+    if (keyName)
+    {
+        int i;
+        ConfigCreatorKeyValue *keyValuePair;
+        for (i = 0; i < CONFIG_STORE_KEY_NUMBER; i++)
+        {
+            // TODO - case independent compare?
+            keyValuePair = &_CreatorKeyValue[i];
+            if (*keyValuePair->Key && (strcmp(keyName, keyValuePair->Key) == 0))
+            {
+                // Keyname found
+                if (*keyValuePair->Value)
+                result = keyValuePair;
+                break;
+            }
+        }
+    }
+    return result;
 }
-
 
 bool SetCreatorKeyValue(const char *keyName, const uint8 *value, size_t valueLength)
 {
-	bool result = false;
-	if (value && valueLength > CONFIG_STORE_KEYVALUE_LENGTH)
-		return result;		// Ignore value - too long
-	ConfigCreatorKeyValue *keyValuePair = GetCreatorKeyValuePair(keyName);
-	if (keyValuePair)
-	{
-		if (value)
-		{
-			// Store new value (erase old value in case it's longer for security)
-			memset(keyValuePair->Value, 0, CONFIG_STORE_KEYVALUE_LENGTH);
-			memcpy(keyValuePair->Value, value, valueLength);
-			keyValuePair->ValueLength = valueLength;
-		}
-		else
-		{
-			// Erase key-value pair
-			memset(keyValuePair, 0, sizeof(ConfigCreatorKeyValue));
-		}
-		result = true;
-	}
-	else if (value)
-	{
-		// Key not found, get first free key-value location
-		int i;
-		ConfigCreatorKeyValue *keyValuePair;
-		for (i = 0; i < CONFIG_STORE_KEY_NUMBER; i++)
-		{
-			keyValuePair = &_CreatorKeyValue[i];
-			if (*keyValuePair->Key == 0)
-			{
-				// Store new key-value
-				memset(keyValuePair, 0, sizeof(ConfigCreatorKeyValue));
-				strncpy(keyValuePair->Key, keyName, CONFIG_STORE_KEYNAME_LENGTH);
-				memcpy(keyValuePair->Value, value, valueLength);
-				keyValuePair->ValueLength = valueLength;
-				result = true;
-				break;
-			}
-		}
-	}
-	return result;
+    bool result = false;
+    if (value && valueLength > CONFIG_STORE_KEYVALUE_LENGTH)
+    return result;		// Ignore value - too long
+    ConfigCreatorKeyValue *keyValuePair = GetCreatorKeyValuePair(keyName);
+    if (keyValuePair)
+    {
+        if (value)
+        {
+            // Store new value (erase old value in case it's longer for security)
+            memset(keyValuePair->Value, 0, CONFIG_STORE_KEYVALUE_LENGTH);
+            memcpy(keyValuePair->Value, value, valueLength);
+            keyValuePair->ValueLength = valueLength;
+        }
+        else
+        {
+            // Erase key-value pair
+            memset(keyValuePair, 0, sizeof(ConfigCreatorKeyValue));
+        }
+        result = true;
+    }
+    else if (value)
+    {
+        // Key not found, get first free key-value location
+        int i;
+        ConfigCreatorKeyValue *keyValuePair;
+        for (i = 0; i < CONFIG_STORE_KEY_NUMBER; i++)
+        {
+            keyValuePair = &_CreatorKeyValue[i];
+            if (*keyValuePair->Key == 0)
+            {
+                // Store new key-value
+                memset(keyValuePair, 0, sizeof(ConfigCreatorKeyValue));
+                strncpy(keyValuePair->Key, keyName, CONFIG_STORE_KEYNAME_LENGTH);
+                memcpy(keyValuePair->Value, value, valueLength);
+                keyValuePair->ValueLength = valueLength;
+                result = true;
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 void CreatorNVS_Set(const char *key, const void *value, size_t size)
 {
-	bool success = SetCreatorKeyValue(key, value, size);
-	NVS_Write(8, _CreatorKeyValue, CONFIG_STORE_KEY_NUMBER * sizeof(ConfigCreatorKeyValue));
+    bool success = SetCreatorKeyValue(key, value, size);
+    NVS_Write(8, _CreatorKeyValue, CONFIG_STORE_KEY_NUMBER * sizeof(ConfigCreatorKeyValue));
 }
 
 void *CreatorNVS_Get(const char *key, size_t *size)
 {
-	void *result = NULL;
-	if (size)
-		*size = 0;
-	ConfigCreatorKeyValue *keyValuePair = GetCreatorKeyValuePair(key);
-	if (keyValuePair && keyValuePair->ValueLength > 0)
-	{
-		result = Creator_MemAlloc(keyValuePair->ValueLength);
-		if (result)
-		{
-			memcpy(result, keyValuePair->Value, keyValuePair->ValueLength);
-			if (size)
-				*size = keyValuePair->ValueLength;
-		}
-	}
-	return result;
+    void *result = NULL;
+    if (size)
+    *size = 0;
+    ConfigCreatorKeyValue *keyValuePair = GetCreatorKeyValuePair(key);
+    if (keyValuePair && keyValuePair->ValueLength > 0)
+    {
+        result = Creator_MemAlloc(keyValuePair->ValueLength);
+        if (result)
+        {
+            memcpy(result, keyValuePair->Value, keyValuePair->ValueLength);
+            if (size)
+            *size = keyValuePair->ValueLength;
+        }
+    }
+    return result;
 }
 
 void CreatorNVS_SetLocation(const char *location)

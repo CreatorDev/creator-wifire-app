@@ -33,24 +33,6 @@ extern "C" {
 #include <stdbool.h>
 #include <time.h>
 
-typedef enum
-{
-	CreatorType__Unknown = 0,
-	CreatorType_Array,
-	CreatorType_Boolean,
-	CreatorType_Char,
-	CreatorType_Datetime,
-	CreatorType_ID,
-	CreatorType_Integer,
-	CreatorType_Long,
-	CreatorType_String,
-	CreatorType_Timespan,
-	CreatorType_Token,
-	CreatorType_RawString,
-
-	CreatorType__Max
-} CreatorType;             // TODO - deprecate: use std types
-
 
 typedef time_t CreatorDatetime;
 

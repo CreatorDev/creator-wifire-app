@@ -34,19 +34,19 @@ extern "C" {
 
 typedef enum
 {
-	CreatorHTTPMethod_NotSet = 0,
-	CreatorHTTPMethod_Get,
-	CreatorHTTPMethod_Post,
-	CreatorHTTPMethod_Put,
-	CreatorHTTPMethod_Delete,
+    CreatorHTTPMethod_NotSet = 0,
+    CreatorHTTPMethod_Get,
+    CreatorHTTPMethod_Post,
+    CreatorHTTPMethod_Put,
+    CreatorHTTPMethod_Delete,
 
-	//used for checking out redirections
-	CreatorHTTPMethod_Head
+    //used for checking out redirections
+    CreatorHTTPMethod_Head
 
-	/* not used (yet) */
-	/* CreatorHTTPMethod_Trace, */
-	/* CreatorHTTPMethod_Connect, */
-	/* CreatorHTTPMethod_Options, */
+    /* not used (yet) */
+    /* CreatorHTTPMethod_Trace, */
+    /* CreatorHTTPMethod_Connect, */
+    /* CreatorHTTPMethod_Options, */
 } CreatorHTTPMethod;
 
 

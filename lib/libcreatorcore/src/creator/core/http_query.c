@@ -45,399 +45,357 @@
 
 typedef struct _CreatorHTTPQueryParameter
 {
-	char *Key;
-	char *Value;
+    char *Key;
+    char *Value;
 }*CreatorHTTPQueryParameter;
-
 
 struct _CreatorHTTPQuery
 {
-	char *BaseUrl;
-	uint Size;
-	uint Used;
-	CreatorHTTPQueryParameter *Parameters;
+    char *BaseUrl;
+    uint Size;
+    uint Used;
+    CreatorHTTPQueryParameter *Parameters;
 };
 
 static void CreatorHTTPQuery_AddParameters(CreatorHTTPQuery query, char *key, char *value)
 {
-	if (query)
-	{
-		if (query->Used == query->Size)
-		{
-			CreatorHTTPQueryParameter *newParameters = Creator_MemRealloc(query->Parameters, (query->Size + CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE) * sizeof(CreatorHTTPQueryParameter));
-			if (newParameters)
-			{
-				query->Size += CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE;
-				query->Parameters = newParameters;
-			}
-			else
-			{
-				return;
-			}
-		}
-		query->Parameters[query->Used] = Creator_MemAlloc(sizeof(struct _CreatorHTTPQueryParameter));
-		if (query->Parameters[query->Used])
-		{
-			query->Parameters[query->Used]->Key = key;
-			query->Parameters[query->Used]->Value = value;
-			query->Used++;
-		}
-	}
+    if (query)
+    {
+        if (query->Used == query->Size)
+        {
+            CreatorHTTPQueryParameter *newParameters = Creator_MemRealloc(query->Parameters,
+                    (query->Size + CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE) * sizeof(CreatorHTTPQueryParameter));
+            if (newParameters)
+            {
+                query->Size += CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE;
+                query->Parameters = newParameters;
+            }
+            else
+            {
+                return;
+            }
+        }
+        query->Parameters[query->Used] = Creator_MemAlloc(sizeof(struct _CreatorHTTPQueryParameter));
+        if (query->Parameters[query->Used])
+        {
+            query->Parameters[query->Used]->Key = key;
+            query->Parameters[query->Used]->Value = value;
+            query->Used++;
+        }
+    }
 }
 
 bool CreatorHTTPQuery_AppendPathSuffix(CreatorHTTPQuery self, const char *suffix)
 {
-	if (!self || !self->BaseUrl || !suffix)
-	{
-		return false;
-	}
-	size_t urlLength = strlen(self->BaseUrl);
-	size_t encodedSuffixLength;
-	bool bSuccess = CreatorHTTP_EncodePathSegmentRFC3986(suffix, NULL, 0, &encodedSuffixLength);
-	if (bSuccess)
-	{
-		size_t newUrlLength = urlLength + 1 + encodedSuffixLength + 1;
-		char *newUrl = Creator_MemAlloc(newUrlLength);
-		if (newUrl)
-		{
-			memset(newUrl, 0, newUrlLength);
-			sprintf(newUrl, "%s/", self->BaseUrl);
-			bSuccess = CreatorHTTP_EncodePathSegmentRFC3986(suffix, newUrl + urlLength + 1, newUrlLength - urlLength - 1, NULL);
-			Creator_MemFree((void **)&self->BaseUrl);
-			self->BaseUrl = newUrl;
-		}
-		else
-		{
-			bSuccess = false;
-		}
-	}
+    if (!self || !self->BaseUrl || !suffix)
+    {
+        return false;
+    }
+    size_t urlLength = strlen(self->BaseUrl);
+    size_t encodedSuffixLength;
+    bool bSuccess = CreatorHTTP_EncodePathSegmentRFC3986(suffix, NULL, 0, &encodedSuffixLength);
+    if (bSuccess)
+    {
+        size_t newUrlLength = urlLength + 1 + encodedSuffixLength + 1;
+        char *newUrl = Creator_MemAlloc(newUrlLength);
+        if (newUrl)
+        {
+            memset(newUrl, 0, newUrlLength);
+            sprintf(newUrl, "%s/", self->BaseUrl);
+            bSuccess = CreatorHTTP_EncodePathSegmentRFC3986(suffix, newUrl + urlLength + 1, newUrlLength - urlLength - 1, NULL);
+            Creator_MemFree((void **)&self->BaseUrl);
+            self->BaseUrl = newUrl;
+        }
+        else
+        {
+            bSuccess = false;
+        }
+    }
 
-	if (!bSuccess) {
-		//failure should discard base url to screw up the query and indicate the failure
-		Creator_MemFree((void **)&self->BaseUrl);
-	}
-	return bSuccess;
+    if (!bSuccess)
+    {
+        //failure should discard base url to screw up the query and indicate the failure
+        Creator_MemFree((void **)&self->BaseUrl);
+    }
+    return bSuccess;
 }
 
 bool CreatorHTTPQuery_AppendPathSuffixBoolean(CreatorHTTPQuery query, bool value)
 {
-	return CreatorHTTPQuery_AppendPathSuffix(query, value?"true":"false");
+    return CreatorHTTPQuery_AppendPathSuffix(query, value ? "true" : "false");
 }
 
 bool CreatorHTTPQuery_AppendPathSuffixChar(CreatorHTTPQuery query, char value)
 {
-	char szChar[2] = "\0";
-	szChar[0] = value;
-	return CreatorHTTPQuery_AppendPathSuffix(query, szChar);
+    char szChar[2] = "\0";
+    szChar[0] = value;
+    return CreatorHTTPQuery_AppendPathSuffix(query, szChar);
 }
 
 bool CreatorHTTPQuery_AppendPathSuffixInt(CreatorHTTPQuery query, int value)
 {
-	char szInt[32];
-	sprintf(szInt, "%d", value);
-	return CreatorHTTPQuery_AppendPathSuffix(query, szInt);
+    char szInt[32];
+    sprintf(szInt, "%d", value);
+    return CreatorHTTPQuery_AppendPathSuffix(query, szInt);
 }
 
 static size_t CreatorHTTPQuery_FindParameterLength(char* url)
 {
-	size_t result = 0;
-	char* position = url;
-	if  (position)
-	{
-		while ((*position != '&') && (*position != '\0'))
-		{
-			result++;
-			position++;
-		}
-	}
-	return result;
+    size_t result = 0;
+    char* position = url;
+    if (position)
+    {
+        while ((*position != '&') && (*position != '\0'))
+        {
+            result++;
+            position++;
+        }
+    }
+    return result;
 }
 
 void CreatorHTTPQuery_Free(CreatorHTTPQuery *self)
 {
-	if (self && *self)
-	{
-		CreatorHTTPQuery httpQuery = *self;
-		uint index;
-		for (index = 0; index < httpQuery->Used; index++)
-		{
-			if(httpQuery->Parameters[index])
-			{
-				if (httpQuery->Parameters[index]->Key)
-					Creator_MemFree((void **)&httpQuery->Parameters[index]->Key);
-				if (httpQuery->Parameters[index]->Value)
-					Creator_MemFree((void **)&httpQuery->Parameters[index]->Value);
-				Creator_MemFree((void **)&httpQuery->Parameters[index]);
-				httpQuery->Parameters[index] = NULL;
-			}
-		}
-		Creator_MemFree((void **)&httpQuery->Parameters);
-		if (httpQuery->BaseUrl)
-		{
-			Creator_MemFree((void **)&httpQuery->BaseUrl);
-		}
-		Creator_MemFree((void **)self);
-	}
+    if (self && *self)
+    {
+        CreatorHTTPQuery httpQuery = *self;
+        uint index;
+        for (index = 0; index < httpQuery->Used; index++)
+        {
+            if (httpQuery->Parameters[index])
+            {
+                if (httpQuery->Parameters[index]->Key)
+                    Creator_MemFree((void **)&httpQuery->Parameters[index]->Key);
+                if (httpQuery->Parameters[index]->Value)
+                    Creator_MemFree((void **)&httpQuery->Parameters[index]->Value);
+                Creator_MemFree((void **)&httpQuery->Parameters[index]);
+                httpQuery->Parameters[index] = NULL;
+            }
+        }
+        Creator_MemFree((void **)&httpQuery->Parameters);
+        if (httpQuery->BaseUrl)
+        {
+            Creator_MemFree((void **)&httpQuery->BaseUrl);
+        }
+        Creator_MemFree((void **)self);
+    }
 }
 
 char* CreatorHTTPQuery_GenerateUrl(CreatorHTTPQuery self)
 {
-	char* result = NULL;
-	if (self && self->BaseUrl)
-	{
-		size_t urlLength = strlen(self->BaseUrl);
-		size_t totalSize = urlLength + 1/*\0*/;
+    char* result = NULL;
+    if (self && self->BaseUrl)
+    {
+        size_t urlLength = strlen(self->BaseUrl);
+        size_t totalSize = urlLength + 1/*\0*/;
 
-		uint index ;
-		uint componentsCount = 0;
+        uint index;
+        uint componentsCount = 0;
 
+        const char *components[self->Used * 4];
+        size_t componentsLength[self->Used * 4];
 
-		const char *components[self->Used*4];
-		size_t componentsLength[self->Used*4];
+        for (index = 0; index < self->Used; index++)
+        {
+            if (!(self->Parameters[index]))
+            {
+                continue;
+            }
+            components[componentsCount] = self->Parameters[index]->Key;
+            totalSize += (componentsLength[componentsCount++] = strlen(self->Parameters[index]->Key));
+            components[componentsCount] = "=";
+            totalSize += (componentsLength[componentsCount++] = 1);
+            components[componentsCount] = self->Parameters[index]->Value;
+            totalSize += (componentsLength[componentsCount++] = strlen(self->Parameters[index]->Value));
+            components[componentsCount] = "&";
+            totalSize += (componentsLength[componentsCount++] = 1);
+        }
 
+        result = (char*)Creator_MemAlloc(totalSize);
+        memset(result, 0, totalSize);
+        memcpy(result, self->BaseUrl, urlLength);
+        size_t writtenBytes = urlLength;
+        if (componentsCount > 0)
+        {
+            result[writtenBytes++] = '?';
+            for (index = 0; index < (componentsCount - 1); index++)
+            {
+                if (componentsLength[index] == 1)
+                {
+                    result[writtenBytes++] = *components[index];
+                }
+                else
+                {
+                    memcpy(result + writtenBytes, components[index], componentsLength[index]);
+                    writtenBytes += componentsLength[index];
+                }
+            }
+        }
 
-		for (index = 0; index < self->Used; index++)
-		{
-			if (!(self->Parameters[index]))
-			{
-				continue;
-			}
-			components[componentsCount] = self->Parameters[index]->Key;
-			totalSize += (componentsLength[componentsCount++] = strlen(self->Parameters[index]->Key));
-			components[componentsCount] = "=";
-			totalSize += (componentsLength[componentsCount++] = 1);
-			components[componentsCount] = self->Parameters[index]->Value;
-			totalSize += (componentsLength[componentsCount++] = strlen(self->Parameters[index]->Value));
-			components[componentsCount] = "&";
-			totalSize += (componentsLength[componentsCount++] = 1);
-		}
-
-		result =  (char*)Creator_MemAlloc(totalSize);
-		memset(result, 0, totalSize);
-		memcpy(result, self->BaseUrl, urlLength);
-		size_t writtenBytes = urlLength;
-		if (componentsCount > 0)
-		{
-			result[writtenBytes++] = '?';
-			for (index = 0; index < (componentsCount-1); index++)
-			{
-				if (componentsLength[index] == 1)
-				{
-					result[writtenBytes++] = *components[index];
-				}
-				else
-				{
-					memcpy(result + writtenBytes, components[index], componentsLength[index]);
-					writtenBytes += componentsLength[index];
-				}
-			}
-		}
-
-	}
-	return result;
+    }
+    return result;
 }
-
 
 char *CreatorHTTPQuery_GetBaseUrl(CreatorHTTPQuery self)
 {
-	char *result = NULL;
-	if (self)
-	{
-		result = oauth_url_unescape(self->BaseUrl, NULL);
-	}
-	return result;
+    char *result = NULL;
+    if (self)
+    {
+        result = oauth_url_unescape(self->BaseUrl, NULL);
+    }
+    return result;
 }
 
 char *CreatorHTTPQuery_GetQueryParameter(CreatorHTTPQuery self, const char *param)
 {
-	char *result = NULL;
-	if (self)
-	{
-		uint index;
-		for (index = 0; index < self->Used; index++)
-		{
-			if (strcmp(self->Parameters[index]->Key, param) == 0)
-			{
-				result = oauth_url_unescape(self->Parameters[index]->Value, NULL);
-				break;
-			}
-		}
-	}
-	return result;
+    char *result = NULL;
+    if (self)
+    {
+        uint index;
+        for (index = 0; index < self->Used; index++)
+        {
+            if (strcmp(self->Parameters[index]->Key, param) == 0)
+            {
+                result = oauth_url_unescape(self->Parameters[index]->Value, NULL);
+                break;
+            }
+        }
+    }
+    return result;
 }
-
-//CreatorObject CreatorHTTPQuery_HTTPRequest(CreatorMemoryManager memoryManager, CreatorHTTPQuery self, CreatorHTTPMethod method,CreatorObject data, CreatorType returnType)
-//{
-//	CreatorObject result = NULL;
-//	if (self)
-//	{
-//		char *url = CreatorHTTPQuery_GenerateUrl(self);
-//		if (url)
-//		{
-//			if (memoryManager)
-//			{
-//				CreatorHTTP_Call(memoryManager,method,url,returnType,&result,data, NULL);
-//			}
-//			Creator_MemFree((void**)&url);
-//		}
-//	}
-//	return result;
-//}
-//
-//bool CreatorHTTPQuery_HTTPRequestWithStatusResponse(CreatorMemoryManager memoryManager, CreatorHTTPQuery self, CreatorHTTPMethod method,CreatorObject data)
-//{
-//	bool result = false;
-//	if (self)
-//	{
-//		char *url = CreatorHTTPQuery_GenerateUrl(self);
-//		if (url)
-//		{
-//			if (memoryManager)
-//			{
-//				CreatorHTTPStatus status;
-//				if (CreatorHTTP_Call(memoryManager,method,url,CreatorType__Unknown,NULL,data, &status))
-//				{
-//					result = (status >= CreatorHTTPStatus_OK) && (status < CreatorHTTPStatus_MultipleChoices);
-//				}
-//			}
-//			Creator_MemFree((void**)&url);
-//		}
-//	}
-//	return result;
-//}
-
 
 static void CreatorHTTPQuery_LoadParameters(CreatorHTTPQuery query, const char* url)
 {
-	if (url && (url[0] == '?') && url[1] != '\0')
-	{
-		char* part = (char*)&url[1];
-		while(part)
-		{
-			size_t partLength = CreatorHTTPQuery_FindParameterLength(part);
-			if (partLength == 0)
-			{
-				part = NULL;
-			}
-			else
-			{
-				char* equalPosition = strchr(part,'=');
-				if (equalPosition)
-				{
-					equalPosition++;
-					size_t valueLength = partLength - (equalPosition - part);
-					char* value = (char*)Creator_MemAlloc((valueLength + 1)* sizeof(char));
-					memcpy(value,equalPosition,valueLength+1);
-					value[valueLength] = '\0';
-					size_t keyLength = partLength - valueLength - 1;
-					char* key  = (char*)Creator_MemAlloc((keyLength + 1)* sizeof(char));
-					memcpy(key,part,keyLength);
-					key[keyLength] = '\0';
-					CreatorHTTPQuery_AddParameters(query, key, value);
-				}
-				part += partLength;
-				if (*part == '&')
-					part++;
-			}
-		}
-	}
+    if (url && (url[0] == '?') && url[1] != '\0')
+    {
+        char* part = (char*)&url[1];
+        while (part)
+        {
+            size_t partLength = CreatorHTTPQuery_FindParameterLength(part);
+            if (partLength == 0)
+            {
+                part = NULL;
+            }
+            else
+            {
+                char* equalPosition = strchr(part, '=');
+                if (equalPosition)
+                {
+                    equalPosition++;
+                    size_t valueLength = partLength - (equalPosition - part);
+                    char* value = (char*)Creator_MemAlloc((valueLength + 1) * sizeof(char));
+                    memcpy(value, equalPosition, valueLength + 1);
+                    value[valueLength] = '\0';
+                    size_t keyLength = partLength - valueLength - 1;
+                    char* key = (char*)Creator_MemAlloc((keyLength + 1) * sizeof(char));
+                    memcpy(key, part, keyLength);
+                    key[keyLength] = '\0';
+                    CreatorHTTPQuery_AddParameters(query, key, value);
+                }
+                part += partLength;
+                if (*part == '&')
+                    part++;
+            }
+        }
+    }
 }
 
 CreatorHTTPQuery CreatorHTTPQuery_New()
 {
-	size_t size = sizeof(struct _CreatorHTTPQuery);
-	CreatorHTTPQuery result = (CreatorHTTPQuery)Creator_MemAlloc(size);
-	if(result)
-	{
-		memset(result, 0, size);
-		size = CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE * sizeof(CreatorHTTPQueryParameter);
-		result->Parameters = (CreatorHTTPQueryParameter *)Creator_MemAlloc(size);
-		if (result->Parameters)
-		{
-			memset(result->Parameters, 0 , size);
-			result->Size = CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE;
-		}
-	}
-	return result;
+    size_t size = sizeof(struct _CreatorHTTPQuery);
+    CreatorHTTPQuery result = (CreatorHTTPQuery)Creator_MemAlloc(size);
+    if (result)
+    {
+        memset(result, 0, size);
+        size = CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE * sizeof(CreatorHTTPQueryParameter);
+        result->Parameters = (CreatorHTTPQueryParameter *)Creator_MemAlloc(size);
+        if (result->Parameters)
+        {
+            memset(result->Parameters, 0, size);
+            result->Size = CREATOR_HTTPQUERYPARAMETER_DEFAULTSIZE;
+        }
+    }
+    return result;
 }
 
 CreatorHTTPQuery CreatorHTTPQuery_NewFromUrl(const char* url)
 {
-	CreatorHTTPQuery result = CreatorHTTPQuery_New();
-	if(result)
-	{
-		//find length of base url excluding query parameters
-		char *urlBaseEnd = strchr(url, '?');
-		size_t urlLength;
-		if (urlBaseEnd)
-		{
-			urlLength = urlBaseEnd - url;
-		}
-		else
-		{
-			urlLength = strlen(url);
-		}
-		result->BaseUrl = Creator_MemAlloc(urlLength+1);
-		if (result->BaseUrl)
-		{
-			memcpy(result->BaseUrl, url, urlLength);
-			result->BaseUrl[urlLength] = '\0';
-			if (urlBaseEnd)
-			{
-				CreatorHTTPQuery_LoadParameters(result, urlBaseEnd);
-			}
-		}
-		else
-		{
-			CreatorHTTPQuery_Free(&result);
-		}
+    CreatorHTTPQuery result = CreatorHTTPQuery_New();
+    if (result)
+    {
+        //find length of base url excluding query parameters
+        char *urlBaseEnd = strchr(url, '?');
+        size_t urlLength;
+        if (urlBaseEnd)
+        {
+            urlLength = urlBaseEnd - url;
+        }
+        else
+        {
+            urlLength = strlen(url);
+        }
+        result->BaseUrl = Creator_MemAlloc(urlLength + 1);
+        if (result->BaseUrl)
+        {
+            memcpy(result->BaseUrl, url, urlLength);
+            result->BaseUrl[urlLength] = '\0';
+            if (urlBaseEnd)
+            {
+                CreatorHTTPQuery_LoadParameters(result, urlBaseEnd);
+            }
+        }
+        else
+        {
+            CreatorHTTPQuery_Free(&result);
+        }
 
-	}
-	return result;
+    }
+    return result;
 }
 
 void CreatorHTTPQuery_SetBaseUrl(CreatorHTTPQuery self, const char *szBaseUrl)
 {
-	if (!self || !szBaseUrl) {
-		return;
-	}
-	if (self->BaseUrl) {
-		Creator_MemFree((void **)&self->BaseUrl);
-	}
-	size_t urlLength = strlen(szBaseUrl);
-	self->BaseUrl = Creator_MemAlloc(urlLength + 1);
-	if (self->BaseUrl) {
-		strcpy(self->BaseUrl, szBaseUrl);
-	}
+    if (!self || !szBaseUrl)
+    {
+        return;
+    }
+    if (self->BaseUrl)
+    {
+        Creator_MemFree((void **)&self->BaseUrl);
+    }
+    size_t urlLength = strlen(szBaseUrl);
+    self->BaseUrl = Creator_MemAlloc(urlLength + 1);
+    if (self->BaseUrl)
+    {
+        strcpy(self->BaseUrl, szBaseUrl);
+    }
 }
 
 void CreatorHTTPQuery_SetQueryParameter(CreatorHTTPQuery self, const char *param, const char* paramValue)
 {
-	if (self)
-	{
-		bool found = false;
-		uint index;
-		for (index = 0; index < self->Used; index++)
-		{
-			if (strcmp(self->Parameters[index]->Key, param) == 0)
-			{
-				if (self->Parameters[index]->Value)
-					Creator_MemFree((void **)&self->Parameters[index]->Value);
-				if (paramValue)
-					self->Parameters[index]->Value = oauth_url_unescape(paramValue, NULL);
-				else
-					self->Parameters[index]->Value = NULL;
-				found = true;
-				break;
-			}
-		}
-		if (!found)
-		{
-			char *key = CreatorString_Duplicate((char *)param);
-			CreatorHTTPQuery_AddParameters(self,key,oauth_url_escape(paramValue));
-		}
-	}
+    if (self)
+    {
+        bool found = false;
+        uint index;
+        for (index = 0; index < self->Used; index++)
+        {
+            if (strcmp(self->Parameters[index]->Key, param) == 0)
+            {
+                if (self->Parameters[index]->Value)
+                    Creator_MemFree((void **)&self->Parameters[index]->Value);
+                if (paramValue)
+                    self->Parameters[index]->Value = oauth_url_unescape(paramValue, NULL);
+                else
+                    self->Parameters[index]->Value = NULL;
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            char *key = CreatorString_Duplicate((char *)param);
+            CreatorHTTPQuery_AddParameters(self, key, oauth_url_escape(paramValue));
+        }
+    }
 }
-
-
 

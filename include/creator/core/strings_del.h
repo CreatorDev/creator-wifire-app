@@ -43,6 +43,7 @@ extern "C" {
  * \param memoryManager Memory manager on which the method will be applied
 */
 static inline CreatorStrings CreatorStrings_New(CreatorMemoryManager memoryManager){ return (CreatorStrings)CreatorMemoryManager_NewObject(memoryManager, 1, 0, CreatorType_Strings);}
+
 /**
  * \memberof CreatorStrings
  * \brief Registers meta data used for (de)serialising CreatorStrings to XML.
@@ -57,6 +58,7 @@ static inline void  CreatorStrings_RegisterType()
 		CreatorXMLDeserialiser_RegisterTypeArrayProperty(CreatorType_Strings, _CreatorStrings_Items, "Items", "Item", CreatorType_String, CreatorType_Strings);
 	}
 }
+
 /**
  * \memberof CreatorStrings
  * \brief Indicates whether the property Items is set on this object.
@@ -64,6 +66,7 @@ static inline void  CreatorStrings_RegisterType()
  * Can be used to check whether Items is available on this object without making an HTTP call.
  * \param self Object on which the method will be applied
 */
+
 static inline bool CreatorStrings_HasItems(CreatorStrings self) { return CreatorObject_HasProperty(self, _CreatorStrings_Items);}
 /**
  * \memberof CreatorStrings
@@ -72,6 +75,7 @@ static inline bool CreatorStrings_HasItems(CreatorStrings self) { return Creator
  * \param self Object on which the method will be applied
  * \param index index of item in collection
 */
+
 static inline char *CreatorStrings_GetItem(CreatorStrings self, uint index) { return CreatorObject_GetArrayStringProperty(self, _CreatorStrings_Items, index);}
 /**
  * \memberof CreatorStrings
@@ -80,6 +84,7 @@ static inline char *CreatorStrings_GetItem(CreatorStrings self, uint index) { re
  * The value returned by this method is related to the number of items already loaded in the list.
  * \param self Object on which the method will be applied
 */
+
 static inline int CreatorStrings_GetCount(CreatorStrings self) { return CreatorObject_GetArrayPropertyCount(self, _CreatorStrings_Items);}
 /**
  * \memberof CreatorStrings
@@ -89,9 +94,10 @@ static inline int CreatorStrings_GetCount(CreatorStrings self) { return CreatorO
  * \param self Object on which the method will be applied
  * \param item to add to collection
 */
+
 static inline void CreatorStrings_NewItem(CreatorStrings self, char * item)
 {
-	CreatorObject_AddArrayStringProperty(self, _CreatorStrings_Items, item);
+    CreatorObject_AddArrayStringProperty(self, _CreatorStrings_Items, item);
 }
 #ifdef __cplusplus
 }

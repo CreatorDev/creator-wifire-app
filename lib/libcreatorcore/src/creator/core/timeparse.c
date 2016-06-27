@@ -21,19 +21,18 @@
 ***********************************************************************************************************************/
 
 #ifndef _XOPEN_SOURCE
-	#define _XOPEN_SOURCE
+#define _XOPEN_SOURCE
 #endif
 #ifndef _POSIX_SOURCE
-	#define _POSIX_SOURCE
+    #define _POSIX_SOURCE
 #endif
 #ifndef _BSD_SOURCE
-	#define _BSD_SOURCE
+    #define _BSD_SOURCE
 #endif
 #include <time.h>
 #include <stdlib.h>
 #include "creator/core/timeparse.h"
 #include "creator/core/creator_time.h"
-
 
 
 #ifdef MICROCHIP_PIC32
@@ -50,46 +49,50 @@
 
 long _timezone = 0;                 // Difference in seconds between GMT and local time
 
-const int _ytab[2][12] = {
-        { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
-        { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
+const int _ytab[2][12] =
+{
+    { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
+    { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
 };
 
 struct tm *gmtime_r(const time_t *timer, struct tm *timep)
 {
-        time_t time = *timer;
-        unsigned long dayclock, dayno;
-        int year = EPOCH_YR;
+    time_t time = *timer;
+    unsigned long dayclock, dayno;
+    int year = EPOCH_YR;
 
-        dayclock = (unsigned long)time % SECS_DAY;
-        dayno = (unsigned long)time / SECS_DAY;
+    dayclock = (unsigned long)time % SECS_DAY;
+    dayno = (unsigned long)time / SECS_DAY;
 
-        timep->tm_sec = dayclock % 60;
-        timep->tm_min = (dayclock % 3600) / 60;
-        timep->tm_hour = dayclock / 3600;
-        timep->tm_wday = (dayno + 4) % 7;       /* day 0 was a thursday */
-        while (dayno >= YEARSIZE(year)) {
-                dayno -= YEARSIZE(year);
-                year++;
-        }
-        timep->tm_year = year - YEAR0;
-        timep->tm_yday = dayno;
-        timep->tm_mon = 0;
-        while (dayno >= _ytab[LEAPYEAR(year)][timep->tm_mon]) {
-                dayno -= _ytab[LEAPYEAR(year)][timep->tm_mon];
-                timep->tm_mon++;
-        }
-        timep->tm_mday = dayno + 1;
-        timep->tm_isdst = 0;
+    timep->tm_sec = dayclock % 60;
+    timep->tm_min = (dayclock % 3600) / 60;
+    timep->tm_hour = dayclock / 3600;
+    timep->tm_wday = (dayno + 4) % 7; /* day 0 was a thursday */
+    while (dayno >= YEARSIZE(year))
+    {
+        dayno -= YEARSIZE(year);
+        year++;
+    }
+    timep->tm_year = year - YEAR0;
+    timep->tm_yday = dayno;
+    timep->tm_mon = 0;
+    while (dayno >= _ytab[LEAPYEAR(year)][timep->tm_mon])
+    {
+        dayno -= _ytab[LEAPYEAR(year)][timep->tm_mon];
+        timep->tm_mon++;
+    }
+    timep->tm_mday = dayno + 1;
+    timep->tm_isdst = 0;
 
-        return timep;
+    return timep;
 }
 
-struct tm *localtime_r(const time_t *timer, struct tm *tmbuf) {
-  time_t t;
+struct tm *localtime_r(const time_t *timer, struct tm *tmbuf)
+{
+    time_t t;
 
-  t = *timer - _timezone;
-  return gmtime_r(&t, tmbuf);
+    t = *timer - _timezone;
+    return gmtime_r(&t, tmbuf);
 }
 
 
@@ -98,12 +101,12 @@ struct tm *localtime_r(const time_t *timer, struct tm *tmbuf) {
 
 long timezoneOffset()
 {
-	time_t now = Creator_GetTime(NULL);
-	struct tm gmTimeTm;
-	struct tm localTimeTm;
-	gmtime_r(&now, &gmTimeTm);
-	localtime_r(&now, &localTimeTm);
-	time_t gmTimeT = mktime(&gmTimeTm);
-	time_t localTimeT = mktime(&localTimeTm);
-	return localTimeT - gmTimeT;
+    time_t now = Creator_GetTime(NULL);
+    struct tm gmTimeTm;
+    struct tm localTimeTm;
+    gmtime_r(&now, &gmTimeTm);
+    localtime_r(&now, &localTimeTm);
+    time_t gmTimeT = mktime(&gmTimeTm);
+    time_t localTimeT = mktime(&localTimeTm);
+    return localTimeT - gmTimeT;
 }

@@ -34,43 +34,41 @@ char *_AllocatedFilePath = NULL;
 
 void *CreatorNVS_Get(const char *key, size_t *size)
 {
-	return CreatorNVSFile_Get(key, size);
+    return CreatorNVSFile_Get(key, size);
 }
 
 bool CreatorNVS_Initialise(void)
 {
-	return CreatorNVSFile_Initialise(_NVSFilePath);
+    return CreatorNVSFile_Initialise(_NVSFilePath);
 }
 
 void CreatorNVS_Set(const char *key, const void *value, size_t size)
 {
-	CreatorNVSFile_Set(key, value, size);
+    CreatorNVSFile_Set(key, value, size);
 }
-
 
 void CreatorNVS_SetLocation(const char *location)
 {
-	if (_AllocatedFilePath)
-		CreatorString_Free(&_AllocatedFilePath);
-	_AllocatedFilePath = _NVSFilePath = CreatorString_Duplicate(location);
+    if (_AllocatedFilePath)
+    CreatorString_Free(&_AllocatedFilePath);
+    _AllocatedFilePath = _NVSFilePath = CreatorString_Duplicate(location);
 }
 
 void CreatorNVS_Shutdown(void)
 {
-	CreatorNVSFile_Shutdown();
-	if (_AllocatedFilePath)
-		CreatorString_Free(&_NVSFilePath);
+    CreatorNVSFile_Shutdown();
+    if (_AllocatedFilePath)
+    CreatorString_Free(&_NVSFilePath);
 }
 
 bool CreatorNVS_Read(size_t offset, void *value, size_t size)
 {
-	return false;
+    return false;
 }
-
 
 bool CreatorNVS_Write(size_t offset, const void *value, size_t size)
 {
-	return false;
+    return false;
 }
 
 #endif

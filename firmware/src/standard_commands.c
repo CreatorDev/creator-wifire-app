@@ -43,14 +43,14 @@
 // Supported Set/Show command list
 typedef enum
 {
-	setshow_cmd_devicename = 0,
-	setshow_cmd_logconfig,
-	setshow_cmd_networkconfig,
-	setshow_cmd_versions,
-	setshow_cmd_wifire_details,
-	setshow_cmd_saved_values,
+    setshow_cmd_devicename = 0,
+    setshow_cmd_logconfig,
+    setshow_cmd_networkconfig,
+    setshow_cmd_versions,
+    setshow_cmd_wifire_details,
+    setshow_cmd_saved_values,
 
-	setshow_cmd__max
+    setshow_cmd__max
 } setShowCommand;
 
 typedef void (*SetShowCommandHandler) (void);
@@ -83,14 +83,15 @@ static void StandardCommands_SetDeviceServerConfig(void);
 static void StandardCommands_SetNetworkConfig(void);    
 static void StandardCommands_ShowWiFireDetails(void);
 
-//                                                                   Name                    SetCallback?                    ShowCallback?
-static setShowCommandInfo setShowCommands[setshow_cmd__max] = { {"device_name",    StandardCommands_SetDeviceName,    StandardCommands_GetDeviceName},
-                                                                {"log_config",     StandardCommands_SetLogConfig,     StandardCommands_GetLogConfig},
-                                                                {"network_config", StandardCommands_SetNetworkConfig, StandardCommands_GetNetworkConfig},
-                                                                {"server_config",  StandardCommands_SetDeviceServerConfig, StandardCommands_GetDeviceServerConfig},
-                                                                {"versions",       NULL,                              StandardCommands_GetVersions},
-                                                                {"wifire_details", NULL,                              StandardCommands_ShowWiFireDetails}
-                                                             };
+static setShowCommandInfo setShowCommands[setshow_cmd__max] =
+//  Name                    SetCallback?                    ShowCallback?
+{{"device_name",    StandardCommands_SetDeviceName,    StandardCommands_GetDeviceName},
+ {"log_config",     StandardCommands_SetLogConfig,     StandardCommands_GetLogConfig},
+ {"network_config", StandardCommands_SetNetworkConfig, StandardCommands_GetNetworkConfig},
+ {"server_config",  StandardCommands_SetDeviceServerConfig, StandardCommands_GetDeviceServerConfig},
+ {"versions",       NULL,                              StandardCommands_GetVersions},
+ {"wifire_details", NULL,                              StandardCommands_ShowWiFireDetails}
+};
 
 
 //
@@ -99,89 +100,92 @@ static setShowCommandInfo setShowCommands[setshow_cmd__max] = { {"device_name", 
 
 bool StandardCommands_BoardDetails(int argc, char** argv)
 {
-	bool result = false;
-	if(ConfigStore_Config_Read() && ConfigStore_Config_IsValid())
-	{
-		StringBuilder response = StringBuilder_New(256);
-		// DeviceType
-		response = StringBuilder_Append(response, ConfigStore_GetDeviceType());
-		response = StringBuilder_Append(response, "\n");
-		// MAC address
-		response = StringBuilder_Append(response, ConfigStore_GetMacAddress());
-		response = StringBuilder_Append(response, "\n");
-		// Serial number
-		char snString[17];
-		memset((void*) snString, 0, 17);
-		if(DeviceSerial_GetCpuSerialNumberHexString(snString, 17))
-			response = StringBuilder_Append(response, snString);
-		else
-			response = StringBuilder_Append(response, " ");
-		response = StringBuilder_Append(response, "\n");
+    bool result = false;
+    if (ConfigStore_Config_Read() && ConfigStore_Config_IsValid())
+    {
+        StringBuilder response = StringBuilder_New(256);
+        // DeviceType
+        response = StringBuilder_Append(response, ConfigStore_GetDeviceType());
+        response = StringBuilder_Append(response, "\n");
+        // MAC address
+        response = StringBuilder_Append(response, ConfigStore_GetMacAddress());
+        response = StringBuilder_Append(response, "\n");
+        // Serial number
+        char snString[17];
+        memset((void*) snString, 0, 17);
+        if (DeviceSerial_GetCpuSerialNumberHexString(snString, 17))
+            response = StringBuilder_Append(response, snString);
+        else
+            response = StringBuilder_Append(response, " ");
+        response = StringBuilder_Append(response, "\n");
 
-		// WiFi SoftAP SSID
-		response = StringBuilder_Append(response, ConfigStore_GetSoftAPSSID());
-		response = StringBuilder_Append(response, "\n");
+        // WiFi SoftAP SSID
+        response = StringBuilder_Append(response, ConfigStore_GetSoftAPSSID());
+        response = StringBuilder_Append(response, "\n");
 
-		// WiFi SoftAP password
-		response = StringBuilder_Append(response, ConfigStore_GetSoftAPPassword());
-		response = StringBuilder_Append(response, "\n");
+        // WiFi SoftAP password
+        response = StringBuilder_Append(response, ConfigStore_GetSoftAPPassword());
+        response = StringBuilder_Append(response, "\n");
 
-		char CB[2] = {0,0};
-		int32_t byteCount = StringBuilder_GetLength(response);
-		int32_t byteIndex = 0;
-		for (byteIndex = 0; byteIndex < byteCount; byteIndex++)
-		{
-			CB[0] += (StringBuilder_GetCString(response))[byteIndex];
-		}
+        char CB[2] =
+        { 0, 0 };
+        int32_t byteCount = StringBuilder_GetLength(response);
+        int32_t byteIndex = 0;
+        for (byteIndex = 0; byteIndex < byteCount; byteIndex++)
+        {
+            CB[0] += (StringBuilder_GetCString(response))[byteIndex];
+        }
 
-		// Compute checkbyte - 2's compliment of MOD-256 sum
-		CB[0] ^= 0xFF;
-		CB[0]++;
-		response = StringBuilder_Append(response, CB);
-		response = StringBuilder_Append(response, "\n");
+        // Compute checkbyte - 2's compliment of MOD-256 sum
+        CB[0] ^= 0xFF;
+        CB[0]++;
+        response = StringBuilder_Append(response, CB);
+        response = StringBuilder_Append(response, "\n");
 
-		// Output entire response
-		byteCount = StringBuilder_GetLength(response);
-		uint8_t* _response = (uint8_t*) StringBuilder_GetCString(response);
-		for (byteIndex = 0; byteIndex < byteCount; byteIndex++)
-		{
-			CreatorConsole_Putc(((char *) _response)[byteIndex]);
-		}
-		CreatorConsole_Puts(LINE_TERM);
+        // Output entire response
+        byteCount = StringBuilder_GetLength(response);
+        uint8_t* _response = (uint8_t*) StringBuilder_GetCString(response);
+        for (byteIndex = 0; byteIndex < byteCount; byteIndex++)
+        {
+            CreatorConsole_Putc(((char *) _response)[byteIndex]);
+        }
+        CreatorConsole_Puts(LINE_TERM);
 
-		StringBuilder_Free(&response);
-		result = true;
-	}    
-	return result;
+        StringBuilder_Free(&response);
+        result = true;
+    }
+    return result;
 }
 
 bool StandardCommands_FactoryResetHelper(void)
 {
-	bool result = false;
+    bool result = false;
 
-	// Reset configuration to default state
-	if (ConfigStore_Config_Read() && ConfigStore_LoggingSettings_Read())
-	{
-		if (ConfigStore_Config_ResetToDefaults() && ConfigStore_LoggingSettings_ResetToDefaults() && ConfigStore_Config_Write() && ConfigStore_LoggingSettings_Write())
-		{
-			CreatorConsole_Puts("Successfully reset device to factory-default state\n\r");
-			result = true;
-		}
-	}
+    // Reset configuration to default state
+    if (ConfigStore_Config_Read() && ConfigStore_LoggingSettings_Read())
+    {
+        if (ConfigStore_Config_ResetToDefaults() && ConfigStore_LoggingSettings_ResetToDefaults() && ConfigStore_Config_Write()
+                && ConfigStore_LoggingSettings_Write())
+        {
+            CreatorConsole_Puts("Successfully reset device to factory-default state\n\r");
+            result = true;
+        }
+    }
 
-	if (!result)
-		SYS_ERROR(SYS_ERROR_ERROR, "command_handlers: Error, Could not reset device to factory-default settings");
+    if (!result)
+        SYS_ERROR(SYS_ERROR_ERROR, "command_handlers: Error, Could not reset device to factory-default settings");
 
-	return result;
+    return result;
 }
 
 bool StandardCommands_FactoryReset(int argc, char** argv)
 {
-	bool result = true;
+    bool result = true;
     // Confirm with user before resetting
     if (CreatorCommand_PromptUserWithQuery("Are you sure you want to reset this device to its factory-default settings? (y/n) "))
     {
-        bool preserveSoftAPPassword = CreatorCommand_PromptUserWithQuery("Would you like to preserve your device's current Configuration mode password: (y/n) ");
+        bool preserveSoftAPPassword = CreatorCommand_PromptUserWithQuery(
+                "Would you like to preserve your device's current Configuration mode password: (y/n) ");
         char *existingSoftAPPassword = NULL;
         if (preserveSoftAPPassword)
         {
@@ -229,12 +233,12 @@ bool StandardCommands_FactoryReset(int argc, char** argv)
         CreatorConsole_Printf("Aborted." LINE_TERM);
     }
 
-	return result;
+    return result;
 }
 
 bool StandardCommands_Reboot(int argc, char** argv)
 {
-	int result = true;
+    int result = true;
     AppInfo *appInfo = AppConfig_GetAppInfo();
     if (!AppConfig_IsRunningInConfigurationMode() && appInfo != NULL && appInfo->AppCLI_ResetHandler != NULL)
     {
@@ -246,24 +250,24 @@ bool StandardCommands_Reboot(int argc, char** argv)
         CreatorConsole_Printf("Rebooting..." LINE_TERM);
         AppConfig_SoftwareReset(false);
     }
-	return result;
+    return result;
 }
 
 bool StandardCommands_RebootSoftAP(int argc, char** argv)
 {
-	int result = true;
+    int result = true;
     AppInfo *appInfo = AppConfig_GetAppInfo();
-	if (!AppConfig_IsRunningInConfigurationMode() && appInfo != NULL && appInfo->AppCLI_ResetHandler != NULL)
-		result = appInfo->AppCLI_ResetHandler(true);
-	else
-		AppConfig_SoftwareReset(true);
+    if (!AppConfig_IsRunningInConfigurationMode() && appInfo != NULL && appInfo->AppCLI_ResetHandler != NULL)
+        result = appInfo->AppCLI_ResetHandler(true);
+    else
+        AppConfig_SoftwareReset(true);
 
-	return result;
+    return result;
 }
 
 bool StandardCommands_Set(int argc, char** argv)
 {
-	bool result = true;
+    bool result = true;
     if (argc == 2)
     {
         if (argv[1])
@@ -310,30 +314,30 @@ bool StandardCommands_Set(int argc, char** argv)
 
         AppInfo *appInfo = AppConfig_GetAppInfo();
         CreatorConsole_Printf("'set' command usage:\tset <setting_name>" LINE_TERM);
-		CreatorConsole_Puts("Supported:\r\n");
-		int index;
-		for (index = 0; index < setshow_cmd__max; index++)
-		{
+        CreatorConsole_Puts("Supported:\r\n");
+        int index;
+        for (index = 0; index < setshow_cmd__max; index++)
+        {
             if (setShowCommands[index].SetCallBack != NULL)
             {
                 CreatorConsole_Puts("\t\t");
                 CreatorConsole_Puts(setShowCommands[index].Name);
                 CreatorConsole_Puts(LINE_TERM);
             }
-		}
+        }
         if (!AppConfig_IsRunningInConfigurationMode() && appInfo != NULL && appInfo->CommandSet != NULL)
             result = appInfo->CommandSet(argc, argv);
 
         result = false;
     }
-	return result;
+    return result;
 }
 
 bool StandardCommands_Show(int argc, char** argv)
 {
-	bool result = true;
+    bool result = true;
     if (argc == 2)
-    {       
+    {
         if (argv[1])
         {
             unsigned int index = 0;
@@ -377,59 +381,62 @@ bool StandardCommands_Show(int argc, char** argv)
             CreatorConsole_Printf("Invalid command" LINE_TERM);
 
         CreatorConsole_Printf("'show' command usage:\tshow <setting_name>" LINE_TERM);
-		CreatorConsole_Puts("Supported:" LINE_TERM);
-		int index;
-		for (index = 0; index < setshow_cmd__max; index++)
-		{
+        CreatorConsole_Puts("Supported:" LINE_TERM);
+        int index;
+        for (index = 0; index < setshow_cmd__max; index++)
+        {
             if (setShowCommands[index].ShowCallBack != NULL)
             {
                 CreatorConsole_Puts("\t\t");
                 CreatorConsole_Puts(setShowCommands[index].Name);
                 CreatorConsole_Puts(LINE_TERM);
             }
-		}	
-        AppInfo *appInfo = AppConfig_GetAppInfo();        
+        }
+        AppInfo *appInfo = AppConfig_GetAppInfo();
         if (!AppConfig_IsRunningInConfigurationMode() && appInfo != NULL && appInfo->CommandShow != NULL)
             result = appInfo->CommandShow(argc, argv);
 
         result = false;
     }
 
-	return result;
+    return result;
 }
 
 bool StandardCommands_UpdateOwnedDevices(int argc, char** argv)
 {
     CommandHandlers_UpdateOwnedDevices();
-	return true;
+    return true;
 }
 
 bool StandardCommands_Uptime(int argc, char** argv)
 {
-	bool result = true;
-	SYS_UPTIME uptime;
-	AppConfig_Uptime(&uptime);
-	CreatorConsole_Printf("Device uptime: %dd, %dh, %dm, %ds" LINE_TERM, uptime.Days, uptime.Hours, uptime.Minutes, uptime.Seconds);
+    bool result = true;
+    SYS_UPTIME uptime;
+    AppConfig_Uptime(&uptime);
+    CreatorConsole_Printf("Device uptime: %dd, %dh, %dm, %ds" LINE_TERM, uptime.Days, uptime.Hours, uptime.Minutes, uptime.Seconds);
 
-	return result;
+    return result;
 }
 
 /*Get Command Handlers*/
 void StandardCommands_GetVersions(void)
 {
-		// Application and library information
-        AppInfo *appInfo = AppConfig_GetAppInfo();
-        if(appInfo != NULL)
-            CreatorConsole_Printf("application:\t\t%s\n\r\t\t\tv%s (%s)" LINE_TERM LINE_TERM, appInfo->ApplicationName == NULL ? "no application name" : appInfo->ApplicationName, appInfo->ApplicationVersion == NULL ? "no application version" : appInfo->ApplicationVersion, appInfo->ApplicationVersionDate == NULL ? "no version date" : appInfo->ApplicationVersionDate);
-        
-		CreatorConsole_Printf("libcreatorcore:\t\tv%s (%s)" LINE_TERM, CreatorCore_GetVersion(), CreatorCore_GetVersionDate());
+    // Application and library information
+    AppInfo *appInfo = AppConfig_GetAppInfo();
+    if (appInfo != NULL)
+        CreatorConsole_Printf("application:\t\t%s\n\r\t\t\tv%s (%s)" LINE_TERM LINE_TERM,
+                appInfo->ApplicationName == NULL ? "no application name" : appInfo->ApplicationName,
+                appInfo->ApplicationVersion == NULL ? "no application version" : appInfo->ApplicationVersion,
+                appInfo->ApplicationVersionDate == NULL ? "no version date" : appInfo->ApplicationVersionDate);
 
-		// Wifi module software version
-		DRV_WIFI_DEVICE_INFO deviceInfo;
-		DRV_WIFI_DeviceInfoGet(&deviceInfo);
-		CreatorConsole_Printf("MRF24W:\t\t\t0x%02X%02X" LINE_TERM, deviceInfo.romVersion, deviceInfo.patchVersion);
+    CreatorConsole_Printf("libcreatorcore:\t\tv%s (%s)" LINE_TERM, CreatorCore_GetVersion(), CreatorCore_GetVersionDate());
 
-		CreatorConsole_Printf(LINE_TERM LINE_TERM);
+    // Wifi module software version
+    DRV_WIFI_DEVICE_INFO deviceInfo;
+    DRV_WIFI_DeviceInfoGet(&deviceInfo);
+    CreatorConsole_Printf("MRF24W:\t\t\t0x%02X%02X" LINE_TERM, deviceInfo.romVersion, deviceInfo.patchVersion);
+
+    CreatorConsole_Printf(LINE_TERM LINE_TERM);
 }
 
 void StandardCommands_GetDeviceName(void)
@@ -515,8 +522,7 @@ void StandardCommands_GetNetworkConfig(void)
         // WiFi Encryption Type
         WiFiEncryptionType wifiEncryption = ConfigStore_GetEncryptionType();
         CreatorConsole_Printf("WiFi encryption:\t\t");
-        switch (wifiEncryption)
-        {
+        switch (wifiEncryption) {
             case WiFiEncryptionType_WEP:
                 CreatorConsole_Printf("WEP" LINE_TERM);
                 break;
@@ -546,7 +552,7 @@ void StandardCommands_GetNetworkConfig(void)
             if (wifiPassword && strlen(wifiPassword))
             {
                 unsigned int index = 0;
-                for (index = 0 ; index < strlen(wifiPassword); index++)
+                for (index = 0; index < strlen(wifiPassword); index++)
                 {
                     CreatorConsole_Putc('X');
                 }
@@ -559,8 +565,7 @@ void StandardCommands_GetNetworkConfig(void)
         // IP addressing scheme
         AddressScheme addressingScheme = ConfigStore_GetAddressingScheme();
         CreatorConsole_Printf("Addressing scheme:\t\t");
-        switch (addressingScheme)
-        {
+        switch (addressingScheme) {
             case AddressScheme_Dhcp:
                 CreatorConsole_Printf("DHCP" LINE_TERM);
                 break;
@@ -609,8 +614,8 @@ void StandardCommands_GetNetworkConfig(void)
 
         // Configuration Mode setting
         bool bootIntoConfigurationMode = ConfigStore_GetStartInConfigurationMode();
-        CreatorConsole_Printf("Boot Into Configuration Mode:\t%s" LINE_TERM, bootIntoConfigurationMode ? "True": "False" );
-        
+        CreatorConsole_Printf("Boot Into Configuration Mode:\t%s" LINE_TERM, bootIntoConfigurationMode ? "True" : "False");
+
         CreatorConsole_Printf(LINE_TERM LINE_TERM);
     }
     else
@@ -631,8 +636,7 @@ void StandardCommands_GetDeviceServerConfig(void)
 
         ServerSecurityMode securityMode = ConfigStore_GetSecurityMode();
         CreatorConsole_Printf("Security mode:\t\t");
-        switch (securityMode)
-        {
+        switch (securityMode) {
             case ServerSecurityMode_NoSec:
                 CreatorConsole_Printf("NoSec" LINE_TERM);
                 break;
@@ -657,14 +661,14 @@ void StandardCommands_GetDeviceServerConfig(void)
                 CreatorConsole_Printf("Public key:\t\t%s" LINE_TERM, publicKey);
             else
                 CreatorConsole_Printf("Public key:\t\tnot set" LINE_TERM);
-            
+
             char *privateKey = (char *) ConfigStore_GetPrivateKey();
             if (privateKey && strlen(privateKey))
                 CreatorConsole_Printf("Private key:\t\tlength = %d" LINE_TERM, strlen(privateKey));
             else
                 CreatorConsole_Printf("Private key:\t\tnot set" LINE_TERM);
         }
-        
+
         if (securityMode == ServerSecurityMode_Cert)
         {
             char *cert = (char *) ConfigStore_GetCertificate();
@@ -672,7 +676,7 @@ void StandardCommands_GetDeviceServerConfig(void)
                 CreatorConsole_Printf("Certificate:\t\tlength = %d" LINE_TERM, strlen(cert));
             else
                 CreatorConsole_Printf("Certificate:\t\tnot set" LINE_TERM);
-            
+
             char *certChain = (char *) ConfigStore_GetBootstrapCertChain();
             if (certChain && strlen(certChain))
                 CreatorConsole_Printf("Bootstrap cert chain:\t\tlength = %d" LINE_TERM, strlen(certChain));
@@ -690,7 +694,7 @@ void StandardCommands_GetDeviceServerConfig(void)
 
 void StandardCommands_SetDeviceName(void)
 {
-	if (ConfigStore_Config_Read() && ConfigStore_Config_IsValid())
+    if (ConfigStore_Config_Read() && ConfigStore_Config_IsValid())
     {
         // Display current device name
         char *deviceName = (char *) ConfigStore_GetDeviceName();
@@ -882,7 +886,8 @@ static void StandardCommands_SetNetworkConfig(void)
             for (encryptionIndex = 0; encryptionIndex < WiFiEncryptionType_Max; encryptionIndex++)
                 CreatorConsole_Printf(LINE_TERM LINE_TAB "%d) %s", encryptionIndex + 1, (char*) ConfigStore_GetEncryptionName(encryptionIndex));
 
-            int32_t selection = CreatorCommand_ReadInputIntegerOptionWithQuery(LINE_TERM "Select a new WiFi encryption type: ", WiFiEncryptionType_Max, false, false);
+            int32_t selection = CreatorCommand_ReadInputIntegerOptionWithQuery(LINE_TERM "Select a new WiFi encryption type: ", WiFiEncryptionType_Max, false,
+                    false);
             if (selection > -1)
             {
                 if (ConfigStore_SetNetworkEncryption(selection - 1) && ConfigStore_Config_UpdateCheckbyte() && ConfigStore_Config_Write())
@@ -903,7 +908,7 @@ static void StandardCommands_SetNetworkConfig(void)
             if (wifiPassword && strlen((const char *) wifiPassword) > 0)
             {
                 unsigned int index = 0;
-                for (index = 0 ; index < strlen(wifiPassword); index++)
+                for (index = 0; index < strlen(wifiPassword); index++)
                 {
                     CreatorConsole_Putc('X');
                 }
@@ -911,15 +916,14 @@ static void StandardCommands_SetNetworkConfig(void)
             }
             else
                 CreatorConsole_Printf("not set" LINE_TERM);
-            
-            
-            
+
             if (CreatorCommand_PromptUserWithQuery("Do you want to set a new WiFi network password: (y/n) "))
             {
                 uint8_t settingBuffer[CONFIG_STORE_DEFAULT_FIELD_LENGTH + 1];
                 while (1)
                 {
-                    if (CreatorCommand_ReadInputStringWithQuery("Enter new WiFi network password: ", settingBuffer, CONFIG_STORE_DEFAULT_FIELD_LENGTH + 1, true) > 0)
+                    if (CreatorCommand_ReadInputStringWithQuery("Enter new WiFi network password: ", settingBuffer, CONFIG_STORE_DEFAULT_FIELD_LENGTH + 1, true)
+                            > 0)
                     {
                         uint8_t key_len = strlen(settingBuffer);
                         if ((key_len < MIN_KEY_PHRASE_LENGTH) || (key_len > MAX_KEY_PHRASE_LENGTH))
@@ -956,7 +960,8 @@ static void StandardCommands_SetNetworkConfig(void)
             uint8_t addressingSchemeIndex;
             CreatorConsole_Printf("Supported WiFi encryption types: ");
             for (addressingSchemeIndex = 0; addressingSchemeIndex < AddressScheme_Max; addressingSchemeIndex++)
-                CreatorConsole_Printf(LINE_TERM LINE_TAB "%d) %s", addressingSchemeIndex + 1, (char*) ConfigStore_GetAddressingSchemeName(addressingSchemeIndex));
+                CreatorConsole_Printf(LINE_TERM LINE_TAB "%d) %s", addressingSchemeIndex + 1,
+                        (char*) ConfigStore_GetAddressingSchemeName(addressingSchemeIndex));
 
             int32_t selection = CreatorCommand_ReadInputIntegerOptionWithQuery(LINE_TERM "Select a new addressing scheme: ", AddressScheme_Max, false, false);
             if (selection > -1)
@@ -1069,17 +1074,15 @@ static void StandardCommands_SetNetworkConfig(void)
                 }
             }
         }
-        
+
         // Prompt user as to whether they would like to boot into configuration mode
         // TODO - move to separate command
         if (CreatorCommand_PromptUserWithQuery("Do you want to force this device into application mode next time it reboots: (y/n) "))
         {
             if (AppConfig_CheckValidAppConfig(false))
             {
-                if (ConfigStore_SetResetToConfigurationMode(false) && 
-                    ConfigStore_SetNetworkConfigSet(true) &&
-                    ConfigStore_Config_UpdateCheckbyte() && 
-                    ConfigStore_Config_Write())
+                if (ConfigStore_SetResetToConfigurationMode(false) && ConfigStore_SetNetworkConfigSet(true) && ConfigStore_Config_UpdateCheckbyte()
+                        && ConfigStore_Config_Write())
                 {
                     // Next boot should be into application mode
                 }
@@ -1089,7 +1092,7 @@ static void StandardCommands_SetNetworkConfig(void)
                 char* wifiSsid = (char *) ConfigStore_GetNetworkSSID();
                 char* wifiPassword = (char *) ConfigStore_GetNetworkPassword();
                 char* bootUrl = (char*) ConfigStore_GetBootstrapURL();
-                
+
                 if (0 == (strlen(wifiSsid)))
                 {
                     CreatorConsole_Printf("Note: Network SSID was not set. Please set Network SSID.\n\r\n\r");
@@ -1100,7 +1103,8 @@ static void StandardCommands_SetNetworkConfig(void)
                 }
                 if (0 == (strlen(bootUrl)))
                 {
-                    CreatorConsole_Printf("Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\n\r\n\r");
+                    CreatorConsole_Printf(
+                            "Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\n\r\n\r");
                 }
             }
         }
@@ -1128,7 +1132,8 @@ static void StandardCommands_SetDeviceServerConfig(void)
             uint8_t settingBuffer[CONFIG_STORE_DEFAULT_FIELD_LENGTH + 1];
             if (CreatorCommand_ReadInputStringWithQuery("Enter new bootstrap URL: ", settingBuffer, CONFIG_STORE_DEFAULT_FIELD_LENGTH + 1, false) > 0)
             {
-                if (ConfigStore_SetBootstrapURL((const char *) settingBuffer) && ConfigStore_DeviceServerConfig_UpdateCheckbyte() && ConfigStore_DeviceServerConfig_Write())
+                if (ConfigStore_SetBootstrapURL((const char *) settingBuffer) && ConfigStore_DeviceServerConfig_UpdateCheckbyte()
+                        && ConfigStore_DeviceServerConfig_Write())
                     CreatorConsole_Printf(LINE_TERM"Setting updated successfully." LINE_TERM);
                 else
                     CreatorConsole_Printf(LINE_TERM "Setting update failed." LINE_TERM);
@@ -1172,10 +1177,8 @@ static void StandardCommands_SetDeviceServerConfig(void)
         {
             if (AppConfig_CheckValidAppConfig(false))
             {
-                if (ConfigStore_SetResetToConfigurationMode(false) && 
-                    ConfigStore_SetNetworkConfigSet(true) &&
-                    ConfigStore_Config_UpdateCheckbyte() && 
-                    ConfigStore_Config_Write())
+                if (ConfigStore_SetResetToConfigurationMode(false) && ConfigStore_SetNetworkConfigSet(true) && ConfigStore_Config_UpdateCheckbyte()
+                        && ConfigStore_Config_Write())
                 {
                     // Next boot should be into application mode
                 }
@@ -1187,7 +1190,8 @@ static void StandardCommands_SetDeviceServerConfig(void)
                 char* wifiPassword = (char *) ConfigStore_GetNetworkPassword();
                 if (0 == (strlen(bootUrl)))
                 {
-                    CreatorConsole_Printf("Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\n\r\n\r");
+                    CreatorConsole_Printf(
+                            "Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\n\r\n\r");
                 }
                 if (0 == (strlen(wifiSsid)))
                 {
@@ -1232,9 +1236,9 @@ static void StandardCommands_ShowWiFireDetails(void)
             CreatorConsole_Printf("MAC:\t\t\tunknown" LINE_TERM);
 
         // Device Serial number
-        #define serialNumberBufferLen	(17)
+        #define serialNumberBufferLen (17)
         char deviceSerialNumber[serialNumberBufferLen];
-        DeviceSerial_GetCpuSerialNumberHexString (deviceSerialNumber, serialNumberBufferLen);
+        DeviceSerial_GetCpuSerialNumberHexString(deviceSerialNumber, serialNumberBufferLen);
         CreatorConsole_Printf("MCU Serial number:\t%s" LINE_TERM, deviceSerialNumber);
 
         // Microchip DeviceID
@@ -1242,7 +1246,7 @@ static void StandardCommands_ShowWiFireDetails(void)
         CreatorConsole_Printf("MCU Device ID:\t\t0x%08X" LINE_TERM, devID);
 
         // Microchip DeviceID
-        uint32_t revision = (DEVID&0xF0000000) >> 28;
+        uint32_t revision = (DEVID & 0xF0000000) >> 28;
         CreatorConsole_Printf("MCU Device Revision:\tRev %d" LINE_TERM, revision);
         // SoftAP SSID setting
         char *softApSSID = (char *) ConfigStore_GetSoftAPSSID();
@@ -1259,5 +1263,5 @@ static void StandardCommands_ShowWiFireDetails(void)
             CreatorConsole_Printf("SoftAP Password:\tnot set" LINE_TERM);
 
         CreatorConsole_Printf(LINE_TERM LINE_TERM);
-	}
+    }
 }

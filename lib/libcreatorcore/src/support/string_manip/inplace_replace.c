@@ -25,24 +25,29 @@
 
 #include "string_manip.h"
 
-void StringManip_InplaceReplace(char *haystack, size_t *haystackLength, char *szPin, const char *szReplacement, StringManip_EncodingFn replacementEncoder) {
-	if (!replacementEncoder) {
-		replacementEncoder = StringManip_DontEncode;
-	}
-	size_t pinLength = strlen(szPin);
-	char *sLocation = strstr(haystack, szPin);
-	if (sLocation) {
-		size_t replacementLength;
-		replacementEncoder(szReplacement, NULL, &replacementLength);
-		//make room for replacement
-		memmove(sLocation + replacementLength, sLocation + pinLength, (*haystackLength) - (sLocation - haystack) - pinLength);
-		replacementEncoder(szReplacement, sLocation, NULL);
-		if (replacementLength >= pinLength) {
-			*haystackLength += replacementLength - pinLength;
-		}
-		else {
-			*haystackLength -= pinLength - replacementLength;
-		}
-	}
+void StringManip_InplaceReplace(char *haystack, size_t *haystackLength, char *szPin, const char *szReplacement, StringManip_EncodingFn replacementEncoder)
+{
+    if (!replacementEncoder)
+    {
+        replacementEncoder = StringManip_DontEncode;
+    }
+    size_t pinLength = strlen(szPin);
+    char *sLocation = strstr(haystack, szPin);
+    if (sLocation)
+    {
+        size_t replacementLength;
+        replacementEncoder(szReplacement, NULL, &replacementLength);
+        //make room for replacement
+        memmove(sLocation + replacementLength, sLocation + pinLength, (*haystackLength) - (sLocation - haystack) - pinLength);
+        replacementEncoder(szReplacement, sLocation, NULL);
+        if (replacementLength >= pinLength)
+        {
+            *haystackLength += replacementLength - pinLength;
+        }
+        else
+        {
+            *haystackLength -= pinLength - replacementLength;
+        }
+    }
 }
 

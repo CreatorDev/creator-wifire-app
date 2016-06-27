@@ -31,30 +31,30 @@ extern "C" {
 #include "creator/core/creator_threading.h"
 #include "creator_command.h"
 	
+
 typedef bool (*AppBase_ResetHandler)(bool resetToConfigurationMode);
 
 typedef struct
 {
-	char *ApplicationName;
-	char *ApplicationVersion;
-	char *ApplicationVersionDate;	
+    char *ApplicationName;
+    char *ApplicationVersion;
+    char *ApplicationVersionDate;
 
-	CreatorThread_Callback AppTask;
+    CreatorThread_Callback AppTask;
 
-	CreatorCommand_Handler CommandSet;
-	CreatorCommand_Handler CommandShow;
-	AppBase_ResetHandler AppCLI_ResetHandler;
+    CreatorCommand_Handler CommandSet;
+    CreatorCommand_Handler CommandShow;
+    AppBase_ResetHandler AppCLI_ResetHandler;
 } AppInfo;
-	
+
 typedef struct
 {
     /* Uptime components*/
     uint16_t Days;
-	uint8_t Hours;
-	uint8_t	Minutes;
-	uint8_t	Seconds;
+    uint8_t Hours;
+    uint8_t Minutes;
+    uint8_t Seconds;
 } SYS_UPTIME;
-
 
 bool AppConfig_CheckForConfigurationModeRebootButtonPress(void);
 
@@ -89,7 +89,7 @@ void AppConfig_SoftwareReset(bool resetToConfigurationMode);
 
 void AppConfig_Tasks(void);
 
-void AppConfig_Uptime (SYS_UPTIME* uptime);
+void AppConfig_Uptime(SYS_UPTIME* uptime);
 
 
 

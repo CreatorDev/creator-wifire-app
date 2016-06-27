@@ -32,66 +32,66 @@
 
 CreatorSemaphore CreatorSemaphore_New(uint tokensTotal, uint tokensTaken)
 {
-	xSemaphoreHandle result;
-	Creator_Assert(tokensTaken <= tokensTotal, "Bad initial number of tokens");
-	if (tokensTaken > tokensTotal)
-	{
-		tokensTaken = tokensTotal;
-	}
+    xSemaphoreHandle result;
+    Creator_Assert(tokensTaken <= tokensTotal, "Bad initial number of tokens");
+    if (tokensTaken > tokensTotal)
+    {
+        tokensTaken = tokensTotal;
+    }
     result = xSemaphoreCreateCounting(tokensTotal, (tokensTotal - tokensTaken));
-	return result;
+    return result;
 }
 
 void CreatorSemaphore_Wait(CreatorSemaphore self, uint tokens)
 {
-	xSemaphoreHandle semaphore = (xSemaphoreHandle)self;
-	uint index;
-	for (index = 0; index < tokens; ++index)
-	{
-		BaseType_t result;
-		do
-		{
-			result = xSemaphoreTake(semaphore, portMAX_DELAY);
-		}while (result != pdTRUE);
-	}
+    xSemaphoreHandle semaphore = (xSemaphoreHandle)self;
+    uint index;
+    for (index = 0; index < tokens; ++index)
+    {
+        BaseType_t result;
+        do
+        {
+            result = xSemaphoreTake(semaphore, portMAX_DELAY);
+        }while (result != pdTRUE);
+    }
 }
 
 
 bool CreatorSemaphore_WaitFor(CreatorSemaphore self, uint tokens, uint milliseconds)
 {
-	bool result = true;
-	xSemaphoreHandle semaphore = (xSemaphoreHandle)self;
-	uint index;
-	for (index = 0; index < tokens; ++index)
-	{
-		if (xSemaphoreTake(semaphore,(milliseconds * CreatorTimer_GetTicksPerSecond())/1000) != pdTRUE)
-		{
-			if (index > 0)
-				CreatorSemaphore_Release(semaphore, index-1);
-			result =  false;
-			break;
-		}
-	}
-	return result;
+    bool result = true;
+    xSemaphoreHandle semaphore = (xSemaphoreHandle)self;
+    uint index;
+    for (index = 0; index < tokens; ++index)
+    {
+        if (xSemaphoreTake(semaphore,(milliseconds * CreatorTimer_GetTicksPerSecond())/1000) != pdTRUE)
+        {
+            if (index > 0)
+                CreatorSemaphore_Release(semaphore, index-1);
+            result =  false;
+            break;
+        }
+    }
+    return result;
 }
 
 void CreatorSemaphore_Release(CreatorSemaphore self, uint tokens) {
-	xSemaphoreHandle semaphore = (xSemaphoreHandle)self;
-	uint index;
-	for (index = 0; index < tokens; ++index)
-	{
-		xSemaphoreGive(semaphore);
-	}
+    xSemaphoreHandle semaphore = (xSemaphoreHandle)self;
+    uint index;
+    for (index = 0; index < tokens; ++index)
+    {
+        xSemaphoreGive(semaphore);
+    }
 }
 
 void CreatorSemaphore_Free(CreatorSemaphore *self)
 {
-	if (self && *self)
-	{
-		xSemaphoreHandle semaphore = (xSemaphoreHandle)*self;
-		vSemaphoreDelete(semaphore);
-		*self = NULL;
-	}
+    if (self && *self)
+    {
+        xSemaphoreHandle semaphore = (xSemaphoreHandle)*self;
+        vSemaphoreDelete(semaphore);
+        *self = NULL;
+    }
 }
 
 #endif

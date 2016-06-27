@@ -36,163 +36,163 @@
 
 typedef struct
 {
-	CreatorThreadPool_Callback Runnable;
-	void *RunnableContext;
+    CreatorThreadPool_Callback Runnable;
+    void *RunnableContext;
 } ThreadPoolTask;
 
 
 typedef struct
 {
-	CreatorQueue Tasks;
-	CreatorList Threads;
-	CreatorSemaphore Lock;
-	uint MinThreads;
-	uint MaxThreads;
-	uint Priority;
-	uint StackSize;
-	bool Terminate;
+    CreatorQueue Tasks;
+    CreatorList Threads;
+    CreatorSemaphore Lock;
+    uint MinThreads;
+    uint MaxThreads;
+    uint Priority;
+    uint StackSize;
+    bool Terminate;
 } ThreadPool;
 
 static void executeTask(CreatorThread thread, void *context);
 
 void CreatorThreadPool_Free(CreatorThreadPool *self)
 {
-	if (self && *self)
-	{
-		ThreadPool *threadPool = *self;
-		int count = 0;
-		threadPool->Terminate = true;
-		if (threadPool->Lock)
-		{
-			CreatorSemaphore_Wait(threadPool->Lock,1);
-			if (threadPool->Threads)
-				count = CreatorList_GetCount(threadPool->Threads);
-			CreatorSemaphore_Release(threadPool->Lock,1);
-		}
-		if (threadPool->Tasks)
-		{
-			ThreadPoolTask *task = CreatorQueue_DequeueWaitFor(threadPool->Tasks,1);
-			while (task != NULL)
-			{
-				Creator_MemFree((void **)&task);
-				task = CreatorQueue_DequeueWaitFor(threadPool->Tasks,1);
-			}
-			CreatorQueue_Free(&threadPool->Tasks);
-		}
-		if (threadPool->Threads && (count == 0))
-		{
-			CreatorList_Free(&threadPool->Threads, false);
-		}
-		if (threadPool->Lock && (count == 0))
-			CreatorSemaphore_Free(&threadPool->Lock);
-		if (count == 0)
-			Creator_MemFree(self);
-		else
-			self = NULL;
-	}
+    if (self && *self)
+    {
+        ThreadPool *threadPool = *self;
+        int count = 0;
+        threadPool->Terminate = true;
+        if (threadPool->Lock)
+        {
+            CreatorSemaphore_Wait(threadPool->Lock, 1);
+            if (threadPool->Threads)
+                count = CreatorList_GetCount(threadPool->Threads);
+            CreatorSemaphore_Release(threadPool->Lock, 1);
+        }
+        if (threadPool->Tasks)
+        {
+            ThreadPoolTask *task = CreatorQueue_DequeueWaitFor(threadPool->Tasks, 1);
+            while (task != NULL)
+            {
+                Creator_MemFree((void **)&task);
+                task = CreatorQueue_DequeueWaitFor(threadPool->Tasks, 1);
+            }
+            CreatorQueue_Free(&threadPool->Tasks);
+        }
+        if (threadPool->Threads && (count == 0))
+        {
+            CreatorList_Free(&threadPool->Threads, false);
+        }
+        if (threadPool->Lock && (count == 0))
+            CreatorSemaphore_Free(&threadPool->Lock);
+        if (count == 0)
+            Creator_MemFree(self);
+        else
+            self = NULL;
+    }
 }
 
 CreatorThreadPool CreatorThreadPool_New(uint minThreads, uint maxThreads, uint priority, uint stackSize)
 {
-	CreatorThreadPool result = NULL;
-	ThreadPool *threadPool = (ThreadPool*)Creator_MemAlloc(sizeof(ThreadPool));
-	if (threadPool)
-	{
-		memset(threadPool, 0, sizeof(ThreadPool));
-		bool failed = false;
-		threadPool->Lock = CreatorSemaphore_New(1,0);
-		if (threadPool->Lock)
-		{
-			threadPool->Tasks = CreatorQueue_NewBlocking(10);
-			if (threadPool->Tasks)
-			{
-				threadPool->Threads = CreatorList_New(maxThreads);
-				if (threadPool->Threads)
-				{
-					if (minThreads < 1)
-						minThreads = 1;
-					if (maxThreads < minThreads)
-						maxThreads = minThreads;
-					threadPool->MinThreads = minThreads;
-					threadPool->MaxThreads = maxThreads;
-					threadPool->Priority = priority;
-					threadPool->StackSize = stackSize;
-					result = threadPool;
-				}
-				else
-					failed = true;
-			}
-			else
-				failed = true;
-		}
-		else
-			failed = true;
-		if (failed)
-		{
-			CreatorThreadPool_Free((CreatorThreadPool) &threadPool);
-		}
-	}
-	return result;
+    CreatorThreadPool result = NULL;
+    ThreadPool *threadPool = (ThreadPool*)Creator_MemAlloc(sizeof(ThreadPool));
+    if (threadPool)
+    {
+        memset(threadPool, 0, sizeof(ThreadPool));
+        bool failed = false;
+        threadPool->Lock = CreatorSemaphore_New(1, 0);
+        if (threadPool->Lock)
+        {
+            threadPool->Tasks = CreatorQueue_NewBlocking(10);
+            if (threadPool->Tasks)
+            {
+                threadPool->Threads = CreatorList_New(maxThreads);
+                if (threadPool->Threads)
+                {
+                    if (minThreads < 1)
+                        minThreads = 1;
+                    if (maxThreads < minThreads)
+                        maxThreads = minThreads;
+                    threadPool->MinThreads = minThreads;
+                    threadPool->MaxThreads = maxThreads;
+                    threadPool->Priority = priority;
+                    threadPool->StackSize = stackSize;
+                    result = threadPool;
+                }
+                else
+                    failed = true;
+            }
+            else
+                failed = true;
+        }
+        else
+            failed = true;
+        if (failed)
+        {
+            CreatorThreadPool_Free((CreatorThreadPool) & threadPool);
+        }
+    }
+    return result;
 }
 
 bool CreatorThreadPool_AddTask(CreatorThreadPool self, CreatorThreadPool_Callback runnable, void *context)
 {
-	bool result = false;
-	ThreadPool *threadPool = self;
-	if (threadPool && runnable && !threadPool->Terminate)
-	{
-		ThreadPoolTask *task = (ThreadPoolTask*)Creator_MemAlloc(sizeof(ThreadPoolTask));
-		if (task)
-		{
-			task->Runnable = runnable;
-			task->RunnableContext = context;
-			if (CreatorQueue_Enqueue(threadPool->Tasks, task))
-			{
-				result = true;
-				int count = CreatorList_GetCount(threadPool->Threads);
-				if (count < threadPool->MinThreads)
-				{
-					CreatorSemaphore_Wait(threadPool->Lock,1);
-					count = CreatorList_GetCount(threadPool->Threads);
-					if (count < threadPool->MinThreads)
-					{
-						CreatorThread thread = CreatorThread_New("ThreadPool",threadPool->Priority, threadPool->StackSize,executeTask,threadPool);
-						if (thread)
-							CreatorList_Add(threadPool->Threads, thread);
-					}
-					CreatorSemaphore_Release(threadPool->Lock,1);
-				}
-			}
-		}
-	}
-	return result;
+    bool result = false;
+    ThreadPool *threadPool = self;
+    if (threadPool && runnable && !threadPool->Terminate)
+    {
+        ThreadPoolTask *task = (ThreadPoolTask*)Creator_MemAlloc(sizeof(ThreadPoolTask));
+        if (task)
+        {
+            task->Runnable = runnable;
+            task->RunnableContext = context;
+            if (CreatorQueue_Enqueue(threadPool->Tasks, task))
+            {
+                result = true;
+                int count = CreatorList_GetCount(threadPool->Threads);
+                if (count < threadPool->MinThreads)
+                {
+                    CreatorSemaphore_Wait(threadPool->Lock, 1);
+                    count = CreatorList_GetCount(threadPool->Threads);
+                    if (count < threadPool->MinThreads)
+                    {
+                        CreatorThread thread = CreatorThread_New("ThreadPool", threadPool->Priority, threadPool->StackSize, executeTask, threadPool);
+                        if (thread)
+                            CreatorList_Add(threadPool->Threads, thread);
+                    }
+                    CreatorSemaphore_Release(threadPool->Lock, 1);
+                }
+            }
+        }
+    }
+    return result;
 }
 
 void executeTask(CreatorThread thread, void *context)
 {
-	ThreadPool *threadPool = context;
-	if (threadPool)
-	{
-		while (!threadPool->Terminate)
-		{
-			ThreadPoolTask *task = CreatorQueue_DequeueWaitFor(threadPool->Tasks,2000);
-			if (task)
-			{
-				CreatorThread_ClearLastError();
-				task->Runnable(task->RunnableContext);
-				Creator_MemFree((void **)&task);
-			}
-		}
-		CreatorSemaphore_Wait(threadPool->Lock,1);
-		CreatorList_Remove(threadPool->Threads, thread);
-		int count = CreatorList_GetCount(threadPool->Threads);
-		CreatorSemaphore_Release(threadPool->Lock,1);
-		if (count == 0)
-		{
-			CreatorList_Free(&threadPool->Threads, false);
-			CreatorSemaphore_Free(&threadPool->Lock);
-			Creator_MemFree((void **)&threadPool);
-		}
-	}
-	CreatorThread_Free(&thread);
+    ThreadPool *threadPool = context;
+    if (threadPool)
+    {
+        while (!threadPool->Terminate)
+        {
+            ThreadPoolTask *task = CreatorQueue_DequeueWaitFor(threadPool->Tasks, 2000);
+            if (task)
+            {
+                CreatorThread_ClearLastError();
+                task->Runnable(task->RunnableContext);
+                Creator_MemFree((void **)&task);
+            }
+        }
+        CreatorSemaphore_Wait(threadPool->Lock, 1);
+        CreatorList_Remove(threadPool->Threads, thread);
+        int count = CreatorList_GetCount(threadPool->Threads);
+        CreatorSemaphore_Release(threadPool->Lock, 1);
+        if (count == 0)
+        {
+            CreatorList_Free(&threadPool->Threads, false);
+            CreatorSemaphore_Free(&threadPool->Lock);
+            Creator_MemFree((void **)&threadPool);
+        }
+    }
+    CreatorThread_Free(&thread);
 }

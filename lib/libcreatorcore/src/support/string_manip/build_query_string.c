@@ -29,73 +29,86 @@
 #include "creator/core/creator_memalloc.h"
 #include "creator/core/creator_debug.h"
 
-char *StringManip_BuildQueryString(const char *szId, const char **valuesArray, size_t valuesCount, const char *valueBinder, const char *szTemplate, StringManip_EncodingFn valueEncoder) {
-	if (!szId || !valuesArray || !valueBinder || !szTemplate || !valuesCount) {
-		return NULL;
-	}
-	if (!valueEncoder) {
-		valueEncoder = StringManip_DontEncode;
-	}
+char *StringManip_BuildQueryString(const char *szId, const char **valuesArray, size_t valuesCount, const char *valueBinder,
+        const char *szTemplate, StringManip_EncodingFn valueEncoder)
+{
+    if (!szId || !valuesArray || !valueBinder || !szTemplate || !valuesCount)
+    {
+        return NULL;
+    }
+    if (!valueEncoder)
+    {
+        valueEncoder = StringManip_DontEncode;
+    }
 
-	bool bNoError = true;
+    bool bNoError = true;
 
-	size_t escapedIdLength;
-	bNoError &= valueEncoder(szId, NULL, &escapedIdLength);
-	if (escapedIdLength < 3) {
-		//if the id is smaller than the placeholder, we would overrun our buffer while replacing the value
-		escapedIdLength = 3;
-	}
-	size_t binderLength = strlen(valueBinder);
-	//length of template - length of !id and !val placeholders
-	size_t templateLength = strlen(szTemplate);
-	size_t templatePaddingLength = templateLength - 7;
+    size_t escapedIdLength;
+    bNoError &= valueEncoder(szId, NULL, &escapedIdLength);
+    if (escapedIdLength < 3)
+    {
+        //if the id is smaller than the placeholder, we would overrun our buffer while replacing the value
+        escapedIdLength = 3;
+    }
+    size_t binderLength = strlen(valueBinder);
+    //length of template - length of !id and !val placeholders
+    size_t templateLength = strlen(szTemplate);
+    size_t templatePaddingLength = templateLength - 7;
 
-	char *szResult = NULL;
+    char *szResult = NULL;
 
-	//escape values and estimate the size of the result string
-	size_t i, totalQueryLength = binderLength*(valuesCount-1) + 1;
-	for (i = 0; i < valuesCount; i++) {
-		size_t encodedValueLength;
-		bNoError &= valueEncoder(valuesArray[i], NULL, &encodedValueLength);
-		if (encodedValueLength < 4) {
-			//if the encoded value is smaller than the placeholder, we would overrun our buffer while replacing the id
-			encodedValueLength = 4;
-		}
+    //escape values and estimate the size of the result string
+    size_t i, totalQueryLength = binderLength * (valuesCount - 1) + 1;
+    for (i = 0; i < valuesCount; i++)
+    {
+        size_t encodedValueLength;
+        bNoError &= valueEncoder(valuesArray[i], NULL, &encodedValueLength);
+        if (encodedValueLength < 4)
+        {
+            //if the encoded value is smaller than the placeholder, we would overrun our buffer while replacing the id
+            encodedValueLength = 4;
+        }
 
-		if (escapedIdLength + encodedValueLength + templatePaddingLength > templateLength) {
-			totalQueryLength += escapedIdLength + encodedValueLength + templatePaddingLength;
-		}
-		else {
-			//the template will be copied first, so it must be able to hold it entirely
-			totalQueryLength += templateLength;
-		}
-	}
+        if (escapedIdLength + encodedValueLength + templatePaddingLength > templateLength)
+        {
+            totalQueryLength += escapedIdLength + encodedValueLength + templatePaddingLength;
+        }
+        else
+        {
+            //the template will be copied first, so it must be able to hold it entirely
+            totalQueryLength += templateLength;
+        }
+    }
 
-	if (bNoError) {
-		//build the result string, which will first hold the template then have placeholders replaced
-		char *szQueryString = Creator_MemAlloc(totalQueryLength);
-		if (szQueryString) {
-			size_t writtenBytes = 0;
-			for (i = 0; i < valuesCount; i++) {
-				//write the value binder
-				if (writtenBytes > 0) {
-					strcpy(szQueryString + writtenBytes, valueBinder);
-					writtenBytes += binderLength;
-				}
+    if (bNoError)
+    {
+        //build the result string, which will first hold the template then have placeholders replaced
+        char *szQueryString = Creator_MemAlloc(totalQueryLength);
+        if (szQueryString)
+        {
+            size_t writtenBytes = 0;
+            for (i = 0; i < valuesCount; i++)
+            {
+                //write the value binder
+                if (writtenBytes > 0)
+                {
+                    strcpy(szQueryString + writtenBytes, valueBinder);
+                    writtenBytes += binderLength;
+                }
 
-				//copy the template into the final buffer
-				size_t finalizedBytes = writtenBytes;
-				strcpy(szQueryString + finalizedBytes, szTemplate);
-				writtenBytes += templateLength;
-				//then replace placeholders with encoded values
-				StringManip_InplaceReplace(szQueryString + finalizedBytes, &writtenBytes, "!id", szId, valueEncoder);
-				StringManip_InplaceReplace(szQueryString + finalizedBytes, &writtenBytes, "!val", valuesArray[i], valueEncoder);
-			}
-			*(szQueryString + writtenBytes) = '\0';
-			szResult = szQueryString;
-		}
-	}
+                //copy the template into the final buffer
+                size_t finalizedBytes = writtenBytes;
+                strcpy(szQueryString + finalizedBytes, szTemplate);
+                writtenBytes += templateLength;
+                //then replace placeholders with encoded values
+                StringManip_InplaceReplace(szQueryString + finalizedBytes, &writtenBytes, "!id", szId, valueEncoder);
+                StringManip_InplaceReplace(szQueryString + finalizedBytes, &writtenBytes, "!val", valuesArray[i], valueEncoder);
+            }
+            *(szQueryString + writtenBytes) = '\0';
+            szResult = szQueryString;
+        }
+    }
 
-	return szResult;
+    return szResult;
 }
 

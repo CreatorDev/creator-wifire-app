@@ -39,13 +39,10 @@
                 <logicalFolder name="creator" displayName="creator" projectFiles="true">
                   <logicalFolder name="core" displayName="core" projectFiles="true">
                     <itemPath>../libcreatorcore/include/private/creator/core/base_types_methods_private.h</itemPath>
-                    <itemPath>../libcreatorcore/include/private/creator/core/client_private.h</itemPath>
                     <itemPath>../libcreatorcore/include/private/creator/core/c_utils.h</itemPath>
                     <itemPath>../libcreatorcore/include/private/creator/core/creator_cert_private.h</itemPath>
                     <itemPath>../libcreatorcore/include/private/creator/core/http_encoding.h</itemPath>
                     <itemPath>../libcreatorcore/include/private/creator/core/query_encoding.h</itemPath>
-                    <itemPath>../libcreatorcore/include/private/creator/core/server_private.h</itemPath>
-                    <itemPath>../libcreatorcore/include/private/creator/core/session_private.h</itemPath>
                     <itemPath>../libcreatorcore/include/private/creator/core/timeparse.h</itemPath>
                     <itemPath>../libcreatorcore/include/private/creator/core/session_events.h</itemPath>
                   </logicalFolder>

@@ -28,27 +28,27 @@
 
 typedef struct
 {
-	bool Enabled;
-	bool ResponsePending;
-	bool IsKeepAliveRequired;
-	int32 ConnectionHandle;
-	char *ReceivedBuffer;
-	char *TemporaryDataBuffer;
-	CreatorCommonMessaging_ProtocolCallBack ProtocolCallBack;
-	void *CallbackContext;
-	ushort PacketOffsetLength; //is used in case of incomplete header..
-	bool IsPacketBegining; 
-	bool IsContentReadingInProgress;
-	ushort LengthOfRemainingContent;
-	ushort TemporaryDataBufferLength;
-	uchar TransportType;
-	uint32 ConnectionDestinationAddress;
-	ushort ConnectionDestinationPort;
-	uint32 ResponseTimeout;				// max response time (in SYS_TICKS)
-	uint32 SendStartTime;				// send start time (SYS_TICKS)
-	unsigned char *TLSCertificateData;
-	int TLSCertificateSize;
-	void *SSLSession;
+    bool Enabled;
+    bool ResponsePending;
+    bool IsKeepAliveRequired;
+    int32 ConnectionHandle;
+    char *ReceivedBuffer;
+    char *TemporaryDataBuffer;
+    CreatorCommonMessaging_ProtocolCallBack ProtocolCallBack;
+    void *CallbackContext;
+    ushort PacketOffsetLength;          // used in case of incomplete header
+    bool IsPacketBegining;
+    bool IsContentReadingInProgress;
+    ushort LengthOfRemainingContent;
+    ushort TemporaryDataBufferLength;
+    uchar TransportType;
+    uint32 ConnectionDestinationAddress;
+    ushort ConnectionDestinationPort;
+    uint32 ResponseTimeout;             // max response time (in SYS_TICKS)
+    uint32 SendStartTime;               // send start time (SYS_TICKS)
+    unsigned char *TLSCertificateData;
+    int TLSCertificateSize;
+    void *SSLSession;
 } CreatorCommonMessaging_ControlBlock;
 
 void CreatorCommonMessaging_Receive(CreatorCommonMessaging_ControlBlock *controlBlock);

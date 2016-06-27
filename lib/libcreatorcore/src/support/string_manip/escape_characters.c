@@ -26,52 +26,61 @@
 #include "creator/core/creator_memalloc.h"
 
 
-char *StringManip_EscapeCharacters(const char *src, const char *szEscapableCharacters, const char escapeCharacter) {
-	if (!src || !szEscapableCharacters) {
-		return NULL;
-	}
-	size_t srcLength = strlen(src);
-	size_t dstLength = srcLength;
-	char *sEscapePositions = Creator_MemAlloc(srcLength);
-	memset(sEscapePositions, 0, srcLength);
+char *StringManip_EscapeCharacters(const char *src, const char *szEscapableCharacters, const char escapeCharacter)
+{
+    if (!src || !szEscapableCharacters)
+    {
+        return NULL;
+    }
+    size_t srcLength = strlen(src);
+    size_t dstLength = srcLength;
+    char *sEscapePositions = Creator_MemAlloc(srcLength);
+    memset(sEscapePositions, 0, srcLength);
 
-	char *pEscapePos = sEscapePositions;
-	const char *sourcePosition = src;
-	while (*sourcePosition) {
-		const char *pEscapable = szEscapableCharacters;
-		while (*pEscapable) {
-			if (*pEscapable == *sourcePosition) {
-				*pEscapePos = 1;
-				dstLength++;
-				break;
-			}
-			pEscapable++;
-		}
-		sourcePosition++;
-		pEscapePos++;
-	}
+    char *pEscapePos = sEscapePositions;
+    const char *sourcePosition = src;
+    while (*sourcePosition)
+    {
+        const char *pEscapable = szEscapableCharacters;
+        while (*pEscapable)
+        {
+            if (*pEscapable == *sourcePosition)
+            {
+                *pEscapePos = 1;
+                dstLength++;
+                break;
+            }
+            pEscapable++;
+        }
+        sourcePosition++;
+        pEscapePos++;
+    }
 
-	char *szResult = NULL;
-	if (dstLength > srcLength) {
-		szResult = Creator_MemAlloc(dstLength + 1);
+    char *szResult = NULL;
+    if (dstLength > srcLength)
+    {
+        szResult = Creator_MemAlloc(dstLength + 1);
 
-		char *pResult = szResult;
-		pEscapePos = sEscapePositions;
-		sourcePosition = src;
-		while (*sourcePosition) {
-			if (*pEscapePos) {
-				*pResult++ = escapeCharacter;
-			}
-			*pResult++ = *sourcePosition++;
-			pEscapePos++;
-		}
-		szResult[dstLength] = '\0';
-	}
-	else {
-		szResult = Creator_MemAlloc(dstLength + 1);
-		strcpy(szResult, src);
-	}
+        char *pResult = szResult;
+        pEscapePos = sEscapePositions;
+        sourcePosition = src;
+        while (*sourcePosition)
+        {
+            if (*pEscapePos)
+            {
+                *pResult++ = escapeCharacter;
+            }
+            *pResult++ = *sourcePosition++;
+            pEscapePos++;
+        }
+        szResult[dstLength] = '\0';
+    }
+    else
+    {
+        szResult = Creator_MemAlloc(dstLength + 1);
+        strcpy(szResult, src);
+    }
 
-	Creator_MemFree((void **)&sEscapePositions);
-	return szResult;
+    Creator_MemFree((void **)&sEscapePositions);
+    return szResult;
 }

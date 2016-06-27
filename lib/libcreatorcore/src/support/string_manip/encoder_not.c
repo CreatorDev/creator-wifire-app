@@ -24,16 +24,20 @@
 
 #include "string_manip.h"
 
-bool StringManip_DontEncode(const char *src, char *dest, size_t *pDstSize) {
-	if (!src) {
-		return false;
-	}
-	size_t len = strlen(src);
-	if (dest) {
-		memcpy(dest, src, len);
-	}
-	if (pDstSize) {
-		*pDstSize = len;
-	}
-	return true;
+bool StringManip_DontEncode(const char *src, char *dest, size_t *pDstSize)
+{
+    if (!src)
+    {
+        return false;
+    }
+    size_t len = strlen(src);
+    if (dest)
+    {
+        memcpy(dest, src, len);
+    }
+    if (pDstSize)
+    {
+        *pDstSize = len;
+    }
+    return true;
 }

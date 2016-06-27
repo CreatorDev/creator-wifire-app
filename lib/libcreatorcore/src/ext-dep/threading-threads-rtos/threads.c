@@ -40,66 +40,65 @@
 
 typedef struct
 {
-	CreatorThread_Callback Runnable;
-	void *Context;
-	xTaskHandle ThreadID;
-} ThreadInfo;
+    CreatorThread_Callback Runnable;
+    void *Context;
+    xTaskHandle ThreadID;
+}ThreadInfo;
 
 typedef struct
 {
-	uint ThreadID;
-	CreatorErrorType Error;
-} ThreadError;
+    uint ThreadID;
+    CreatorErrorType Error;
+}ThreadError;
 
 static CreatorList _ThreadErrors = NULL;
 
 typedef struct
 {
-	uint ThreadID;
+    uint ThreadID;
 //	bool UseOAuth;
 //	bool UseSessionToken;
 //	CreatorClient Client;
-} ThreadRequestSecurity;
+}ThreadRequestSecurity;
 
 static CreatorList _ThreadRequestSecurityList = NULL;
 
 static CreatorSemaphore _ThreadLock = NULL;
 
-static uint  _NextTaskID = 0;
+static uint _NextTaskID = 0;
 
 static void ThreadCallbackWrapper(void *context);
 
-
 void CreatorThread_ClearLastError(void)
 {
-	if (_ThreadErrors)
-	{
-		uint threadID = CreatorThread_GetThreadID(NULL);
-		CreatorSemaphore_Wait(_ThreadLock,1);
-		uint index;
-		for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
-		{
-			ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
-			if (threadError && (threadError->ThreadID == threadID))
-			{
-				CreatorList_RemoveAt(_ThreadErrors, index);
-				Creator_MemFree((void **)&threadError);
-				break;
-			}
-		}
-		CreatorSemaphore_Release(_ThreadLock,1);
-	}
+    if (_ThreadErrors)
+    {
+        uint threadID = CreatorThread_GetThreadID(NULL);
+        CreatorSemaphore_Wait(_ThreadLock,1);
+        uint index;
+        for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
+        {
+            ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
+            if (threadError && (threadError->ThreadID == threadID))
+            {
+                CreatorList_RemoveAt(_ThreadErrors, index);
+                Creator_MemFree((void **)&threadError);
+                break;
+            }
+        }
+        CreatorSemaphore_Release(_ThreadLock,1);
+    }
 }
 
 void CreatorThread_Free(CreatorThread *self)
 {
-	if (self && *self)
-	{
-		ThreadInfo *threadInfo = (ThreadInfo*)*self;
-		xTaskHandle threadID = threadInfo->ThreadID;
-		Creator_MemFree((void **)self);
-		vTaskDelete(threadID);
-	}
+    if (self && *self)
+    {
+        ThreadInfo *threadInfo = (ThreadInfo*)*self;
+        xTaskHandle threadID = threadInfo->ThreadID;
+        Creator_MemFree((void **)self);
+        vTaskDelete(threadID);
+    }
 }
 
 //CreatorClient CreatorThread_GetClient()
@@ -126,41 +125,41 @@ void CreatorThread_Free(CreatorThread *self)
 
 CreatorErrorType CreatorThread_GetLastError(void)
 {
-	CreatorErrorType result = CreatorError_NoError;
-	if (_ThreadErrors)
-	{
-		uint threadID = CreatorThread_GetThreadID(NULL);
-		CreatorSemaphore_Wait(_ThreadLock,1);
-		uint index;
-		for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
-		{
-			ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
-			if (threadError && (threadError->ThreadID == threadID))
-			{
-				result = threadError->Error;
-				break;
-			}
-		}
-		CreatorSemaphore_Release(_ThreadLock,1);
-	}
-	return result;
+    CreatorErrorType result = CreatorError_NoError;
+    if (_ThreadErrors)
+    {
+        uint threadID = CreatorThread_GetThreadID(NULL);
+        CreatorSemaphore_Wait(_ThreadLock,1);
+        uint index;
+        for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
+        {
+            ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
+            if (threadError && (threadError->ThreadID == threadID))
+            {
+                result = threadError->Error;
+                break;
+            }
+        }
+        CreatorSemaphore_Release(_ThreadLock,1);
+    }
+    return result;
 }
 
 uint CreatorThread_GetThreadID(CreatorThread self)
 {
-	uint result = 0;
-	xTaskHandle currentTask;
-	if (self)
-	{
-		ThreadInfo *threadInfo = (ThreadInfo*)self;
-		currentTask = threadInfo->ThreadID;
-	}
-	else
-	{
-		currentTask = xTaskGetCurrentTaskHandle();
-	}
-	result = (uint)uxTaskGetTaskNumber(currentTask);
-	return result;
+    uint result = 0;
+    xTaskHandle currentTask;
+    if (self)
+    {
+        ThreadInfo *threadInfo = (ThreadInfo*)self;
+        currentTask = threadInfo->ThreadID;
+    }
+    else
+    {
+        currentTask = xTaskGetCurrentTaskHandle();
+    }
+    result = (uint)uxTaskGetTaskNumber(currentTask);
+    return result;
 }
 
 //bool CreatorThread_GetUseOAuth(void)
@@ -209,8 +208,8 @@ uint CreatorThread_GetThreadID(CreatorThread self)
 
 void CreatorThread_Initialise(void)
 {
-	if (!_ThreadLock)
-		_ThreadLock = CreatorSemaphore_New(1,0);
+    if (!_ThreadLock)
+    _ThreadLock = CreatorSemaphore_New(1,0);
 }
 
 void CreatorThread_Join(CreatorThread self)
@@ -247,25 +246,25 @@ void CreatorThread_Join(CreatorThread self)
 
 CreatorThread CreatorThread_New(const char *name, uint priority, uint stackSize, CreatorThread_Callback runnable, void *context)
 {
-	ThreadInfo *result = (ThreadInfo*)Creator_MemAlloc(sizeof(ThreadInfo));
-	if (result)
-	{
-		result->Runnable = runnable;
-		result->Context = context;
-		result->ThreadID = NULL;
-		if (stackSize == 0)
-			stackSize = CREATOR_STACK_SIZE;
-		xTaskCreate(ThreadCallbackWrapper, name, stackSize, result, priority + (tskIDLE_PRIORITY + 1), &result->ThreadID);
-		if (!result->ThreadID)
-		{
-			Creator_MemFree((void **)&result);
-		}
-		else
-		{
-			vTaskSetTaskNumber(result->ThreadID, _NextTaskID++);
-		}
-	}
-	return (CreatorThread)result;
+    ThreadInfo *result = (ThreadInfo*)Creator_MemAlloc(sizeof(ThreadInfo));
+    if (result)
+    {
+        result->Runnable = runnable;
+        result->Context = context;
+        result->ThreadID = NULL;
+        if (stackSize == 0)
+        stackSize = CREATOR_STACK_SIZE;
+        xTaskCreate(ThreadCallbackWrapper, name, stackSize, result, priority + (tskIDLE_PRIORITY + 1), &result->ThreadID);
+        if (!result->ThreadID)
+        {
+            Creator_MemFree((void **)&result);
+        }
+        else
+        {
+            vTaskSetTaskNumber(result->ThreadID, _NextTaskID++);
+        }
+    }
+    return (CreatorThread)result;
 }
 
 //void CreatorThread_SetClient(CreatorClient client)
@@ -384,70 +383,70 @@ CreatorThread CreatorThread_New(const char *name, uint priority, uint stackSize,
 
 void CreatorThread_SetError(CreatorErrorType error)
 {
-	if (error == CreatorError_NoError)
-		CreatorThread_ClearLastError();
-	else
-	{
-		uint threadID = CreatorThread_GetThreadID(NULL);
-		if (!_ThreadLock)
-			_ThreadLock = CreatorSemaphore_New(1,0);
-		CreatorSemaphore_Wait(_ThreadLock,1);
-		if (!_ThreadErrors)
-			_ThreadErrors = CreatorList_New(10);
-		uint index;
-		bool found = false;
-		for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
-		{
-			ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
-			if (threadError && (threadError->ThreadID == threadID))
-			{
-				threadError->Error = error;
-				found = true;
-				break;
-			}
-		}
-		if (!found)
-		{
-			ThreadError *threadError = Creator_MemAlloc(sizeof(ThreadError));
-			if (threadError)
-			{
-				threadError->ThreadID = threadID;
-				threadError->Error = error;
-				CreatorList_Add(_ThreadErrors, threadError);
-			}
-		}
-		CreatorSemaphore_Release(_ThreadLock,1);
-	}
+    if (error == CreatorError_NoError)
+    CreatorThread_ClearLastError();
+    else
+    {
+        uint threadID = CreatorThread_GetThreadID(NULL);
+        if (!_ThreadLock)
+        _ThreadLock = CreatorSemaphore_New(1,0);
+        CreatorSemaphore_Wait(_ThreadLock,1);
+        if (!_ThreadErrors)
+        _ThreadErrors = CreatorList_New(10);
+        uint index;
+        bool found = false;
+        for(index = 0; index < CreatorList_GetCount(_ThreadErrors); index++)
+        {
+            ThreadError *threadError = CreatorList_GetItem(_ThreadErrors, index);
+            if (threadError && (threadError->ThreadID == threadID))
+            {
+                threadError->Error = error;
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            ThreadError *threadError = Creator_MemAlloc(sizeof(ThreadError));
+            if (threadError)
+            {
+                threadError->ThreadID = threadID;
+                threadError->Error = error;
+                CreatorList_Add(_ThreadErrors, threadError);
+            }
+        }
+        CreatorSemaphore_Release(_ThreadLock,1);
+    }
 }
 
 void CreatorThread_Shutdown(void)
 {
-	if (_ThreadErrors)
-		 CreatorList_Free(&_ThreadErrors, true);
-	if (_ThreadRequestSecurityList)
-		 CreatorList_Free(&_ThreadRequestSecurityList, true);
-	if (_ThreadLock)
-		CreatorSemaphore_Free(&_ThreadLock);
+    if (_ThreadErrors)
+    CreatorList_Free(&_ThreadErrors, true);
+    if (_ThreadRequestSecurityList)
+    CreatorList_Free(&_ThreadRequestSecurityList, true);
+    if (_ThreadLock)
+    CreatorSemaphore_Free(&_ThreadLock);
 }
 
 bool CreatorThread_Sleep(CreatorThread self, uint seconds)
 {
-	bool result = false;
-	if (seconds > 0) 
-	{
-		if (self)
-		{
-			ThreadInfo *threadInfo = (ThreadInfo*)self;
-			xTaskHandle currentTask =  xTaskGetCurrentTaskHandle();
-			result = (currentTask == threadInfo->ThreadID);
-		}
-		else
-			result = true;
-		if (result)
-		{
-			portTickType ticks = (seconds * CreatorTimer_GetTicksPerSecond());
-			vTaskDelay(ticks);
-		}
+    bool result = false;
+    if (seconds > 0)
+    {
+        if (self)
+        {
+            ThreadInfo *threadInfo = (ThreadInfo*)self;
+            xTaskHandle currentTask = xTaskGetCurrentTaskHandle();
+            result = (currentTask == threadInfo->ThreadID);
+        }
+        else
+        result = true;
+        if (result)
+        {
+            portTickType ticks = (seconds * CreatorTimer_GetTicksPerSecond());
+            vTaskDelay(ticks);
+        }
 //		struct timespec sleepDuration;
 //		sleepDuration.tv_nsec = 0;
 //		sleepDuration.tv_sec = time(NULL) + seconds;
@@ -455,51 +454,51 @@ bool CreatorThread_Sleep(CreatorThread self, uint seconds)
 //		int waitResult = pthread_cond_timedwait(&threadInfo->sleepCondition, &threadInfo->sleepMutex, &sleepDuration);
 //		pthread_mutex_unlock(&threadInfo->sleepMutex);
 //		return (waitResult != ETIMEDOUT);
-	}
-	return result;
+    }
+    return result;
 }
 
 bool CreatorThread_SleepMilliseconds(CreatorThread self, uint milliseconds)
 {
-	bool result = false;
-	if (milliseconds > 0)
-	{
-		if (self)
-		{
-			ThreadInfo *threadInfo = (ThreadInfo*)self;
-			xTaskHandle currentTask =  xTaskGetCurrentTaskHandle();
-			result = (currentTask == threadInfo->ThreadID);
-		}
-		else
-			result = true;
-		if (result)
-		{
-			portTickType ticks = (milliseconds * CreatorTimer_GetTicksPerSecond())/1000;
-			if (ticks == 0)
-				ticks = 1;
-			vTaskDelay(ticks);
-		}
-	}
-	return result;
+    bool result = false;
+    if (milliseconds > 0)
+    {
+        if (self)
+        {
+            ThreadInfo *threadInfo = (ThreadInfo*)self;
+            xTaskHandle currentTask = xTaskGetCurrentTaskHandle();
+            result = (currentTask == threadInfo->ThreadID);
+        }
+        else
+        result = true;
+        if (result)
+        {
+            portTickType ticks = (milliseconds * CreatorTimer_GetTicksPerSecond())/1000;
+            if (ticks == 0)
+            ticks = 1;
+            vTaskDelay(ticks);
+        }
+    }
+    return result;
 }
 
 bool CreatorThread_SleepTicks(CreatorThread self, uint ticks)
 {
-	bool result = false;
-	if (ticks > 0)
-	{
-		if (self)
-		{
-			ThreadInfo *threadInfo = (ThreadInfo*)self;
-			xTaskHandle currentTask =  xTaskGetCurrentTaskHandle();
-			result = (currentTask == threadInfo->ThreadID);
-		}
-		else
-			result = true;
-		if (result)
-			vTaskDelay(ticks);
-	}
-	return result;
+    bool result = false;
+    if (ticks > 0)
+    {
+        if (self)
+        {
+            ThreadInfo *threadInfo = (ThreadInfo*)self;
+            xTaskHandle currentTask = xTaskGetCurrentTaskHandle();
+            result = (currentTask == threadInfo->ThreadID);
+        }
+        else
+        result = true;
+        if (result)
+        vTaskDelay(ticks);
+    }
+    return result;
 }
 
 void CreatorThread_Wakeup(CreatorThread self)
@@ -510,14 +509,12 @@ void CreatorThread_Wakeup(CreatorThread self)
 //	pthread_mutex_unlock(&threadInfo->sleepMutex);
 }
 
-
-
 static void ThreadCallbackWrapper(void *context)
 {
-	ThreadInfo *threadInfo = (ThreadInfo*)context;
-	if (threadInfo)
-		threadInfo->Runnable(threadInfo, threadInfo->Context);
-	vTaskDelete(NULL);
+    ThreadInfo *threadInfo = (ThreadInfo*)context;
+    if (threadInfo)
+    threadInfo->Runnable(threadInfo, threadInfo->Context);
+    vTaskDelete(NULL);
 }
 
 #endif

@@ -23,153 +23,152 @@
 #include <stddef.h>
 
 #include "creator/core/creator_debug.h"
-
 #include "creator/core/query_encoding.h"
 
 bool CreatorEncodeLuceneQuery(const char *src, char *dest, size_t *destSize)
 {
-	Creator_Assert(src != NULL, "src must be non-NULL");
-	if (src == NULL)
-	{
-		return false;
-	}
+    Creator_Assert(src != NULL, "src must be non-NULL");
+    if (src == NULL)
+    {
+        return false;
+    }
 
-	const char *currentSourceChar = src;
-	char *currentDestinationChar = dest;
-	bool bSuccess = true;
+    const char *currentSourceChar = src;
+    char *currentDestinationChar = dest;
+    bool bSuccess = true;
 
-	if (destSize)
-	{
-		*destSize = 0;
-	}
+    if (destSize)
+    {
+        *destSize = 0;
+    }
 
-	while (bSuccess && *currentSourceChar != '\0')
-	{
-		size_t encodedCharSize = 0;
-		char curChar = *currentSourceChar;
-		switch (curChar)
-		{
-			case '+': case '-': case '!': case '(': case ')':
-			case '{': case '}': case '[': case ']': case '^':
-			case '"': case '~': case '*': case '?': case ':':
-			case '\\':
-			//these last two only need to be escaped when they are paired, i.e. && or ||.
-			//Lucene doesn't document how to escape them however, and escaping them always doesn't hurt either
-			case '&': case '|':
-				//escape with '\'
-				if (currentDestinationChar)
-				{
-					*currentDestinationChar = '\\';
-					*(currentDestinationChar+1) = curChar;
-				}
-				encodedCharSize = 2;
-				break;
+    while (bSuccess && *currentSourceChar != '\0')
+    {
+        size_t encodedCharSize = 0;
+        char curChar = *currentSourceChar;
+        switch (curChar)
+        {
+            case '+': case '-': case '!': case '(': case ')':
+            case '{': case '}': case '[': case ']': case '^':
+            case '"': case '~': case '*': case '?': case ':':
+            case '\\':
+                //these last two only need to be escaped when they are paired, i.e. && or ||.
+                //Lucene doesn't document how to escape them however, and escaping them always doesn't hurt either
+            case '&':
+            case '|':
+                //escape with '\'
+                if (currentDestinationChar)
+                {
+                    *currentDestinationChar = '\\';
+                    *(currentDestinationChar + 1) = curChar;
+                }
+                encodedCharSize = 2;
+                break;
 
-			default:
-				if (currentDestinationChar)
-				{
-					*currentDestinationChar = curChar;
-				}
-				encodedCharSize = 1;
-				break;
-		}
+            default:
+                if (currentDestinationChar)
+                {
+                    *currentDestinationChar = curChar;
+                }
+                encodedCharSize = 1;
+                break;
+        }
 
-		if (destSize)
-		{
-			*destSize += encodedCharSize;
-		}
-		if (currentDestinationChar)
-		{
-			currentDestinationChar += encodedCharSize;
-		}
-		currentSourceChar++;
-	}
-	if (!bSuccess)
-	{
-		//hide the stuff we tried to write so far
-		currentDestinationChar = dest;
+        if (destSize)
+        {
+            *destSize += encodedCharSize;
+        }
+        if (currentDestinationChar)
+        {
+            currentDestinationChar += encodedCharSize;
+        }
+        currentSourceChar++;
+    }
+    if (!bSuccess)
+    {
+        //hide the stuff we tried to write so far
+        currentDestinationChar = dest;
 
-		if (destSize)
-		{
-			*destSize = 0;
-		}
-	}
-	return bSuccess;
+        if (destSize)
+        {
+            *destSize = 0;
+        }
+    }
+    return bSuccess;
 }
 
 bool CreatorEncodeQuery(const char *src, char *dest, size_t *destSize)
 {
-	Creator_Assert(src != NULL, "src must be non-NULL");
-	if (src == NULL)
-	{
-		return false;
-	}
+    Creator_Assert(src != NULL, "src must be non-NULL");
+    if (src == NULL)
+    {
+        return false;
+    }
 
-	const char *currentSourceChar = src;
-	char *currentDestinationChar = dest;
-	bool bSuccess = true;
+    const char *currentSourceChar = src;
+    char *currentDestinationChar = dest;
+    bool bSuccess = true;
 
-	if (destSize)
-	{
-		*destSize = 0;
-	}
+    if (destSize)
+    {
+        *destSize = 0;
+    }
 
-	while (bSuccess && *currentSourceChar != '\0')
-	{
-		size_t encodedCharSize = 0;
-		char curChar = *currentSourceChar;
-		switch (curChar)
-		{
-			case '\\':
-			case '\'':
-				//escape with '\'
-				if (currentDestinationChar)
-				{
-					*currentDestinationChar = '\\';
-					*(currentDestinationChar+1) = curChar;
-				}
-				encodedCharSize = 2;
-				break;
+    while (bSuccess && *currentSourceChar != '\0')
+    {
+        size_t encodedCharSize = 0;
+        char curChar = *currentSourceChar;
+        switch (curChar) {
+            case '\\':
+            case '\'':
+                //escape with '\'
+                if (currentDestinationChar)
+                {
+                    *currentDestinationChar = '\\';
+                    *(currentDestinationChar + 1) = curChar;
+                }
+                encodedCharSize = 2;
+                break;
 
-			case '%':
-				//escape with '%'
-				if (currentDestinationChar)
-				{
-					*currentDestinationChar = '%';
-					*(currentDestinationChar+1) = curChar;
-				}
-				encodedCharSize = 2;
-				break;
+            case '%':
+                //escape with '%'
+                if (currentDestinationChar)
+                {
+                    *currentDestinationChar = '%';
+                    *(currentDestinationChar + 1) = curChar;
+                }
+                encodedCharSize = 2;
+                break;
 
-			default:
-				if (currentDestinationChar)
-				{
-					*currentDestinationChar = curChar;
-				}
-				encodedCharSize = 1;
-				break;
-		}
+            default:
+                if (currentDestinationChar)
+                {
+                    *currentDestinationChar = curChar;
+                }
+                encodedCharSize = 1;
+                break;
+        }
 
-		if (destSize)
-		{
-			*destSize += encodedCharSize;
-		}
-		if (currentDestinationChar)
-		{
-			currentDestinationChar += encodedCharSize;
-		}
-		currentSourceChar++;
-	}
-	if (!bSuccess)
-	{
-		//hide the stuff we tried to write so far
-		currentDestinationChar = dest;
+        if (destSize)
+        {
+            *destSize += encodedCharSize;
+        }
+        if (currentDestinationChar)
+        {
+            currentDestinationChar += encodedCharSize;
+        }
+        currentSourceChar++;
+    }
+    if (!bSuccess)
+    {
+        //hide the stuff we tried to write so far
+        currentDestinationChar = dest;
 
-		if (destSize)
-		{
-			*destSize = 0;
-		}
-	}
-	return bSuccess;
+        if (destSize)
+        {
+            *destSize = 0;
+        }
+    }
+    return bSuccess;
 }
 

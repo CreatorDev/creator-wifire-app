@@ -31,55 +31,54 @@
 
 typedef struct TimerInfoImpl
 {
-	CreatorTimer_Callback Runnable;
-	void * Context;
-	TimerHandle_t Timer;
-} *TimerInfo;
+    CreatorTimer_Callback Runnable;
+    void * Context;
+    TimerHandle_t Timer;
+}*TimerInfo;
 
 static uint _TicksPerSecond = 1000;
 
-
 static void FireTimerCallBack(CreatorTaskID taskID, void *context)
 {
-	TimerInfo timerInfo = (TimerInfo)context;
-	if (timerInfo)
-	{
-		if(timerInfo->Runnable)
-		{
-			timerInfo->Runnable((CreatorTimer)timerInfo, timerInfo->Context);
-		}
-	}
+    TimerInfo timerInfo = (TimerInfo)context;
+    if (timerInfo)
+    {
+        if(timerInfo->Runnable)
+        {
+            timerInfo->Runnable((CreatorTimer)timerInfo, timerInfo->Context);
+        }
+    }
 }
 
 static void TimerCallBack(xTimerHandle timerHandle)
 {
-	TimerInfo timerInfo = (TimerInfo) pvTimerGetTimerID(timerHandle);
-	if (timerInfo)
-	{
-		CreatorScheduler_ScheduleTask(FireTimerCallBack, timerInfo, 0, false);
-	}
+    TimerInfo timerInfo = (TimerInfo) pvTimerGetTimerID(timerHandle);
+    if (timerInfo)
+    {
+        CreatorScheduler_ScheduleTask(FireTimerCallBack, timerInfo, 0, false);
+    }
 }
 
 void CreatorTimer_Free(CreatorTimer *self)
 {
-	if (self && *self)
-	{
-		CreatorTimer timer = *self;
-		CreatorTimer_Stop(timer);
-		TimerInfo timerInfo = (TimerInfo)timer;
-		xTimerDelete(timerInfo->Timer,0);
-		Creator_MemFree((void **)self);
-	}
+    if (self && *self)
+    {
+        CreatorTimer timer = *self;
+        CreatorTimer_Stop(timer);
+        TimerInfo timerInfo = (TimerInfo)timer;
+        xTimerDelete(timerInfo->Timer,0);
+        Creator_MemFree((void **)self);
+    }
 }
 
 uint CreatorTimer_GetTickCount()
 {
-	return xTaskGetTickCount();
+    return xTaskGetTickCount();
 }
 
 uint CreatorTimer_GetTicksPerSecond()
 {
-	return _TicksPerSecond;
+    return _TicksPerSecond;
 }
 
 void CreatorTimer_Initialise(void)
@@ -89,51 +88,50 @@ void CreatorTimer_Initialise(void)
 
 CreatorTimer CreatorTimer_New(const char *name, uint periodInMilliseconds, bool continuous, CreatorTimer_Callback runnable, void *context)
 {
-	TimerInfo timerInfo = (TimerInfo)Creator_MemAlloc(sizeof(struct TimerInfoImpl));
-	if (!timerInfo)
-	{
-		return NULL;
-	}
-	UBaseType_t reload;
-	if (continuous)
-		reload = pdTRUE;
-	else
-		reload = pdFALSE;
-	timerInfo->Runnable = runnable;
-	timerInfo->Context = context;
-	
-	timerInfo->Timer = xTimerCreate(name, (periodInMilliseconds * CreatorTimer_GetTicksPerSecond())/1000, reload, (void*)timerInfo, TimerCallBack);
+    TimerInfo timerInfo = (TimerInfo)Creator_MemAlloc(sizeof(struct TimerInfoImpl));
+    if (!timerInfo)
+    {
+        return NULL;
+    }
+    UBaseType_t reload;
+    if (continuous)
+    reload = pdTRUE;
+    else
+    reload = pdFALSE;
+    timerInfo->Runnable = runnable;
+    timerInfo->Context = context;
 
-	return (CreatorTimer)timerInfo;
+    timerInfo->Timer = xTimerCreate(name, (periodInMilliseconds * CreatorTimer_GetTicksPerSecond())/1000, reload, (void*)timerInfo, TimerCallBack);
+
+    return (CreatorTimer)timerInfo;
 }
 
 bool CreatorTimer_Reset(CreatorTimer self)
 {
-	bool result = false;
-	if (self)
-	{
-		TimerInfo timerInfo = (TimerInfo)self;
-		result = (xTimerReset(timerInfo->Timer, 0) == pdPASS);
-	}
-	return result;
+    bool result = false;
+    if (self)
+    {
+        TimerInfo timerInfo = (TimerInfo)self;
+        result = (xTimerReset(timerInfo->Timer, 0) == pdPASS);
+    }
+    return result;
 }
 
 bool CreatorTimer_SetPeriod(CreatorTimer self, uint periodInMilliseconds)
 {
-	bool result = false;
-	if (self)
-	{
-		TimerInfo timerInfo = (TimerInfo)self;
-		result = (xTimerChangePeriod(timerInfo->Timer,(periodInMilliseconds * CreatorTimer_GetTicksPerSecond())/1000, 0) == pdPASS);
-	}
-	return result;	
+    bool result = false;
+    if (self)
+    {
+        TimerInfo timerInfo = (TimerInfo)self;
+        result = (xTimerChangePeriod(timerInfo->Timer,(periodInMilliseconds * CreatorTimer_GetTicksPerSecond())/1000, 0) == pdPASS);
+    }
+    return result;
 }
 
 void CreatorTimer_SetTicksPerSecond(uint ticks)
 {
-	_TicksPerSecond = ticks;
+    _TicksPerSecond = ticks;
 }
-
 
 void CreatorTimer_Shutdown(void)
 {
@@ -142,24 +140,24 @@ void CreatorTimer_Shutdown(void)
 
 bool CreatorTimer_Start(CreatorTimer self)
 {
-	bool result = false;
-	if (self)
-	{
-		TimerInfo timerInfo = (TimerInfo)self;
-		result = (xTimerStart(timerInfo->Timer, 0) == pdPASS);
-	}
-	return result;
+    bool result = false;
+    if (self)
+    {
+        TimerInfo timerInfo = (TimerInfo)self;
+        result = (xTimerStart(timerInfo->Timer, 0) == pdPASS);
+    }
+    return result;
 }
 
 bool CreatorTimer_Stop(CreatorTimer self)
 {
-	bool result = false;
-	if (self)
-	{
-		TimerInfo timerInfo = (TimerInfo)self;
-		result = (xTimerStop(timerInfo->Timer, 0) == pdPASS);
-	}
-	return result;
+    bool result = false;
+    if (self)
+    {
+        TimerInfo timerInfo = (TimerInfo)self;
+        result = (xTimerStop(timerInfo->Timer, 0) == pdPASS);
+    }
+    return result;
 }
 
 #endif

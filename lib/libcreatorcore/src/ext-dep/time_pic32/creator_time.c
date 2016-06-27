@@ -104,24 +104,24 @@ time_t Creator_GetTime(time_t *time)
 
 void Creator_UpdateTime(time_t time)
 {
-	struct tm convertedTime;
-	struct tm *gtm = gmtime_r(&time, &convertedTime);
-	if (gtm)
-	{
-		int year =(convertedTime.tm_year-100);
-		int month = (convertedTime.tm_mon+1);
-		int day = (convertedTime.tm_mday);
+    struct tm convertedTime;
+    struct tm *gtm = gmtime_r(&time, &convertedTime);
+    if (gtm)
+    {
+        int year =(convertedTime.tm_year-100);
+        int month = (convertedTime.tm_mon+1);
+        int day = (convertedTime.tm_mday);
 
-		uint newDate =
-			(0x10000000 * (year/10))  + (0x01000000 *(year % 10)) +
-			(0x00100000 * (month /10))+ (0x00010000 *(month % 10)) +
-			(0x00001000 * (day/10))   + (0x00000100 *(day % 10)) +
-			(convertedTime.tm_wday);
+        uint newDate =
+        (0x10000000 * (year/10)) + (0x01000000 *(year % 10)) +
+        (0x00100000 * (month /10))+ (0x00010000 *(month % 10)) +
+        (0x00001000 * (day/10)) + (0x00000100 *(day % 10)) +
+        (convertedTime.tm_wday);
 
-		uint newTime =
-			(0x10000000 * (convertedTime.tm_hour/10))+ (0x01000000 *(convertedTime.tm_hour % 10)) +
-			(0x00100000 * (convertedTime.tm_min/10)) + (0x00010000 *(convertedTime.tm_min % 10)) +
-			(0x00001000 * (convertedTime.tm_sec/10)) + (0x00000100 *(convertedTime.tm_sec % 10));
+        uint newTime =
+        (0x10000000 * (convertedTime.tm_hour/10))+ (0x01000000 *(convertedTime.tm_hour % 10)) +
+        (0x00100000 * (convertedTime.tm_min/10)) + (0x00010000 *(convertedTime.tm_min % 10)) +
+        (0x00001000 * (convertedTime.tm_sec/10)) + (0x00000100 *(convertedTime.tm_sec % 10));
 
 //		if(!PLIB_OSC_SecondaryIsReady(OSC_ID_0))
 //		{
@@ -129,125 +129,126 @@ void Creator_UpdateTime(time_t time)
 //			while(1);
 //		}
 
-		while(PLIB_RTCC_RTCSyncStatusGet(RTCC_ID_0)) Nop();
+        while(PLIB_RTCC_RTCSyncStatusGet(RTCC_ID_0)) Nop();
 
 //		PLIB_RTCC_ClockSourceSelect(RTCC_ID_0, RTCC_CLOCK_SOURCE_SOSC);
 
-		PLIB_INT_Disable(INT_ID_0);
-		SYSKEY = 0;
-		SYSKEY = 0xaa996655; // Write first unlock key to SYSKEY
-		SYSKEY = 0x556699aa; // Write second unlock key to SYSKEY
-		//PLIB_CORE_SysUnlock();
+        PLIB_INT_Disable(INT_ID_0);
+        SYSKEY = 0;
+        SYSKEY = 0xaa996655;// Write first unlock key to SYSKEY
+        SYSKEY = 0x556699aa;// Write second unlock key to SYSKEY
+        //PLIB_CORE_SysUnlock();
 
-		PLIB_RTCC_WriteEnable(RTCC_ID_0);
-		PLIB_RTCC_Disable(RTCC_ID_0);
+        PLIB_RTCC_WriteEnable(RTCC_ID_0);
+        PLIB_RTCC_Disable(RTCC_ID_0);
 
-		//while (PLIB_RTCC_ClockRunningStatus(RTCC_ID_0));
-		PLIB_RTCC_RTCTimeSet(RTCC_ID_0,newTime);
-		PLIB_RTCC_RTCDateSet(RTCC_ID_0,newDate);
+        //while (PLIB_RTCC_ClockRunningStatus(RTCC_ID_0));
+        PLIB_RTCC_RTCTimeSet(RTCC_ID_0,newTime);
+        PLIB_RTCC_RTCDateSet(RTCC_ID_0,newDate);
 
 //        PLIB_RTCC_ClockSourceSelect (RTCC_ID_0, RTCC_CLOCK_SOURCE_LPRC);
 //        PLIB_RTCC_ClockOutputEnable (RTCC_ID_0);
 
-		PLIB_INT_Enable(INT_ID_0);
-		PLIB_RTCC_Enable(RTCC_ID_0);
+        PLIB_INT_Enable(INT_ID_0);
+        PLIB_RTCC_Enable(RTCC_ID_0);
 
-		PLIB_RTCC_WriteDisable(RTCC_ID_0);
-		SYSKEY = 0;
+        PLIB_RTCC_WriteDisable(RTCC_ID_0);
+        SYSKEY = 0;
 
-	}
+    }
 }
 
 void Creator_SetTime(time_t time)
 {
-	time_t current_GetTime = 0;
-	time_t correctInterval = 0;
-	time_t updateInterval = 0;
-	
-	current_GetTime = Creator_GetTime(NULL);
-	errorTime = (current_GetTime - time) + totalCorrected;
-	updateInterval = lastUpdated ? time - lastUpdated : 0;
-	correctInterval = updateInterval && errorTime ? abs(updateInterval / errorTime) : 0;
+    time_t current_GetTime = 0;
+    time_t correctInterval = 0;
+    time_t updateInterval = 0;
 
-	if(IS_TIME_UPDATE_IN_RANGE(updateInterval))
-	{
-		time_t correctSum = 0;
-		uint8 correctI = 0;
+    current_GetTime = Creator_GetTime(NULL);
+    errorTime = (current_GetTime - time) + totalCorrected;
+    updateInterval = lastUpdated ? time - lastUpdated : 0;
+    correctInterval = updateInterval && errorTime ? abs(updateInterval / errorTime) : 0;
 
-		if(correctPos > CORRECT_AVG_SIZE - 1)
-			correctPos = 0;
+    if(IS_TIME_UPDATE_IN_RANGE(updateInterval))
+    {
+        time_t correctSum = 0;
+        uint8 correctI = 0;
 
-		if(correctInterval < SERVERTIME_RESYNC_DELAY)
-			correctPrev[correctPos++] = correctInterval;
+        if(correctPos > CORRECT_AVG_SIZE - 1)
+        correctPos = 0;
 
-		correctSize = correctSize >= CORRECT_AVG_SIZE ? CORRECT_AVG_SIZE : correctPos;
+        if(correctInterval < SERVERTIME_RESYNC_DELAY)
+        correctPrev[correctPos++] = correctInterval;
 
-		for(correctI = 0; correctI < correctSize; correctI++)
-			correctSum += correctPrev[correctI];
+        correctSize = correctSize >= CORRECT_AVG_SIZE ? CORRECT_AVG_SIZE : correctPos;
 
-		if(correctSize && correctSum)
-		{
-			correctInterval = correctSum / (time_t)correctSize;
+        for(correctI = 0; correctI < correctSize; correctI++)
+        correctSum += correctPrev[correctI];
 
-			Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync [%d] diff: %d, error: %d, corrected: %d, sync interval: %d, correct interval: %d",  time, (current_GetTime - time), errorTime, totalCorrected, updateInterval, correctInterval);
+        if(correctSize && correctSum)
+        {
+            correctInterval = correctSum / (time_t)correctSize;
 
-			if(!_CorrectTask)
-				_CorrectTask = CreatorScheduler_ScheduleTask(TimeCorrectTask, NULL, correctInterval, true);
-			else
-				CreatorScheduler_SetTaskInterval(_CorrectTask, correctInterval);
-		}
+            Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync [%d] diff: %d, error: %d, corrected: %d, sync interval: %d, correct interval: %d", time, (current_GetTime - time), errorTime, totalCorrected, updateInterval, correctInterval);
 
-		if ( abs(current_GetTime - time) < 2 )
-		{
-			if(SERVERTIME_RESYNC_DELAY < SERVERTIME_RESYNC_DELAY_MAX)
-				SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY << 2;
-		}
-		else if ( abs(current_GetTime - time) < 5 )
-		{
-			if(SERVERTIME_RESYNC_DELAY < SERVERTIME_RESYNC_DELAY_MAX)
-				SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY << 1;
-		}
-		else if ( abs(current_GetTime - time) < 30 )
-		{
-			if(SERVERTIME_RESYNC_DELAY > SERVERTIME_RESYNC_DELAY_DEFAULT)
-				SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY >> 1;
-		}
-		else
-		{
-			SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY_DEFAULT;
-		}
-	}
-	else
-	{
-		if(!correctInterval)
-			Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync reverting to %d interval (expected interval %d got %d)", SERVERTIME_RESYNC_DELAY_DEFAULT, SERVERTIME_RESYNC_DELAY, updateInterval);
+            if(!_CorrectTask)
+            _CorrectTask = CreatorScheduler_ScheduleTask(TimeCorrectTask, NULL, correctInterval, true);
+            else
+            CreatorScheduler_SetTaskInterval(_CorrectTask, correctInterval);
+        }
 
-		memset(&correctPrev[0], 0, sizeof(correctPrev));
-		correctSize = 0;
-		correctPos = 0;
-		
-		SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY_DEFAULT;
-	}
+        if ( abs(current_GetTime - time) < 2 )
+        {
+            if(SERVERTIME_RESYNC_DELAY < SERVERTIME_RESYNC_DELAY_MAX)
+            SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY << 2;
+        }
+        else if ( abs(current_GetTime - time) < 5 )
+        {
+            if(SERVERTIME_RESYNC_DELAY < SERVERTIME_RESYNC_DELAY_MAX)
+            SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY << 1;
+        }
+        else if ( abs(current_GetTime - time) < 30 )
+        {
+            if(SERVERTIME_RESYNC_DELAY > SERVERTIME_RESYNC_DELAY_DEFAULT)
+            SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY >> 1;
+        }
+        else
+        {
+            SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY_DEFAULT;
+        }
+    }
+    else
+    {
+        if(!correctInterval)
+        {
+            Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync reverting to %d interval (expected interval %d got %d)", SERVERTIME_RESYNC_DELAY_DEFAULT, SERVERTIME_RESYNC_DELAY, updateInterval);
+        }
+        memset(&correctPrev[0], 0, sizeof(correctPrev));
+        correctSize = 0;
+        correctPos = 0;
 
-	totalCorrected = 0;
-	lastUpdated = time;
+        SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY_DEFAULT;
+    }
 
-	Creator_UpdateTime(time);
+    totalCorrected = 0;
+    lastUpdated = time;
+
+    Creator_UpdateTime(time);
 }
 
 static void TimeCorrectTask(CreatorTaskID taskID, void *clientArg)
 {
-	time_t correctSecond = 0;
+    time_t correctSecond = 0;
 
-	if(errorTime < 0)
-		correctSecond = -1;
-	else if(errorTime > 0)
-		correctSecond = 1;
+    if(errorTime < 0)
+    correctSecond = -1;
+    else if(errorTime > 0)
+    correctSecond = 1;
 
-	Creator_UpdateTime(Creator_GetTime(NULL) - correctSecond);
-	totalCorrected += correctSecond;
+    Creator_UpdateTime(Creator_GetTime(NULL) - correctSecond);
+    totalCorrected += correctSecond;
 
-	//Creator_Log(CreatorLogLevel_Info, "PIC32MZ time correct error %d correction: %d", errorTime, totalCorrected);
+    //Creator_Log(CreatorLogLevel_Info, "PIC32MZ time correct error %d correction: %d", errorTime, totalCorrected);
 }
 
 #endif
