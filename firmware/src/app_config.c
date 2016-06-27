@@ -31,7 +31,6 @@
 
 
 #include "app_config.h"
-#include "activitylog.h"
 #include "config_store.h"
 #include "ui_control.h"
 #include "standard_commands.h"
@@ -230,7 +229,7 @@ void AppConfig_NetworkInitialise(void)
         CreatorConsole_Puts(" Done\r\n");
     }
 
-    CreatorActivityLogLevel level = ConfigStore_GetLoggingLevel();
+    CreatorLogLevel level = ConfigStore_GetLoggingLevel();
     CreatorLog_SetLevel(level);
     Client_SetLogLevel(level);
 
@@ -269,20 +268,16 @@ void AppConfig_NetworkInitialise(void)
     // Add initial activity log entries (Note: must be after date/time and logging settings initialised)
     if (configDefault && logSettingsDefault && deviceServerConfig)
     {
-        Creator_ActivityLogWrite(CreatorActivityLogLevel_Warning, CreatorActivityLogCategory_HardwareBoot, CREATOR_ACTIVITY_ERRORCODE_NONE,
-                "Default configuration settings set for first-time use");
+        Creator_Log(CreatorLogLevel_Warning, "Default configuration settings set for first-time use");
     }
     else
     {
         if (configDefault)
-            Creator_ActivityLogWrite(CreatorActivityLogLevel_Error, CreatorActivityLogCategory_HardwareBoot, CREATOR_ACTIVITY_ERRORCODE_NONE,
-                    "Creator configuration lost, default values set");
+            Creator_Log(CreatorLogLevel_Error, "Creator configuration lost, default values set");
         if (logSettingsDefault)
-            Creator_ActivityLogWrite(CreatorActivityLogLevel_Error, CreatorActivityLogCategory_HardwareBoot, CREATOR_ACTIVITY_ERRORCODE_NONE,
-                    "Logging settings lost, default values set");
+            Creator_Log(CreatorLogLevel_Error, "Logging settings lost, default values set");
         if (deviceServerConfig)
-            Creator_ActivityLogWrite(CreatorActivityLogLevel_Error, CreatorActivityLogCategory_HardwareBoot, CREATOR_ACTIVITY_ERRORCODE_NONE,
-                    "Device server configuration lost, default values set");
+            Creator_Log(CreatorLogLevel_Error, "Device server configuration lost, default values set");
     }
 
     if ((BSP_SwitchStateGet(BSP_SWITCH_1) == BSP_SWITCH_STATE_PRESSED) && (BSP_SwitchStateGet(BSP_SWITCH_2) == BSP_SWITCH_STATE_PRESSED))
@@ -623,7 +618,7 @@ void AppConfig_NetworkInitialise(void)
 //		{
 //			if (firstInit)
 //			{
-//				Creator_ActivityLogWrite(CreatorActivityLogLevel_Warning, CreatorActivityLogCategory_Startup, CREATOR_ACTIVITY_ERRORCODE_NONE, "CreatorMessaging init failed, retry every 30sec...");
+//				Creator_Log(CreatorLogLevel_Warning, "CreatorMessaging init failed, retry every 30sec...");
 //				firstInit = false;
 //			}
 //			else
@@ -633,7 +628,7 @@ void AppConfig_NetworkInitialise(void)
 //			CreatorThread_Sleep(NULL, 30);
 //		}
 //
-//		Creator_ActivityLogWrite(CreatorActivityLogLevel_Information, CreatorActivityLogCategory_Startup, CREATOR_ACTIVITY_ERRORCODE_NONE, "CreatorMessaging initialised successfully");
+//		Creator_Log(CreatorLogLevel_Info, "CreatorMessaging initialised successfully");
 //	}
 //}
 

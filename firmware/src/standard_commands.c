@@ -24,7 +24,6 @@
 
 #include "app_config.h"
 #include "config_store.h"
-#include "activitylog.h"
 #include "creator_command.h"
 #include "standard_commands.h"
 #include "string_builder.h"
@@ -459,47 +458,14 @@ void StandardCommands_GetLogConfig(void)
 {
     if (ConfigStore_LoggingSettings_Read() && ConfigStore_LoggingSettings_IsValid())
     {
-        // Logging 'enabled' setting
-        bool logEnabled = ConfigStore_GetLoggingEnabled();
-        CreatorConsole_Printf("Logging:\t\t");
-        if (logEnabled)
-            CreatorConsole_Printf("Enabled" LINE_TERM);
-        else
-            CreatorConsole_Printf("Disabled" LINE_TERM);
-
         // Logging level
-        CreatorActivityLogLevel logLevel = ConfigStore_GetLoggingLevel();
+        CreatorLogLevel logLevel = ConfigStore_GetLoggingLevel();
         CreatorConsole_Printf("Log Level:\t\t");
-        if (logLevel < CreatorActivityLogLevel_Max)
+        if (logLevel < CreatorLogLevel_Max)
             CreatorConsole_Printf("%s" LINE_TERM, (char*) ConfigStore_GetLoggingLevelName(logLevel));
         else
             CreatorConsole_Printf("INVALID" LINE_TERM);
 
-        // Logging categories
-        CreatorActivityLogCategory logCategories = ConfigStore_GetLoggingCategories();
-        CreatorConsole_Printf("Log categories:\t\t");
-
-        if (logCategories != 0)
-        {
-            if (logCategories & 1 << CreatorActivityLogCategory_HardwareBoot)
-                CreatorConsole_Printf("hwboot ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_Startup)
-                CreatorConsole_Printf("startup ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_SystemRuntime)
-                CreatorConsole_Printf("runtime ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_App)
-                CreatorConsole_Printf("app ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_Shutdown)
-                CreatorConsole_Printf("shutdown ");
-        }
-        else
-        {
-            CreatorConsole_Printf("<none selected>");
-        }
         CreatorConsole_Printf(LINE_TERM LINE_TERM);
     }
     else
@@ -730,27 +696,10 @@ void StandardCommands_SetLogConfig(void)
     bool settingChanged = false;
     if (ConfigStore_LoggingSettings_Read() && ConfigStore_LoggingSettings_IsValid())
     {
-        // Display current Log 'enabled' setting
-        bool logEnabled = (uint8_t*) ConfigStore_GetLoggingEnabled();
-        CreatorConsole_Printf("Logging currently: ");
-        if (logEnabled)
-            CreatorConsole_Printf("Enabled" LINE_TERM);
-        else
-            CreatorConsole_Printf("Disabled" LINE_TERM);
-
-        if (CreatorCommand_PromptUserWithQuery("Modify the above setting? (y/n) "))
-        {
-            if (ConfigStore_SetLoggingEnabled(CreatorCommand_PromptUserWithQuery("Enable logging? (y/n) ")))
-                CreatorConsole_Printf("Setting updated successfully." LINE_TERM);
-            else
-                CreatorConsole_Printf("Setting update failed." LINE_TERM);
-
-            settingChanged = true;
-        }
         // Display current log-level setting
-        CreatorActivityLogLevel logLevel = ConfigStore_GetLoggingLevel();
+        CreatorLogLevel logLevel = ConfigStore_GetLoggingLevel();
         CreatorConsole_Printf("Logging level: ");
-        if (logLevel < CreatorActivityLogLevel_Max)
+        if (logLevel < CreatorLogLevel_Max)
             CreatorConsole_Printf("%s" LINE_TERM, (char*) ConfigStore_GetLoggingLevelName(logLevel));
         else
             CreatorConsole_Printf("INVALID" LINE_TERM);
@@ -760,12 +709,12 @@ void StandardCommands_SetLogConfig(void)
             CreatorConsole_Printf(
             LINE_TERM "Select a new logging level: ");
             uint32_t loggingLevelIndex = 0;
-            for (loggingLevelIndex = 0; loggingLevelIndex < CreatorActivityLogLevel_Max; loggingLevelIndex++)
+            for (loggingLevelIndex = 0; loggingLevelIndex < CreatorLogLevel_Max; loggingLevelIndex++)
             {
                 CreatorConsole_Printf(LINE_TERM "\t%s", ConfigStore_GetLoggingLevelName(loggingLevelIndex));
             }
             CreatorConsole_Printf(LINE_TERM);
-            int32_t selection = CreatorCommand_ReadInputIntegerOption(CreatorActivityLogLevel_Max, true, false);
+            int32_t selection = CreatorCommand_ReadInputIntegerOption(CreatorLogLevel_Max, true, false);
             if (selection > -1)
             {
                 if (ConfigStore_SetLoggingLevel(selection))
@@ -781,52 +730,6 @@ void StandardCommands_SetLogConfig(void)
             {
                 CreatorConsole_Printf(LINE_TERM "Invalid selection. Aborted" LINE_TERM);
             }
-        }
-        // Display current log-categories settings
-        CreatorActivityLogCategory logCategories = ConfigStore_GetLoggingCategories();
-        CreatorConsole_Printf("Log categories:\t\t");
-        if (logCategories != 0)
-        {
-            if (logCategories & 1 << CreatorActivityLogCategory_HardwareBoot)
-                CreatorConsole_Printf("hwboot ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_Startup)
-                CreatorConsole_Printf("startup ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_SystemRuntime)
-                CreatorConsole_Printf("runtime ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_App)
-                CreatorConsole_Printf("app ");
-
-            if (logCategories & 1 << CreatorActivityLogCategory_Shutdown)
-                CreatorConsole_Printf("shutdown ");
-        }
-        else
-        {
-            CreatorConsole_Printf("<none selected>");
-        }
-        CreatorConsole_Printf(LINE_TERM);
-        if (CreatorCommand_PromptUserWithQuery("Modify logging categories? (y/n) "))
-        {
-            uint32_t loggingCategoryIndex = 0;
-            CreatorConsole_Printf(LINE_TERM);
-            for (loggingCategoryIndex = 0; loggingCategoryIndex < CreatorActivityLogCategory_Max; loggingCategoryIndex++)
-            {
-                CreatorConsole_Printf("Enable logging category '%s': (y/n) ", ConfigStore_GetLoggingCategoryName(loggingCategoryIndex));
-                if (CreatorCommand_PromptUser())
-                    logCategories |= 1 << loggingCategoryIndex; // Set the category bit
-                else
-                    logCategories &= ~(1 << loggingCategoryIndex); // Clear the category bit
-            }
-
-            if (ConfigStore_SetLoggingCategories(logCategories))
-            {
-                CreatorConsole_Printf("Setting updated." LINE_TERM);
-                settingChanged = true;
-            }
-            else
-                CreatorConsole_Printf("Setting update failed." LINE_TERM);
         }
 
         // Save any changes

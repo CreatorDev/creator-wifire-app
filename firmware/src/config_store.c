@@ -57,31 +57,11 @@
 #include "creator/core/creator_nvs.h"
 #include "creator/core/creator_threading.h"
 
-#ifndef MICROCHIP_PIC32
-// TODO - remove
-#include "activitylog.h"
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <pwd.h>
-#include <errno.h>
-#include <sys/mman.h>
-#include "creator_mapping.h"
-int ActivityLogFD;
-const char* ActivityLogPtr;
-#define MODE 0777
-#endif
-
 #define CONFIG_STORE_MAGIC_NUMBER (uint64_t) 0x0101020305080D15
-#define CREATOR_NVSKEY_REMEMBERMETOKEN          "core.remembermetoken"
-#define CREATOR_NVSKEY_DEVICEREMEMBERMETOKEN    "core.deviceremembermetoken"
 #define CREATOR_NVSKEY_DEVICE_CONFIGURATION     "starterapp.deviceconfigration"
 #define CREATOR_NVSKEY_LOG_SETTINGS             "starterapp.logsettings"
-#define CREATOR_NVSKEY_ACTIVITY_LOG             "starterapp.creatoractivitylog"
 
 #define MAX_SEMAPHORE_WAIT_TIME_MS	10
-
-//#define NV_APPSTART_OFFSET				0x4DC		// Note: must match APPSTART_OFFSET in creator_nvs.c
-//#define ACTIVITYLOG_BASEOFFSET			(ACTIVITYLOG_PAGEOFFSET - NV_APPSTART_OFFSET)
 
 // WEP key generation
 #define WEP_KEY_NUMBER 4
@@ -98,17 +78,13 @@ static LoggingSettingsStruct _LoggingSettings;
 static DeviceServerConfigStruct _DeviceServerConfig;
 static CreatorSemaphore _ConfigStoreLock;
 
-// Match against these category names when user sets the logging settings
-static const char* _LoggingCategoryNames[CreatorActivityLogCategory_Max] =
-{ "hwboot", "startup", "sysruntime", "app", "shutdown" };
-
 static const char* _EncryptionNames[WiFiEncryptionType_Max] =
 { "WEP", "WPA", "WPA2", "Open" }; // Definition must match 'WiFiEncryptionType' enum in config_store.h
 
 static const char* _SecurityModeNames[ServerSecurityMode_Max] =
 { "NoSec", "PSK", "Cert" }; // Definition must match 'ServerSecurityMode' enum in config_store.h
 
-static const char* _LoggingLevelNames[CreatorActivityLogLevel_Max] =
+static const char* _LoggingLevelNames[CreatorLogLevel_Max] =
 { "0 - None", "1 - Error only", "2 - Error, Warning", "3 - Error, Warning, Info", "4 - All" }; // Definition must match 'loggingLevelType' enum in config_store.h
 
 static const char* _AddressingSchemeNames[AddressScheme_Max] =
@@ -546,19 +522,8 @@ bool ConfigStore_Config_ResetToDefaults(void)
 
     _DeviceConfig.AddressingScheme = AddressScheme_Dhcp;
 
-    // Sanity checks
-    SYS_ASSERT(strlen(CREATOR_DEFAULT_REST_ROOT_URL) < CONFIG_STORE_DEFAULT_FIELD_LENGTH,   "Default Creator REST root-URL is too large for ConfigStruct field");
-    SYS_ASSERT(strlen(CREATOR_DEFAULT_OAUTH_KEY) < CONFIG_STORE_DEFAULT_FIELD_LENGTH,       "Default Creator OAuth key is too large for ConfigStruct field");
-    SYS_ASSERT(strlen(CREATOR_DEFAULT_OAUTH_SECRET) < CONFIG_STORE_DEFAULT_FIELD_LENGTH,    "Default Creator OAuth secret is too large for ConfigStruct field");
-
     memcpy(&_DeviceConfig.DeviceName, CREATOR_BLANK_DEVICE_NAME, strlen(CREATOR_BLANK_DEVICE_NAME));
     memcpy(&_DeviceConfig.DeviceType, CREATOR_DEFAULT_DEVICE_TYPE, strlen(CREATOR_DEFAULT_DEVICE_TYPE));
-    // TODO - set default bootstrap URL?
-    //memcpy(&_DeviceConfig.RestRootURL, CREATOR_DEFAULT_REST_ROOT_URL, strlen(CREATOR_DEFAULT_REST_ROOT_URL));
-
-    // Clear the remember-me tokens
-    CreatorNVS_Set(CREATOR_NVSKEY_REMEMBERMETOKEN, NULL, 0);
-    CreatorNVS_Set(CREATOR_NVSKEY_DEVICEREMEMBERMETOKEN, NULL, 0);
 
     _DeviceConfig.StartInConfigurationMode = 0xFF;
     _DeviceConfig.Checkbyte = ComputeConfigCheckbyte();
@@ -590,16 +555,6 @@ bool ConfigStore_SetDeviceName(const char* value)
                 memcpy((void*) _DeviceConfig.DeviceName, (void*) value, CONFIG_STORE_DEFAULT_FIELD_LENGTH);
             else
                 memcpy((void*) _DeviceConfig.DeviceName, (void*) value, valueLength);
-
-            // Clear the remember-me tokens to force the device to reregister and push up the new device name.
-            if (ConfigStore_StartInConfigMode())
-            {
-                CreatorNVS_Set(CREATOR_NVSKEY_REMEMBERMETOKEN, NULL, 0);
-                CreatorNVS_Set(CREATOR_NVSKEY_DEVICEREMEMBERMETOKEN, NULL, 0);
-#ifdef MICROCHIP_PIC32
-                CreatorActivity_Log(CreatorActivityLogLevel_Information, CreatorActivityLogCategory_SystemRuntime, CREATOR_ACTIVITY_ERRORCODE_NONE, "Cleared the device remember-me token to allow a device name change to take effect");
-#endif
-            }
         }
         result = true;
     }
@@ -986,27 +941,17 @@ bool ConfigStore_LoggingSettings_Erase(void)
 #endif
 }
 
-bool ConfigStore_GetLoggingEnabled(void)
-{
-    return _LoggingSettings.LoggingEnabled;
-}
-
-CreatorActivityLogLevel ConfigStore_GetLoggingLevel(void)
+CreatorLogLevel ConfigStore_GetLoggingLevel(void)
 {
     return _LoggingSettings.LoggingLevel;
 }
 
-const char* ConfigStore_GetLoggingLevelName(CreatorActivityLogLevel level)
+const char* ConfigStore_GetLoggingLevelName(CreatorLogLevel level)
 {
     const char* result = NULL;
-    if (level < CreatorActivityLogLevel_Max)
+    if (level < CreatorLogLevel_Max)
         result = _LoggingLevelNames[level];
     return result;
-}
-
-uint16_t ConfigStore_GetLoggingCategories(void)
-{
-    return _LoggingSettings.LoggingCategories;
 }
 
 bool ConfigStore_LoggingSettings_IsMagicValid(void)
@@ -1044,9 +989,7 @@ bool ConfigStore_LoggingSettings_ResetToDefaults(void)
     *((uint64_t*) _LoggingSettings.Magic) = CONFIG_STORE_MAGIC_NUMBER;
     _LoggingSettings.MemFormatVer = CONFIGSTORE_LOGGINGSETTINGS_MEM_FORMAT_VERSION;
 
-    _LoggingSettings.LoggingEnabled = DEFAULT_LOGGING_ENABLED_SETTING;
     _LoggingSettings.LoggingLevel = DEFAULT_LOGGING_LEVEL;
-    _LoggingSettings.LoggingCategories = DEFAULT_LOGGING_CATEGORIES;
 
     _LoggingSettings.Checkbyte = ComputeLoggingSettingsCheckbyte();
     return true;
@@ -1068,36 +1011,15 @@ bool ConfigStore_LoggingSettings_Write(void)
 #endif
 }
 
-bool ConfigStore_SetLoggingEnabled(bool value)
-{
-    bool result = true;
-    _LoggingSettings.LoggingEnabled = value;
-    return result;
-}
-
-bool ConfigStore_SetLoggingLevel(CreatorActivityLogLevel value)
+bool ConfigStore_SetLoggingLevel(CreatorLogLevel value)
 {
     bool result = false;
-    if (value < CreatorActivityLogLevel_Max)
+    if (value < CreatorLogLevel_Max)
     {
         _LoggingSettings.LoggingLevel = value;
         result = true;
         CreatorLog_SetLevel(value);
     }
-    return result;
-}
-
-bool ConfigStore_SetLoggingCategories(uint16_t value)
-{
-    _LoggingSettings.LoggingCategories = value;
-    return true;
-}
-
-const char* ConfigStore_GetLoggingCategoryName(CreatorActivityLogCategory category)
-{
-    const char* result = NULL;
-    if (category < CreatorActivityLogCategory_Max)
-        result = _LoggingCategoryNames[category];
     return result;
 }
 

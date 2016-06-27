@@ -39,7 +39,6 @@
 #include "creator/creator_console.h"
 
 #include "app_config.h"
-#include "activitylog.h"
 #include "config_store.h"   // configuration-store  APIs
 #include "device_serial.h"
 #include "ui_control.h"
@@ -89,7 +88,7 @@ APP_DATA appData;
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-#define	STARTER_APP_DEVICE_TYPE			"WiFire"
+#define	STARTER_APP_DEVICE_TYPE "WiFire"
 
 static AppInfo info ={
     .ApplicationName = TOSTRING(APP_NAME),
@@ -196,11 +195,8 @@ void APP_Tasks ( void )
                 // TODO - next functions and remove...
                 UIControl_SetUIState(AppUIState_AppInitConnectingToServer);
                 //AppConfig_CreatorInitialise();
-                //ConfigStore_SetDeviceType(STARTER_APP_DEVICE_TYPE);
-
+                //ConfigStore_SetDeviceType(STARTER_APP_DEVICE_TYPE);   // TODO - only set if changed + update checksum etc...
                 //UIControl_SetUIState(AppUIState_InteractiveConnectedToCreator);
-                // TODO - deprecate/remove activity log from libCore...
-                Creator_ActivityLogSystemMode(CreatorActivityLogCategory_SystemRuntime);
 
                 // TODO - keep Arduino?
                 CreatorThread_New("ArduinoMonitor", 0, 4096, (CreatorThread_Callback) SYS_ArduinoMonitorTask, NULL);

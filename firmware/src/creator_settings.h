@@ -38,24 +38,15 @@
 #ifndef __CREATOR_SETTINGS_H_
 #define	__CREATOR_SETTINGS_H_
 
-
 #include <stdbool.h>
 #include <stdint.h>
 
-#define CREATOR_OAUTH_KEY_LENGTH		(16)
-#define CREATOR_OAUTH_SECRET_LENGTH	(16)
-
-#define CREATOR_BLANK_DEVICE_NAME		"NoDeviceNameSet"
+#define CREATOR_BLANK_DEVICE_NAME       "NoDeviceNameSet"
 #ifdef MICROCHIP_PIC32
-#define CREATOR_DEFAULT_DEVICE_TYPE	"WiFire"
+#define CREATOR_DEFAULT_DEVICE_TYPE     "WiFire"
 #else
-#define CREATOR_DEFAULT_DEVICE_TYPE	"ci20"
+#define CREATOR_DEFAULT_DEVICE_TYPE     "ci20"
 #endif
-#define CREATOR_DEFAULT_REST_ROOT_URL	"https://ws-uat.creatorworld.com"
-#define CREATOR_DEFAULT_OAUTH_KEY		"Ph3bY5kkU4P6vmtT"
-#define CREATOR_DEFAULT_OAUTH_SECRET	"Sd1SVBfYtGfQvUCR"
-
-
 
 #endif	/* __CREATOR_SETTINGS_H_ */
 

@@ -21,6 +21,7 @@
  ***********************************************************************************************************************/
 
 #include "creator/core/core.h"
+#include "creator/core/creator_debug.h"
 #include "creator/core/http_server.h"
 #include "creator/core/creator_task_scheduler.h"
 #include "creator/core/xmltree.h"
@@ -465,11 +466,8 @@ static void PostDeviceServer(CreatorHTTPServerRequest request)
                 ConfigStore_SetBootstrapCertChain("");
             }
 
-            Creator_ActivityLogWrite(CreatorActivityLogLevel_Information, CreatorActivityLogCategory_Startup, CREATOR_ACTIVITY_ERRORCODE_NONE,
-                    "SoftAP device server configured: Security = %s, Bootstrap = %s", ConfigStore_GetSecurityModeName(securityMode),
-                    ConfigStore_GetBootstrapURL());
-            // TODO - try to extract/show clientID from cert or PSK
-
+            Creator_Log(CreatorLogLevel_Info, "SoftAP device server configured: Security = %s, Bootstrap = %s",
+                    ConfigStore_GetSecurityModeName(securityMode), ConfigStore_GetBootstrapURL());
         }
         // Fell the tree
         Tree_Delete(xmlTreeRoot);
@@ -583,8 +581,8 @@ static void PostNetworkConfig(CreatorHTTPServerRequest request)
                     security = "WPA2";
                     break;
             }
-            Creator_ActivityLogWrite(CreatorActivityLogLevel_Information, CreatorActivityLogCategory_Startup, CREATOR_ACTIVITY_ERRORCODE_NONE,
-                    "SoftAP device configured: SSID = %s, Security = %s", ConfigStore_GetNetworkSSID(), security);
+            Creator_Log(CreatorLogLevel_Info, "SoftAP device configured: SSID = %s, Security = %s",
+                    ConfigStore_GetNetworkSSID(), security);
 
             ConfigStore_SetNetworkConfigSet(true);
             if (AppConfig_CheckValidAppConfig(false))

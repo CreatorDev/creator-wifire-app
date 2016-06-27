@@ -49,7 +49,6 @@
         <itemPath>../src/app.h</itemPath>
         <itemPath>../src/app_config.h</itemPath>
         <itemPath>../src/app_commands.h</itemPath>
-        <itemPath>../src/activitylog.h</itemPath>
         <itemPath>../src/arduino_monitor.h</itemPath>
         <itemPath>../src/bsp_srand_seed.h</itemPath>
         <itemPath>../src/command_handlers.h</itemPath>
@@ -374,7 +373,6 @@
         <itemPath>../src/app_commands.c</itemPath>
         <itemPath>../src/app_config.c</itemPath>
         <itemPath>../src/arduino_monitor.c</itemPath>
-        <itemPath>../src/activitylog.c</itemPath>
         <itemPath>../src/bsp_srand_seed.c</itemPath>
         <itemPath>../src/command_handlers.c</itemPath>
         <itemPath>../src/config_webserver.c</itemPath>
@@ -1144,6 +1142,7 @@
         <property key="UART5" value="true"/>
         <property key="UART6" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="false"/>

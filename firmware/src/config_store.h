@@ -40,33 +40,33 @@
 #include <stdint.h>
 
 #include "creator_settings.h"
-#include "activitylog.h"
 #include "creator/core/base_types.h"
+#include "creator/core/creator_debug.h"
 
-#define	MAC_ADDRESS_LENGTH					(12)
-#define	CONFIG_STORE_DEFAULT_FIELD_LENGTH	(32)
+#define	MAC_ADDRESS_LENGTH (12)
+#define	CONFIG_STORE_DEFAULT_FIELD_LENGTH (32)
 
 // WiFi limits (for wifi drivers > v1.03)
-#define	MIN_KEY_PHRASE_LENGTH	(8) //DRV_WIFI_ConvPassphraseToKey() - min length required
-#define	MAX_KEY_PHRASE_LENGTH	(63) // DRV_WIFI_ConvPassphraseToKey() - max length required
+#define	MIN_KEY_PHRASE_LENGTH (8)   //DRV_WIFI_ConvPassphraseToKey() - min length required
+#define	MAX_KEY_PHRASE_LENGTH (63)  // DRV_WIFI_ConvPassphraseToKey() - max length required
 
 // Configuration Memory Base Address
-#define CONFIG_STORE_BASE_ADDRESS							0xBD1F0000
+#define CONFIG_STORE_BASE_ADDRESS 0xBD1F0000
 
 // Versioning
-#define	CONFIGSTORE_CONFIG_MEM_FORMAT_VERSION				(1)
-#define	CONFIGSTORE_LOGGINGSETTINGS_MEM_FORMAT_VERSION		(1)
-#define	CONFIGSTORE_DEVICESERVERSETTINGS_MEM_FORMAT_VERSION	(1)
+#define	CONFIGSTORE_CONFIG_MEM_FORMAT_VERSION               (1)
+#define	CONFIGSTORE_LOGGINGSETTINGS_MEM_FORMAT_VERSION      (1)
+#define	CONFIGSTORE_DEVICESERVERSETTINGS_MEM_FORMAT_VERSION (1)
 
-#define	IPV4_ADDRESS_LENGTH									(15)
-#define CREATOR_ROOT_URL_LENGTH								(48)
+#define	IPV4_ADDRESS_LENGTH (15)
+#define CREATOR_ROOT_URL_LENGTH (48)
 
 // Device server
-#define BOOTSTRAP_URL_LENGTH                                (64)    // TODO - check max lengths
-#define SECURITY_PUBLIC_KEY_LENGTH							(64)
-#define SECURITY_PRIVATE_KEY_LENGTH							(64)    // TODO - 256
-#define SECURITY_CERT_LENGTH    							(64)    // TODO - 16K? (limit to 16K flash page - less config size)
-#define SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH				(64)    // TODO - 4K?
+#define BOOTSTRAP_URL_LENGTH                    (64)    // TODO - check max lengths
+#define SECURITY_PUBLIC_KEY_LENGTH              (64)
+#define SECURITY_PRIVATE_KEY_LENGTH             (64)    // TODO - 256?
+#define SECURITY_CERT_LENGTH                    (64)    // TODO - 16K? (limit to 16K flash page - less config size)
+#define SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH    (64)    // TODO - 4K?
 
 //
 // Device Config settings
@@ -95,9 +95,7 @@ typedef enum
     ServerSecurityMode_Max
 } ServerSecurityMode;
 
-#define DEFAULT_LOGGING_ENABLED_SETTING		(true)
-#define DEFAULT_LOGGING_LEVEL				(CreatorActivityLogLevel_Information)
-#define DEFAULT_LOGGING_CATEGORIES			(1<<CreatorActivityLogCategory_HardwareBoot | 1<<CreatorActivityLogCategory_Startup | 1<<CreatorActivityLogCategory_Shutdown)
+#define DEFAULT_LOGGING_LEVEL (CreatorLogLevel_Info)
 
 
 /*
@@ -106,51 +104,51 @@ typedef enum
  * - LoggingSettingsStruct
  */
 
-#define NVM_STRUCTURE_SPACING_BYTES			(32)			// Todo, could improve this to make it more intelligent (i.e. word/row-aligned)?
+#define NVM_STRUCTURE_SPACING_BYTES (32)
 
 // Format of configuration memory
 //
 // Notes:
 // - startInConfigurationMode: == 0xFFFF -> boot into configuration mode
-//			       != 0xFFFF -> boot into application mode
+//                             != 0xFFFF -> boot into application mode
 // - checkbyte will be XOR of magic number through to padding field
 //
-#define	CONFIGSETTINGS_PAGEOFFSET			(0)
+#define	CONFIGSETTINGS_PAGEOFFSET (0)
 typedef struct
 {
     // Memory Format Information
-    uint8_t             Magic[8];
-    uint32_t            MemFormatVer;
+    uint8_t     Magic[8];
+    uint32_t    MemFormatVer;
 
     // Device Information
-    uint64_t			CpuSerialNumber;
-    char				DeviceName[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		// Null terminated
-    char				DeviceType[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
-    char				MacAddress[MAC_ADDRESS_LENGTH+1];						//  "       "
+    uint64_t    CpuSerialNumber;
+    char        DeviceName[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];        // Null terminated
+    char        DeviceType[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];        //  "       "
+    char        MacAddress[MAC_ADDRESS_LENGTH+1];                       //  "       "
 
     // SoftAP Information
-    char				SoftAPSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
-    char				SoftAPPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];	//  "       "
+    char        SoftAPSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];        //  "       "
+    char        SoftAPPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];    //  "       "
 
     // Network Configuration
     WiFiEncryptionType	Encryption;
-    char				NetworkSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];		//  "       "
-    char				NetworkPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];	//  "       "
-    AddressScheme		AddressingScheme;
+    char        NetworkSSID[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];       //  "       "
+    char        NetworkPassword[CONFIG_STORE_DEFAULT_FIELD_LENGTH+1];   //  "       "
+    AddressScheme AddressingScheme;
 
     // StaticIP configuration
-    char				StatDNS[IPV4_ADDRESS_LENGTH+1];							//  "       "
-    char				StatIP[IPV4_ADDRESS_LENGTH+1];							//  "       "
-    char				StatNetmask[IPV4_ADDRESS_LENGTH+1];						//  "       "
-    char				StatGateway[IPV4_ADDRESS_LENGTH+1];						//  "       "
+    char        StatDNS[IPV4_ADDRESS_LENGTH+1];                         //  "       "
+    char        StatIP[IPV4_ADDRESS_LENGTH+1];                          //  "       "
+    char        StatNetmask[IPV4_ADDRESS_LENGTH+1];                     //  "       "
+    char        StatGateway[IPV4_ADDRESS_LENGTH+1];                     //  "       "
 
     // Device Control
-    uint8_t				StartInConfigurationMode;
-    uint8_t				NetworkConfigConfigured;    // TODO - review/add device server configured?
+    uint8_t     StartInConfigurationMode;
+    uint8_t     NetworkConfigConfigured;    // TODO - review/add device server configured?
     
     // Housekeeping
-    uint16_t			Padding;
-    uint8_t				Checkbyte;												// Note: Must always be last field in structure
+    uint16_t    Padding;
+    uint8_t     Checkbyte;      // Note: Must always be last field in structure
 
 } ConfigStruct;
 
@@ -159,17 +157,15 @@ typedef struct
 typedef struct
 {
     // Memory Format Information
-    uint8_t					Magic[8];
-    uint32_t				MemFormatVer;
+    uint8_t     Magic[8];
+    uint32_t    MemFormatVer;
 
     // Logging Configuration
-    uint32_t				LoggingEnabled;		// Note: could reduce size to uint8 (if other settings are changed in the future)
-    CreatorActivityLogLevel	LoggingLevel;
-    uint16_t				LoggingCategories;
+    CreatorLogLevel LoggingLevel;
 
     // Housekeeping
-    uint16_t				Padding;
-    uint8_t					Checkbyte;												// Note: Must always be last field in structure
+    uint16_t    Padding;
+    uint8_t     Checkbyte;      // Note: Must always be last field in structure
 
 } LoggingSettingsStruct;
 
@@ -177,20 +173,20 @@ typedef struct
 typedef struct
 {
     // Memory Format Information
-    uint8_t					Magic[8];
-    uint32_t				MemFormatVer;
+    uint8_t     Magic[8];
+    uint32_t    MemFormatVer;
 
     // 	Device server configuration
     ServerSecurityMode  SecurityMode;
-    char				BootstrapURL[BOOTSTRAP_URL_LENGTH+1];                   //  Null terminated
-    char				PublicKey[SECURITY_PUBLIC_KEY_LENGTH+1];                //  "       "
-    char				PrivateKey[SECURITY_PRIVATE_KEY_LENGTH+1];              //  "       "
-    char				Certificate[SECURITY_CERT_LENGTH+1];                    //  "       "
-    char				BootstrapCertChain[SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH+1]; //  "       "
+    char        BootstrapURL[BOOTSTRAP_URL_LENGTH+1];                   //  Null terminated
+    char        PublicKey[SECURITY_PUBLIC_KEY_LENGTH+1];                //  "       "
+    char        PrivateKey[SECURITY_PRIVATE_KEY_LENGTH+1];              //  "       "
+    char        Certificate[SECURITY_CERT_LENGTH+1];                    //  "       "
+    char        BootstrapCertChain[SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH+1]; //  "       "
 
     // Housekeeping
-    uint16_t				Padding;
-    uint8_t					Checkbyte;												// Note: Must always be last field in structure
+    uint16_t    Padding;
+    uint8_t     Checkbyte;      // Note: Must always be last field in structure
 
 } DeviceServerConfigStruct;
 
@@ -275,15 +271,9 @@ bool ConfigStore_LoggingSettings_UpdateCheckbyte(void);
 bool ConfigStore_LoggingSettings_Write(void);
 
 // APIs
-uint16_t ConfigStore_GetLoggingCategories(void);
-const char* ConfigStore_GetLoggingCategoryName(CreatorActivityLogCategory category);
-bool ConfigStore_GetLoggingEnabled(void);
-CreatorActivityLogLevel ConfigStore_GetLoggingLevel(void);
-const char* ConfigStore_GetLoggingLevelName(CreatorActivityLogLevel level);
-
-bool ConfigStore_SetLoggingEnabled(bool value);
-bool ConfigStore_SetLoggingLevel(CreatorActivityLogLevel value);
-bool ConfigStore_SetLoggingCategories(uint16_t value);
+CreatorLogLevel ConfigStore_GetLoggingLevel(void);
+const char* ConfigStore_GetLoggingLevelName(CreatorLogLevel level);
+bool ConfigStore_SetLoggingLevel(CreatorLogLevel value);
 
 
 //

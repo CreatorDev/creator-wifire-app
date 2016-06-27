@@ -44,6 +44,8 @@ static CreatorThread _ClientThread;
 static AwaStaticClient * _AwaClient;
 static bool _Terminate;
 
+#define LOCAL_PORT  6000
+
 #define DEVICE_INSTANCES 1
 #define LED_INSTANCES 4
 
@@ -78,12 +80,9 @@ void Client_Initialise(void)
     _AwaClient = AwaStaticClient_New();
     Client_SetLogLevel(ConfigStore_GetLoggingLevel());
 
-//    AwaStaticClient_SetEndPointName(_AwaClient, "WiFire");
-    AwaStaticClient_SetEndPointName(_AwaClient, ConfigStore_GetDeviceName());       // TODO - use clientID from cert
-//    AwaStaticClient_SetBootstrapServerURI(_AwaClient, "coap://127.0.0.1:15685");
-//    AwaStaticClient_SetBootstrapServerURI(_AwaClient, "coap://192.168.148.47:15685");
+    AwaStaticClient_SetEndPointName(_AwaClient, ConfigStore_GetDeviceName());
     AwaStaticClient_SetBootstrapServerURI(_AwaClient, ConfigStore_GetBootstrapURL());
-    AwaStaticClient_SetCoAPListenAddressPort(_AwaClient, "0.0.0.0", 6000);          // TODO - support port config
+    AwaStaticClient_SetCoAPListenAddressPort(_AwaClient, "0.0.0.0", LOCAL_PORT);
     AwaStaticClient_Init(_AwaClient);
 
     CreateDevice(_AwaClient);
@@ -98,7 +97,7 @@ void Client_Shutdown(void)
     _Terminate = true;
     if (_ClientThread)
     {
-        CreatorThread_Join(_ClientThread);     // TODO - beware join ignored on RTOS, free too soon - could assert before reset...
+        CreatorThread_Join(_ClientThread);     // Beware join ignored for FreeRTOS. Free too soon could assert before reset
         CreatorThread_Free(&_ClientThread);
     }
 }
@@ -111,7 +110,7 @@ void UpdateLEDs(void)
         if (prevLeds[index].OnOff != leds[index].OnOff)
         {
             prevLeds[index].OnOff = leds[index].OnOff;
-            UIControl_SetLEDMode(index + 1, UILEDMode_Manual);    // TODO - refactor to remove index ?
+            UIControl_SetLEDMode(index + 1, UILEDMode_Manual);
             if (prevLeds[index].OnOff)
                 UIControl_SetLEDState(index + 1, UILEDState_On);
             else
@@ -141,8 +140,7 @@ static void CreateDevice(AwaStaticClient * awaClient)
 
     // Define resources
     AwaStaticClient_DefineObject(awaClient, 3, "Device", 0, DEVICE_INSTANCES);
-    //AwaStaticClient_DefineResource(awaClient, 3, 0, "Manufacturer", AwaResourceType_String, 0, 1, AwaResourceOperations_ReadOnly);
-    AwaStaticClient_DefineResource(awaClient, 3, 0, "Manufacturer", AwaResourceType_String, 0, 1, AwaResourceOperations_ReadWrite); // TODO - remove write access
+    AwaStaticClient_DefineResource(awaClient, 3, 0, "Manufacturer", AwaResourceType_String, 0, 1, AwaResourceOperations_ReadOnly);
     AwaStaticClient_SetResourceStorageWithPointer(awaClient, 3, 0, &device[0].Manufacturer, sizeof(device[0].Manufacturer), sizeof(device[0]));
     AwaStaticClient_DefineResource(awaClient, 3, 2, "SerialNumber", AwaResourceType_String, 0, 1, AwaResourceOperations_ReadOnly);
     AwaStaticClient_SetResourceStorageWithPointer(awaClient, 3, 2, &device[0].SerialNumber, sizeof(device[0].SerialNumber), sizeof(device[0]));
@@ -176,7 +174,7 @@ static void CreateDevice(AwaStaticClient * awaClient)
 static void CreateLeds(AwaStaticClient * awaClient)
 {
     // Define resources
-    // TODO - use c/b to support live read/write
+    // TODO - use callback API instead - to support live read/writes
     AwaStaticClient_DefineObject(awaClient, 3311, "Light", 0, LED_INSTANCES);
     AwaStaticClient_DefineResource(awaClient, 3311, IPSO_LIGHT_CONTROL_ON_OFF, "OnOff", AwaResourceType_Boolean, 0, 1, AwaResourceOperations_ReadWrite);
     AwaStaticClient_SetResourceStorageWithPointer(awaClient, 3311, IPSO_LIGHT_CONTROL_ON_OFF, &leds[0].OnOff, sizeof(leds[0].OnOff), sizeof(leds[0]));
@@ -198,19 +196,19 @@ LEDObject * Client_GetLeds(void)
     return leds;
 }
 
-void Client_SetLogLevel(CreatorActivityLogLevel level)
+void Client_SetLogLevel(CreatorLogLevel level)
 {
     switch (level) {
-        case CreatorActivityLogLevel_Error:
+        case CreatorLogLevel_Error:
             AwaStaticClient_SetLogLevel(AwaLogLevel_Error);
             break;
-        case CreatorActivityLogLevel_Warning:
+        case CreatorLogLevel_Warning:
             AwaStaticClient_SetLogLevel(AwaLogLevel_Warning);
             break;
-        case CreatorActivityLogLevel_Information:
+        case CreatorLogLevel_Info:
             AwaStaticClient_SetLogLevel(AwaLogLevel_Verbose);
             break;
-        case CreatorActivityLogLevel_Debug:
+        case CreatorLogLevel_Debug:
             AwaStaticClient_SetLogLevel(AwaLogLevel_Debug);
             break;
         default:

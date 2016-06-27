@@ -200,8 +200,6 @@ void APP_Tasks( void );
 
 
 
-//#include "appbase/activitylog.h"
-#include "activitylog.h"
 #include "creator/core/creator_threading.h"
 
 #define	MAC_ADDRESS_LENGTH (12)

@@ -50,7 +50,7 @@ typedef struct      // IPSO object: 3311 - Light control
 void Client_Initialise(void);
 void Client_Shutdown(void);
 
-void Client_SetLogLevel(CreatorActivityLogLevel level);
+void Client_SetLogLevel(CreatorLogLevel level);
 LEDObject * Client_GetLeds(void);
 
 #endif // __APP_CLIENT_H_

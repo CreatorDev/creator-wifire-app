@@ -36,8 +36,8 @@ typedef enum
 	CreatorLogLevel_Error,
 	CreatorLogLevel_Warning,
 	CreatorLogLevel_Info,
-	CreatorLogLevel_Debug
-
+	CreatorLogLevel_Debug,
+        CreatorLogLevel_Max
 } CreatorLogLevel;
 
 /**
