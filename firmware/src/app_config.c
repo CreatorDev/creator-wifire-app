@@ -283,8 +283,8 @@ void AppConfig_NetworkInitialise(void)
     if ((BSP_SwitchStateGet(BSP_SWITCH_1) == BSP_SWITCH_STATE_PRESSED) && (BSP_SwitchStateGet(BSP_SWITCH_2) == BSP_SWITCH_STATE_PRESSED))
         _RunningInConfigurationMode = true;
 
-    // Check configuration memory for SoftAP-mode flag
-    if (ConfigStore_Config_IsValid() && ConfigStore_StartInConfigMode())
+    // Only run in application mode if device has valid configuration
+    if (!_RunningInConfigurationMode && (!ConfigStore_Config_IsValid() || ConfigStore_StartInConfigMode() || !AppConfig_CheckValidAppConfig(false)))
         _RunningInConfigurationMode = true;
 
     int numberOfNetworkInterfaces = TCPIP_STACK_NumberOfNetworksGet();
@@ -385,15 +385,6 @@ void AppConfig_NetworkInitialise(void)
     {
         networkType = DRV_WIFI_NETWORK_TYPE_SOFT_AP;
         CreatorConsole_Puts("              [Configuration Mode]\r\n\r\n\r\n");
-//		const char* remembermeToken = ConfigStore_GetCreatorKeyValue("core.remembermetoken", NULL);
-//		if (remembermeToken == NULL)
-//		{
-//			Creator_Log(CreatorLogLevel_Info, "[Information: Creator Settings (Creator root URL, licensee creds and device registration key) are currently unlocked and can be changed from the mobile app]");
-//		}
-//		else
-//		{
-//			Creator_MemFree((void**) &remembermeToken);
-//		}
         networkSSID = ConfigStore_GetSoftAPSSID();
         const char *mac = ConfigStore_GetSoftAPSSID();
         int networkSSIDLength = strlen(networkSSID);
@@ -406,26 +397,14 @@ void AppConfig_NetworkInitialise(void)
         {
             CreatorThread_SleepMilliseconds(NULL, 50);
         }
-
-#if defined(TCPIP_STACK_USE_SSL_SERVER)        
-#ifdef DYNAMIC_SSL_SERVER_MODE_SWITCH
-        g_sslServerMode = true;
-#endif
-#endif
     }
     else
     {
         networkType = DRV_WIFI_NETWORK_TYPE_INFRASTRUCTURE;
         UIControl_SetUIState(AppUIState_AppInitConnectingToNetwork);
         CreatorConsole_Puts("               [Application Mode]\r\n\r\n\r\n");
-#if defined(TCPIP_STACK_USE_SSL_SERVER)
-#ifdef DYNAMIC_SSL_SERVER_MODE_SWITCH
-        g_sslServerMode = false;
-#endif
-#endif	
 
-        uint8_t channelList[] =
-        { };
+        uint8_t channelList[] = { };
         DRV_WIFI_ChannelListSet(channelList, sizeof(channelList));
 
         DRV_WIFI_ReconnectModeSet(DRV_WIFI_RETRY_FOREVER,         // retry forever to connect to Wi-Fi network
@@ -684,7 +663,8 @@ bool AppConfig_CheckValidAppConfig(bool readConfigFirst)
     bool result = false;
     // TODO - need ConfigStore_DeviceServerConfig_Read()? - acceptable overheads if cert = 16KB?
 
-    if (!readConfigFirst || (ConfigStore_Config_Read() && ConfigStore_Config_IsValid() && ConfigStore_DeviceServerConfig_IsValid()))
+    if (!readConfigFirst || (ConfigStore_Config_Read() && ConfigStore_Config_IsValid() &&
+        ConfigStore_DeviceServerConfig_Read() && ConfigStore_DeviceServerConfig_IsValid()))
     {
         char* bootUrl = (char*) ConfigStore_GetBootstrapURL();
         char* wifiSsid = (char *) ConfigStore_GetNetworkSSID();

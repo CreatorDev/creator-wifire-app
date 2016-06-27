@@ -162,6 +162,7 @@ typedef struct
 
     // Logging Configuration
     CreatorLogLevel LoggingLevel;
+    uint8_t     Reserved[6];        // Reserved for future log settings (to preserve offset to device server settings)
 
     // Housekeeping
     uint16_t    Padding;

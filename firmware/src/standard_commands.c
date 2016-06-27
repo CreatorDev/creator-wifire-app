@@ -161,12 +161,13 @@ bool StandardCommands_FactoryResetHelper(void)
     bool result = false;
 
     // Reset configuration to default state
-    if (ConfigStore_Config_Read() && ConfigStore_LoggingSettings_Read())
+    if (ConfigStore_Config_Read() && ConfigStore_LoggingSettings_Read() && ConfigStore_DeviceServerConfig_Read())
     {
-        if (ConfigStore_Config_ResetToDefaults() && ConfigStore_LoggingSettings_ResetToDefaults() && ConfigStore_Config_Write()
-                && ConfigStore_LoggingSettings_Write())
+        if (ConfigStore_Config_ResetToDefaults() && ConfigStore_Config_Write() &&
+            ConfigStore_LoggingSettings_ResetToDefaults()&& ConfigStore_LoggingSettings_Write() &&
+            ConfigStore_DeviceServerConfig_ResetToDefaults() && ConfigStore_DeviceServerConfig_Write())
         {
-            CreatorConsole_Puts("Successfully reset device to factory-default state\n\r");
+            CreatorConsole_Puts("Successfully reset device to factory-default state\r\n");
             result = true;
         }
     }
@@ -183,8 +184,7 @@ bool StandardCommands_FactoryReset(int argc, char** argv)
     // Confirm with user before resetting
     if (CreatorCommand_PromptUserWithQuery("Are you sure you want to reset this device to its factory-default settings? (y/n) "))
     {
-        bool preserveSoftAPPassword = CreatorCommand_PromptUserWithQuery(
-                "Would you like to preserve your device's current Configuration mode password: (y/n) ");
+        bool preserveSoftAPPassword = CreatorCommand_PromptUserWithQuery("Would you like to preserve your device's current Configuration mode password: (y/n) ");
         char *existingSoftAPPassword = NULL;
         if (preserveSoftAPPassword)
         {
@@ -423,7 +423,7 @@ void StandardCommands_GetVersions(void)
     // Application and library information
     AppInfo *appInfo = AppConfig_GetAppInfo();
     if (appInfo != NULL)
-        CreatorConsole_Printf("application:\t\t%s\n\r\t\t\tv%s (%s)" LINE_TERM LINE_TERM,
+        CreatorConsole_Printf("application:\t\t%s\r\n\t\t\tv%s (%s)" LINE_TERM LINE_TERM,
                 appInfo->ApplicationName == NULL ? "no application name" : appInfo->ApplicationName,
                 appInfo->ApplicationVersion == NULL ? "no application version" : appInfo->ApplicationVersion,
                 appInfo->ApplicationVersionDate == NULL ? "no version date" : appInfo->ApplicationVersionDate);
@@ -998,16 +998,15 @@ static void StandardCommands_SetNetworkConfig(void)
 
                 if (0 == (strlen(wifiSsid)))
                 {
-                    CreatorConsole_Printf("Note: Network SSID was not set. Please set Network SSID.\n\r\n\r");
+                    CreatorConsole_Printf("Note: Network SSID was not set. Please set Network SSID.\r\n\r\n");
                 }
                 if (0 == (strlen(wifiPassword)))
                 {
-                    CreatorConsole_Printf("Note: Network Password was not set. Please set Network Password.\n\r\n\r");
+                    CreatorConsole_Printf("Note: Network Password was not set. Please set Network Password.\r\n\r\n");
                 }
                 if (0 == (strlen(bootUrl)))
                 {
-                    CreatorConsole_Printf(
-                            "Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\n\r\n\r");
+                    CreatorConsole_Printf("Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\r\n\r\n");
                 }
             }
         }
@@ -1094,15 +1093,15 @@ static void StandardCommands_SetDeviceServerConfig(void)
                 if (0 == (strlen(bootUrl)))
                 {
                     CreatorConsole_Printf(
-                            "Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\n\r\n\r");
+                            "Note: The Bootstrap URL has not been set yet. You will need to set this before you can switch this device into application mode when it reboots.\r\n\r\n");
                 }
                 if (0 == (strlen(wifiSsid)))
                 {
-                    CreatorConsole_Printf("Note: Network SSID was not set. Please set Network SSID.\n\r\n\r");
+                    CreatorConsole_Printf("Note: Network SSID was not set. Please set Network SSID.\r\n\r\n");
                 }
                 if (0 == (strlen(wifiPassword)))
                 {
-                    CreatorConsole_Printf("Note: Network Password was not set. Please set Network Password.\n\r\n\r");
+                    CreatorConsole_Printf("Note: Network Password was not set. Please set Network Password.\r\n\r\n");
                 }
             }
         }

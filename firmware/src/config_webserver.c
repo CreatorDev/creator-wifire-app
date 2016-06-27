@@ -342,8 +342,7 @@ static void PostDeviceName(CreatorHTTPServerRequest request)
     if (request && ConfigStore_Config_IsValid())
     {
         // Set up parser to parse the POST body
-        TreeNode xmlTreeRoot = TreeNode_ParseXML((uint8_t*) CreatorHTTPServerRequest_GetContent(request), CreatorHTTPServerRequest_GetContentLength(request),
-                true);
+        TreeNode xmlTreeRoot = TreeNode_ParseXML((uint8_t*) CreatorHTTPServerRequest_GetContent(request), CreatorHTTPServerRequest_GetContentLength(request), true);
         if (xmlTreeRoot)
         {
             // Extract response data and save config
@@ -404,8 +403,7 @@ static void PostDeviceServer(CreatorHTTPServerRequest request)
     if (request && ConfigStore_DeviceServerConfig_IsValid())
     {
         // Set up parser to parse the POST body
-        TreeNode xmlTreeRoot = TreeNode_ParseXML((uint8_t*) CreatorHTTPServerRequest_GetContent(request), CreatorHTTPServerRequest_GetContentLength(request),
-                true);
+        TreeNode xmlTreeRoot = TreeNode_ParseXML((uint8_t*) CreatorHTTPServerRequest_GetContent(request), CreatorHTTPServerRequest_GetContentLength(request), true);
         if (xmlTreeRoot)
         {
             // Extract response data and save config
@@ -496,8 +494,7 @@ static void PostNetworkConfig(CreatorHTTPServerRequest request)
     if (request && ConfigStore_Config_IsValid())
     {
         // Set up parser to parse the POST body
-        TreeNode xmlTreeRoot = TreeNode_ParseXML((uint8_t*) CreatorHTTPServerRequest_GetContent(request), CreatorHTTPServerRequest_GetContentLength(request),
-                true);
+        TreeNode xmlTreeRoot = TreeNode_ParseXML((uint8_t*) CreatorHTTPServerRequest_GetContent(request), CreatorHTTPServerRequest_GetContentLength(request), true);
         if (xmlTreeRoot)
         {
             // Extract response data and save config
