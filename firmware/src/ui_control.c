@@ -21,9 +21,11 @@
 ***********************************************************************************************************************/
 
 /*! \file ui_control.c
- *  \brief APIs for manipulating the user interface behaviour of the Creator Starter App
+ *  \brief APIs for user interface in Creator WiFire App
  */
 
+#include "button_object.h"
+#include "temperature_object.h"
 #include "ui_control.h"
 
 #ifdef MICROCHIP_PIC32
@@ -215,7 +217,6 @@ void UIControl_UIStep(void)
         }
 #endif
     }
-
 }
 
 bool UIControl_SetUIState(AppUIState newState)
@@ -306,3 +307,17 @@ bool UIControl_SetUIState(AppUIState newState)
     }
     return result;
 }
+
+void UIControl_pollInputSensors(void)
+{
+    // Read button inputs
+    bool switch1 = (BSP_SwitchStateGet(BSP_SWITCH_1) == BSP_SWITCH_STATE_PRESSED);
+    bool switch2 = (BSP_SwitchStateGet(BSP_SWITCH_2) == BSP_SWITCH_STATE_PRESSED);
+    ButtonObject_Input(0, switch1);
+    ButtonObject_Input(1, switch2);
+
+    // TODO - read temperature
+    TemperatureObject_Input(0, 19.4);
+    // TODO - read analogue input
+}
+

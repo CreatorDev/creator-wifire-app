@@ -37,7 +37,9 @@
 
 #include "config_store.h"
 #include "app_config.h"
-#include "ui_control.h"
+#include "led_object.h"
+#include "button_object.h"
+#include "temperature_object.h"
 #include "app_client.h"
 
 static CreatorThread _ClientThread;
@@ -47,11 +49,8 @@ static bool _Terminate;
 #define LOCAL_PORT  6000
 
 #define DEVICE_INSTANCES 1
-#define LED_INSTANCES 4
 
 #define LABEL_SIZE 64
-
-#define IPSO_LIGHT_CONTROL_ON_OFF 5850
 
 typedef struct      // urn:oma:lwm2m:oma:3
 {
@@ -63,13 +62,9 @@ typedef struct      // urn:oma:lwm2m:oma:3
 } DeviceObject;
 
 static DeviceObject device[DEVICE_INSTANCES];
-static LEDObject leds[LED_INSTANCES];
-static LEDObject prevLeds[LED_INSTANCES];
 
 static void ClientProcess(CreatorThread thread, void *context);
-static void ClientSetup(void);
 static void CreateDevice(AwaStaticClient * awaClient);
-static void CreateLeds(AwaStaticClient * awaClient);
 
 void Client_Initialise(void)
 {
@@ -86,9 +81,11 @@ void Client_Initialise(void)
     AwaStaticClient_Init(_AwaClient);
 
     CreateDevice(_AwaClient);
-    CreateLeds(_AwaClient);
+    LedObject_Create(_AwaClient);
+    ButtonObject_Create(_AwaClient);
+    TemperatureObject_Create(_AwaClient);
+    
     Creator_Log(CreatorLogLevel_Info, "Client init done");
-
     _ClientThread = CreatorThread_New("Lwm2mClient", 1, 4096, ClientProcess, NULL);
 }
 
@@ -102,22 +99,11 @@ void Client_Shutdown(void)
     }
 }
 
-void UpdateLEDs(void)
+static void UpdateMonitor(AwaStaticClient * awaClient)
 {
-    int index;
-    for (index = 0; index < MAX_LEDS; index++)
-    {
-        if (prevLeds[index].OnOff != leds[index].OnOff)
-        {
-            prevLeds[index].OnOff = leds[index].OnOff;
-            UIControl_SetLEDMode(index + 1, UILEDMode_Manual);
-            if (prevLeds[index].OnOff)
-                UIControl_SetLEDState(index + 1, UILEDState_On);
-            else
-                UIControl_SetLEDState(index + 1, UILEDState_Off);
-            Creator_Log(CreatorLogLevel_Info, "Set LED%d %s", index + 1, prevLeds[index].OnOff ? "On" : "Off");
-        }
-    }
+    LedObject_Update(awaClient);
+    ButtonObject_Update(awaClient);
+    TemperatureObject_Update(awaClient);
 }
 
 static void ClientProcess(CreatorThread thread, void *context)
@@ -125,10 +111,11 @@ static void ClientProcess(CreatorThread thread, void *context)
     while (!_Terminate)
     {
         AwaStaticClient_Process(_AwaClient);
-        UpdateLEDs();           // TODO - remove
+        UpdateMonitor(_AwaClient);
         CreatorThread_SleepMilliseconds(NULL, 1);
     }
-    // TODO - un-register (if registered) and wait for sent (with t/o) - or do in other layer?
+    // TODO - un-register (if registered) and wait for sent (with t/o)
+    LedObject_Close();
     Creator_Log(CreatorLogLevel_Warning, "Client closed");
 }
 
@@ -169,31 +156,6 @@ static void CreateDevice(AwaStaticClient * awaClient)
     strncpy(device[instance].DeviceType, ConfigStore_GetDeviceType(), LABEL_SIZE);
     AwaStaticClient_CreateResource(awaClient, 3, instance, 19);
     strncpy(device[instance].SoftwareVersion, softwareVersion, LABEL_SIZE);
-}
-
-static void CreateLeds(AwaStaticClient * awaClient)
-{
-    // Define resources
-    // TODO - use callback API instead - to support live read/writes
-    AwaStaticClient_DefineObject(awaClient, 3311, "Light", 0, LED_INSTANCES);
-    AwaStaticClient_DefineResource(awaClient, 3311, IPSO_LIGHT_CONTROL_ON_OFF, "OnOff", AwaResourceType_Boolean, 0, 1, AwaResourceOperations_ReadWrite);
-    AwaStaticClient_SetResourceStorageWithPointer(awaClient, 3311, IPSO_LIGHT_CONTROL_ON_OFF, &leds[0].OnOff, sizeof(leds[0].OnOff), sizeof(leds[0]));
-
-    // Set initial values
-    int instance;
-    for (instance = 0; instance < LED_INSTANCES; instance++)
-    {
-        AwaStaticClient_CreateObjectInstance(awaClient, 3311, instance);
-        AwaStaticClient_CreateResource(awaClient, 3311, instance, IPSO_LIGHT_CONTROL_ON_OFF);
-        leds[instance].OnOff = true;
-
-        prevLeds[instance].OnOff = true;
-    }
-}
-
-LEDObject * Client_GetLeds(void)
-{
-    return leds;
 }
 
 void Client_SetLogLevel(CreatorLogLevel level)

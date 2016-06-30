@@ -48,20 +48,20 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-#define	CONFIG_MODE_BTN_PRESS_DEBOUNCE_SECONDS          (5)
+#define	CONFIG_MODE_BTN_PRESS_DEBOUNCE_SECONDS (5)
 
 #define WEP104_KEY_LENGTH 26
-#define DATETIME_MINIMUM_VALUE 1401962400			// 2014-06-05 10:00:00 GMT
+#define DATETIME_MINIMUM_VALUE 1401962400   // 2014-06-05 10:00:00 GMT
 #define BASE_ADDRESS 0xBD1F0000
-#define WF_DEFAULT_SSID_NAME_PREFIX			"WiFire_"
-#define	MAC_ADDRESS_LENGTH					(12)
+
+#define WF_DEFAULT_SSID_NAME_PREFIX "WiFire_"
+#define	MAC_ADDRESS_LENGTH (12)
 
 const uint8_t __attribute__((address(BASE_ADDRESS))) NVS_MEM_FLASH_RESERVE[DRV_NVM_PAGE_SIZE] = {0};
 
 static uint32_t _UptimeSecs = 0;
 
 static bool _DeviceIsOnline = false;
-static bool _ForcePresencePublish = false;
 static bool _RunningInConfigurationMode = false;
 
 AppInfo *_AppInfo = NULL;
@@ -150,11 +150,6 @@ bool AppConfig_IsDeviceOnline(void)
     return _DeviceIsOnline;
 }
 
-bool AppConfig_IsForcePresencePublish(void)
-{
-    return _ForcePresencePublish;
-}
-
 bool AppConfig_IsRunningInConfigurationMode(void)
 {
     return _RunningInConfigurationMode;
@@ -163,11 +158,6 @@ bool AppConfig_IsRunningInConfigurationMode(void)
 void AppConfig_SetDeviceOnline(bool deviceStatus)
 {
     _DeviceIsOnline = deviceStatus;
-}
-
-void AppConfig_SetForcePresencePublish(bool forcePublish)
-{
-    _ForcePresencePublish = forcePublish;
 }
 
 void AppConfig_NetworkInitialise(void)
@@ -256,15 +246,17 @@ void AppConfig_NetworkInitialise(void)
     CreatorTimer_SetTicksPerSecond(1000);
 
     // Check date/time has valid minimum value
-    // TODO - drop Creator datetime support?
+    // TODO - could use NTP to get time (in app mode), or mobile app could set time (in config mode)
     time_t time = Creator_GetTime(NULL);
     if (time < DATETIME_MINIMUM_VALUE)
     {
         Creator_SetTime(DATETIME_MINIMUM_VALUE);
     }
     else
+    {
         Creator_SetTime(time);	// Kick start the date/time support
-
+    }
+    
     // Add initial activity log entries (Note: must be after date/time and logging settings initialised)
     if (configDefault && logSettingsDefault && deviceServerConfig)
     {

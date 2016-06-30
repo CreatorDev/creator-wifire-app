@@ -39,19 +39,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define LED_INSTANCES 4
-
-typedef struct      // IPSO object: 3311 - Light control
-{
-    bool OnOff;
-} LEDObject;
-
-
 void Client_Initialise(void);
 void Client_Shutdown(void);
-
 void Client_SetLogLevel(CreatorLogLevel level);
-LEDObject * Client_GetLeds(void);
 
 #endif // __APP_CLIENT_H_
 

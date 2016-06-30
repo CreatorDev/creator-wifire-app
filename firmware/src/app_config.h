@@ -74,14 +74,11 @@ void AppConfig_Initialise(AppInfo *info);
 
 bool AppConfig_IsDeviceOnline(void);
 
-bool AppConfig_IsForcePresencePublish(void);
-
 bool AppConfig_IsRunningInConfigurationMode(void); // Check if App is in configuration (SoftAP) or application mode	
 
 void AppConfig_NetworkInitialise(void);
 
 void AppConfig_SetDeviceOnline(bool deviceStatus);
-void AppConfig_SetForcePresencePublish(bool forcePublish);
 
 bool AppConfig_SetResetMode(bool configMode);
 

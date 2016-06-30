@@ -78,11 +78,11 @@ APP_DATA appData;
 #endif
 
 #ifndef APP_VERSION
-#define APP_VERSION 0.0.10
+#define APP_VERSION 0.0.11
 #endif
 
 #ifndef APP_VERISONDATE
-#define APP_VERISONDATE 26 June 2016
+#define APP_VERISONDATE 30 June 2016
 #endif
 
 #define STRINGIFY(x) #x
@@ -90,7 +90,8 @@ APP_DATA appData;
 
 #define	STARTER_APP_DEVICE_TYPE "WiFire"
 
-static AppInfo info ={
+static AppInfo info =
+{
     .ApplicationName = TOSTRING(APP_NAME),
     .ApplicationVersion = TOSTRING(APP_VERSION),
     .ApplicationVersionDate =  TOSTRING(APP_VERISONDATE),
@@ -98,24 +99,9 @@ static AppInfo info ={
     .AppCLI_ResetHandler = CommandHandlers_ResetHandler
 };
 
-//-----------------------------------------------------------------------------
 //App information.
-static time_t _LastPrintUpTime = 0;
-
-#define	PRINT_UPTIME_PERIOD_SECONDS	(20)
-
-
-//CreatorID g_DeviceID;
-//char *g_OwnerID;
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Application Callback Functions
-// *****************************************************************************
-// *****************************************************************************
-
-/* TODO:  Add any necessary callback functions.
- */
+//static time_t _PrevAppTaskTime = 0;
+//#define APP_TASK_SECONDS (20)
 
 // *****************************************************************************
 // *****************************************************************************
@@ -249,13 +235,13 @@ void ApplicationModeTasks(void)
         CommandHandlers_ResetHandler(true);
     }
 
-    // Periodically print uptime
-    time_t currentTime;
-    Creator_GetTime(&currentTime);
-    if ((currentTime - _LastPrintUpTime) >= PRINT_UPTIME_PERIOD_SECONDS)
-    {
-        _LastPrintUpTime = currentTime;     // TODO - remove?
-    }
+    // Hook to perform period tasks
+    //time_t currentTime;
+    //Creator_GetTime(&currentTime);
+    //if ((currentTime - _PrevAppTaskTime) >= APP_TASK_SECONDS)
+    //{
+    //    _PrevAppTaskTime = currentTime;
+    //}
 
     //Handle device reset request.
     if (CommandHandlers_IsResetPending())
@@ -266,6 +252,10 @@ void ApplicationModeTasks(void)
         }
         else
             CreatorConsole_Puts("Shutdown failed\r\n");
+    }
+    else
+    {
+        UIControl_pollInputSensors();
     }
 }
 

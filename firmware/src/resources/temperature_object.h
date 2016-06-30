@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- Copyright (c) 2016, Imagination Technologies Limited
+ Copyright (c) 2016, Imagination Technologies Limited and/or its affiliated group companies.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -20,71 +20,15 @@
  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ***********************************************************************************************************************/
 
+#ifndef __TEMPERATURE_OBJECT_H_
+#define __TEMPERATURE_OBJECT_H_
 
-/*******************************************************************************
-  User Interface Control Headers
+#include "awa\static.h"
 
-  File Name:
-    ui_control.h
+void TemperatureObject_Create(AwaStaticClient * awaClient);
+void TemperatureObject_Update(AwaStaticClient * awaClient);
+void TemperatureObject_Input(int TemperatureID, float temperature);
 
-  Summary:
-    APIs for manipulating the user interface behaviour of the Creator Starter App
-
-  Description:
-
- *******************************************************************************/
-
-#ifndef __UI_CONTROL_H_
-#define __UI_CONTROL_H_
-
-#include <stdbool.h>
-#include <stdint.h>
+#endif // __TEMPERATURE_OBJECT_H_
 
 
-#define MAX_LEDS			(4)
-
-typedef enum
-{
-    UILEDState_Off = 0,
-    UILEDState_On
-} UILEDState;
-
-typedef enum
-{
-    UILEDMode_Manual = 0,					// Manually controlled (the ui controller module will not modify the LED's state)
-    UILEDMode_Off,
-    UILEDMode_On,
-    UILEDMode_FlashStartOn,
-    UILEDMode_FlashStartOff,
-    UILEDMode_Max,
-} UILEDMode;
-
-
-typedef enum
-{
-    AppUIState_None = 0,
-    AppUIState_SoftApHardwareError,
-    AppUIState_SoftApNotConnected,
-    AppUIState_SoftApConnected,
-    AppUIState_SoftApNotConfigured,
-    AppUIState_SoftApConfigured,
-    AppUIState_AppInitConnectingToNetwork,
-    AppUIState_AppInitConnectedToNetwork,
-    AppUIState_AppInitConnectingToServer,
-    AppUIState_AppConnectedToServer,
-    AppUIState_AppHardwareError,
-    AppUIState_Max
-
-} AppUIState;
-
-void UIControl_UIStep(void);
-
-// APIs
-void UIControl_ClearLEDs(void);
-bool UIControl_SetUIState(AppUIState newState);
-bool UIControl_SetLEDMode(uint8_t led, UILEDMode newMode);
-bool UIControl_SetLEDState(uint8_t led, UILEDState newState);
-
-void UIControl_pollInputSensors(void);
-
-#endif	// __UI_CONTROL_H_
