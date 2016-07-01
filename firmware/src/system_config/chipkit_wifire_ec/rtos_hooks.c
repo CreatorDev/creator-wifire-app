@@ -43,7 +43,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 *********************************************************************************************************
 *                                          vApplicationStackOverflowHook()
 *
-* Description : Hook function called by FreeRTOS if a stack Overflow happens.
+* Description : Hook function called by FreeRTOS if a stack overflow happens.
 *
 * Argument(s) : none
 *
@@ -59,9 +59,9 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, signed char *pcTaskName
    ( void ) pcTaskName;
    ( void ) pxTask;
 
-   /* Run time task stack Overflow checking is performed if
+   /* Run time task stack overflow checking is performed if
    configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook	function is
-   called if a task stack Overflow is detected.  Note the system/interrupt
+   called if a task stack overflow is detected.  Note the system/interrupt
    stack is not checked. */
    taskDISABLE_INTERRUPTS();
    for( ;; );

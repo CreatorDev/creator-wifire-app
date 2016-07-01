@@ -108,7 +108,7 @@ void TemperatureObject_Update(AwaStaticClient * awaClient)
                 }
                 else
                 {
-                    Creator_Log(CreatorLogLevel_Info, "Temperature %d", (int)value);    // TODO - remove (note %lf doesn't work!))
+                    //Creator_Log(CreatorLogLevel_Info, "Temperature %d", (int)value);    // TODO - remove (note %lf doesn't work!))
                     temperatures[index].IsInitialised = true;
                     temperatures[index].Min = value;
                     temperatures[index].Max = value;

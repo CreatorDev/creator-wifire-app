@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration version="1.0.7.16">
   <General>
-    <HarmonyPath path="../../.."/>
+    <HarmonyPath path="../.."/>
     <ForceOptimization flag="false"/>
   </General>
   <Manifest>
@@ -1127,19 +1127,19 @@
     </Templates>
     <CompilerItems>
       <C32-AS>
-        <Include value="../../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ"/>
-        <Include value="../../../../../third_party/rtos/FreeRTOS/Source/include"/>
+        <Include value="../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ"/>
+        <Include value="../../../../third_party/rtos/FreeRTOS/Source/include"/>
         <Include value="../src/system_config/chipkit_wifire"/>
       </C32-AS>
       <C32>
-        <Include value="../../../../../bsp/chipkit_wifire"/>
-        <Include value="../../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ"/>
-        <Include value="../../../../../third_party/rtos/FreeRTOS/Source/include"/>
+        <Include value="../../../../bsp/chipkit_wifire"/>
+        <Include value="../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ"/>
+        <Include value="../../../../third_party/rtos/FreeRTOS/Source/include"/>
         <Include value="../src/system_config/chipkit_wifire"/>
       </C32>
     </CompilerItems>
     <Libraries>
-      <Library value="../../../../../bin/framework/peripheral/PIC32MZ2048EFG100_peripherals.a"/>
+      <Library value="../../../../bin/framework/peripheral/PIC32MZ2048EFG100_peripherals.a"/>
     </Libraries>
   </Manifest>
 </configuration>

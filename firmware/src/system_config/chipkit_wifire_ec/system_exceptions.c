@@ -89,7 +89,7 @@ static char *cause[] =
     "Breakpoint",
     "Reserved instruction",
     "Coprocessor unusable",
-    "Arithmetic Overflow",
+    "Arithmetic overflow",
     "Trap",
     "Reserved",
     "Reserved",
