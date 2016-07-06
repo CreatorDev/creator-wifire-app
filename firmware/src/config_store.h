@@ -62,11 +62,11 @@
 #define CREATOR_ROOT_URL_LENGTH (48)
 
 // Device server
-#define BOOTSTRAP_URL_LENGTH                    (64)    // TODO - check max lengths
+#define BOOTSTRAP_URL_LENGTH                    (64)
 #define SECURITY_PUBLIC_KEY_LENGTH              (64)
-#define SECURITY_PRIVATE_KEY_LENGTH             (64)    // TODO - 256?
-#define SECURITY_CERT_LENGTH                    (64)    // TODO - 16K? (limit to 16K flash page - less config size)
-#define SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH    (64)    // TODO - 4K?
+#define SECURITY_PRIVATE_KEY_LENGTH             (64)
+#define SECURITY_CERT_LENGTH                    (3072)    // 3K max
+#define SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH    (8192)    // 8K max (TODO - review)
 
 //
 // Device Config settings
@@ -153,7 +153,7 @@ typedef struct
 } ConfigStruct;
 
 
-#define	LOGGINGSETTINGS_PAGEOFFSET      (CONFIGSETTINGS_PAGEOFFSET + sizeof(ConfigStruct) + NVM_STRUCTURE_SPACING_BYTES)
+#define	LOGGINGSETTINGS_PAGEOFFSET (CONFIGSETTINGS_PAGEOFFSET + sizeof(ConfigStruct) + NVM_STRUCTURE_SPACING_BYTES)
 typedef struct
 {
     // Memory Format Information
@@ -162,7 +162,7 @@ typedef struct
 
     // Logging Configuration
     CreatorLogLevel LoggingLevel;
-    uint8_t     Reserved[6];        // Reserved for future log settings (to preserve offset to device server settings)
+    uint8_t     Reserved[6];        // Reserved (to preserve offset to next NV section)
 
     // Housekeeping
     uint16_t    Padding;
@@ -170,7 +170,7 @@ typedef struct
 
 } LoggingSettingsStruct;
 
-#define	DEVICESERVERSETTINGS_PAGEOFFSET     (LOGGINGSETTINGS_PAGEOFFSET + sizeof(LoggingSettingsStruct) + NVM_STRUCTURE_SPACING_BYTES)
+#define	DEVICESERVERSETTINGS_PAGEOFFSET (LOGGINGSETTINGS_PAGEOFFSET + sizeof(LoggingSettingsStruct) + NVM_STRUCTURE_SPACING_BYTES)
 typedef struct
 {
     // Memory Format Information
@@ -182,8 +182,12 @@ typedef struct
     char        BootstrapURL[BOOTSTRAP_URL_LENGTH+1];                   //  Null terminated
     char        PublicKey[SECURITY_PUBLIC_KEY_LENGTH+1];                //  "       "
     char        PrivateKey[SECURITY_PRIVATE_KEY_LENGTH+1];              //  "       "
-    char        Certificate[SECURITY_CERT_LENGTH+1];                    //  "       "
-    char        BootstrapCertChain[SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH+1]; //  "       "
+    uint16_t    CertLength;
+    uint8_t     CertCheckByte;
+    uint16_t    BootstrapChainCertLength;
+    uint8_t     BootstrapChainCertCheckByte;
+    
+    char        Reserved[124];      // Reserved (to preserve offset to next NV section)
 
     // Housekeeping
     uint16_t    Padding;
@@ -191,9 +195,13 @@ typedef struct
 
 } DeviceServerConfigStruct;
 
+// Device server certificates
+// Note: certificates are stored/read from NV flash directly (they can be big so don't store in RAM as well)
+#define	DEVICESERVERSETTINGS_CERTIFICATE_OFFSET    (DEVICESERVERSETTINGS_PAGEOFFSET + sizeof(DeviceServerConfigStruct) + NVM_STRUCTURE_SPACING_BYTES)
+#define	DEVICESERVERSETTINGS_BOOTSTRAPCHAINCERT_OFFSET  (DEVICESERVERSETTINGS_CERTIFICATE_OFFSET + SECURITY_CERT_LENGTH + NVM_STRUCTURE_SPACING_BYTES)
+
 // WARNING: must be after the last config setting
-#define	CONFIG_STORE_SETTING_END        (DEVICESERVERSETTINGS_PAGEOFFSET + sizeof(DeviceServerConfigStruct))
-// TODO - error if > NV flash page size
+#define	CONFIG_STORE_SETTING_END    (DEVICESERVERSETTINGS_BOOTSTRAPCHAINCERT_OFFSET + NVM_STRUCTURE_SPACING_BYTES)
 
 
 ///////////////////
@@ -216,7 +224,7 @@ bool ConfigStore_Config_Write(void);
 // APIs
 bool ConfigStore_SoftAPSSIDValid(void);
 bool ConfigStore_StartInConfigMode(void);
-bool ConfigStore_GetNetworkConfigConfirmed(void);       // TODO - review use in creatorstarter
+bool ConfigStore_GetNetworkConfigConfirmed(void);       // TODO - review if needed
 bool ConfigStore_GetNetworkConfigSet(void);
 
 AddressScheme ConfigStore_GetAddressingScheme(void);
@@ -228,7 +236,6 @@ WiFiEncryptionType  ConfigStore_GetEncryptionType(void);
 const char* ConfigStore_GetMacAddress(void);
 const char* ConfigStore_GetNetworkSSID(void);
 
-// TODO - delete?
 const char* ConfigStore_GetCreatorKeyValue(const char *keyName, size_t *valueLength);
 
 const char* ConfigStore_GetNetworkPassword(void);
@@ -243,21 +250,21 @@ const char* ConfigStore_GetStaticIP(void);
 bool ConfigStore_GetStartInConfigurationMode(void);
 
 bool ConfigStore_SetAddressingScheme(const AddressScheme addressingScheme);
-bool ConfigStore_SetDeviceName(const char* value);
-bool ConfigStore_SetDeviceType(const char* value);
-bool ConfigStore_SetMacAddress(const char* value);
+bool ConfigStore_SetDeviceName(const char *value);
+bool ConfigStore_SetDeviceType(const char *value);
+bool ConfigStore_SetMacAddress(const char *value);
 bool ConfigStore_SetNetworkConfigConfirmed(bool isSet);
 bool ConfigStore_SetNetworkConfigSet(bool isSet);
 bool ConfigStore_SetNetworkEncryption(WiFiEncryptionType encryption);
-bool ConfigStore_SetNetworkPassword(const char* value);
-bool ConfigStore_SetNetworkSSID(const char* value);
-bool ConfigStore_SetRegistrationKey(const char* value);
+bool ConfigStore_SetNetworkPassword(const char *value);
+bool ConfigStore_SetNetworkSSID(const char *value);
+bool ConfigStore_SetRegistrationKey(const char *value);
 bool ConfigStore_SetResetToConfigurationMode(bool value);
-bool ConfigStore_SetSoftAPPassword(const char* value);
-bool ConfigStore_SetStaticDNS(const char* value);
-bool ConfigStore_SetStaticGateway(const char* value);
-bool ConfigStore_SetStaticIP(const char* value);
-bool ConfigStore_SetStaticNetmask(const char* value);
+bool ConfigStore_SetSoftAPPassword(const char *value);
+bool ConfigStore_SetStaticDNS(const char *value);
+bool ConfigStore_SetStaticGateway(const char *value);
+bool ConfigStore_SetStaticIP(const char *value);
+bool ConfigStore_SetStaticNetmask(const char *value);
 
 
 //
@@ -297,12 +304,12 @@ const char* ConfigStore_GetPrivateKey(void);
 const char* ConfigStore_GetCertificate(void);
 const char* ConfigStore_GetBootstrapCertChain(void);
 
-bool ConfigStore_SetBootstrapURL(const char* value);
+bool ConfigStore_SetBootstrapURL(const char *value);
 bool ConfigStore_SetSecurityMode(ServerSecurityMode securityMode);
-bool ConfigStore_SetPublicKey(const char* value);
-bool ConfigStore_SetPrivateKey(const char* value);
-bool ConfigStore_SetCertificate(const char* value);
-bool ConfigStore_SetBootstrapCertChain(const char* value);
+bool ConfigStore_SetPublicKey(const char *value);
+bool ConfigStore_SetPrivateKey(const char *value);
+bool ConfigStore_SetCertificate(const char *value);
+bool ConfigStore_SetBootstrapCertChain(const char *value);
 
 
 //

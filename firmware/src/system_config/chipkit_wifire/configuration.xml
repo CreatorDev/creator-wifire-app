@@ -1098,7 +1098,8 @@
       <Template>
         <Name>system_config.h</Name>
         <Path>Header Files/app/system_config/chipkit_wifire</Path>
-        <Checksum>55FD54E869F7A9E6EF017188F77FFDD7</Checksum>
+        <Checksum>352ECA70D1009BA7B0313821481BEFD3</Checksum>
+        <ProjectFileChecksum>81938D3F4DC958B0100EC5865FBECEC2</ProjectFileChecksum>
       </Template>
       <Template>
         <Name>rtos_hooks.c</Name>

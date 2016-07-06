@@ -739,7 +739,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/resources;../../../../framework;../../include;../../../../third_party/AwaLWM2M/api/include;C:/Program Files (x86)/Microchip/xc32/v1.40/pic32mx/include/proc;../src/chipkit_wifire;../src/system_config/chipkit_wifire/framework;../../../../bsp/chipkit_wifire;../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include;../src/system_config/chipkit_wifire"/>
+                  value="../src;../src/resources;../../../../framework;../../include;../../../../third_party/AwaLWM2M/api/include;C:/Program Files (x86)/Microchip/xc32/v1.40/pic32mx/include/proc;../src/chipkit_wifire;../src/system_config/chipkit_wifire/framework;../src/system_config/chipkit_wifire;../../../../bsp/chipkit_wifire;../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -765,7 +765,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="exclude-floating-point-library" value="false"/>
         <property key="expand-macros" value="false"/>
-        <property key="extra-include-directories-for-assembler" value=";"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
         <property key="extra-include-directories-for-preprocessor"
                   value="../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include;../src/system_config/chipkit_wifire"/>
         <property key="false-conditionals" value="false"/>
@@ -1186,7 +1186,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/resources;../../../../framework;../../include;../../../../third_party/AwaLWM2M/api/include;C:/Program Files (x86)/Microchip/xc32/v1.40/pic32mx/include/proc;../src/chipkit_wifire_ec;../src/system_config/chipkit_wifire_ec/framework;../../../../bsp/chipkit_wifire_ec;../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include;../src/system_config/chipkit_wifire_ec"/>
+                  value="../src;../src/resources;../../../../framework;../../include;../../../../third_party/AwaLWM2M/api/include;C:/Program Files (x86)/Microchip/xc32/v1.40/pic32mx/include/proc;../src/chipkit_wifire_ec;../src/system_config/chipkit_wifire_ec/framework;../src/system_config/chipkit_wifire_ec;../../../../bsp/chipkit_wifire_ec;../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -1208,7 +1208,7 @@
         <property key="additional-options-chop-files" value="false"/>
       </C32-AR>
       <C32-AS>
-        <property key="extra-include-directories-for-assembler" value=""/>
+        <property key="extra-include-directories-for-assembler" value=";"/>
         <property key="extra-include-directories-for-preprocessor"
                   value=";../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include;../src/system_config/chipkit_wifire_ec"/>
       </C32-AS>

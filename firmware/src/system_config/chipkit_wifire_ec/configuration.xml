@@ -1035,7 +1035,6 @@
         <Name>rtos_hooks.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec</Path>
         <Checksum>FA52743264536E5207D2ADBE57B48D05</Checksum>
-        <ProjectFileChecksum>6CA0A96DD2BD7CEF5B358B819BBA7431</ProjectFileChecksum>
       </Template>
       <Template>
         <Name>net_pres_enc_glue.h</Name>
@@ -1055,7 +1054,6 @@
         <Name>system_exceptions.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec</Path>
         <Checksum>C111969CA43D6CEA1E9E33A6164E7AE0</Checksum>
-        <ProjectFileChecksum>D9AE7E8EEDEDBD4FB8B532F4B3296851</ProjectFileChecksum>
       </Template>
       <Template>
         <Name>sys_clk_static.c</Name>
@@ -1080,7 +1078,7 @@
       <Template>
         <Name>system_config.h</Name>
         <Path>Header Files/app/system_config/chipkit_wifire_ec</Path>
-        <Checksum>55FD54E869F7A9E6EF017188F77FFDD7</Checksum>
+        <Checksum>352ECA70D1009BA7B0313821481BEFD3</Checksum>
         <ProjectFileChecksum>1E18EB289F18677D6FC604658BC4813E</ProjectFileChecksum>
       </Template>
       <Template>

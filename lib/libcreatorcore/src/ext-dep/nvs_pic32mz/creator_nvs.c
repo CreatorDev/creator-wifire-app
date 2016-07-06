@@ -126,15 +126,11 @@ bool CreatorNVS_Read(size_t offset, void *value, size_t size)
 bool NVS_Write(size_t offset, const void *value, size_t size)
 {
     bool result = false;
-    bool skipErase = false;
-    if (size == DRV_NVM_ROW_SIZE && (offset % DRV_NVM_ROW_SIZE) == 0)
-    skipErase = true;	// assume row can be written without erase (used by ActivityLog)
-
     if (CreatorSemaphore_WaitFor(_NVSLock, 1, MAX_SEMAPHORE_WAIT_TIME_MS))
     {
         memcpy((void*)_NVSCache + offset, value, size);
-        if (!skipErase)
         DRV_NVM_Erase(_NVMHandle, &_NVMBufferHandle, NVS_BASE_ADDRESS, 1); //DRV_NVM_PAGE_SIZE
+
         if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
         {
             result = false;
@@ -142,15 +138,9 @@ bool NVS_Write(size_t offset, const void *value, size_t size)
         }
         else
         {
-            if (!skipErase)
-            {
-                while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
-                DRV_NVM_Write(_NVMHandle, &_NVMBufferHandle, (uint8 *)_NVSCache, NVS_BASE_ADDRESS, DRV_NVM_PAGE_SIZE/DRV_NVM_ROW_SIZE);
-            }
-            else
-            {
-                DRV_NVM_Write(_NVMHandle, &_NVMBufferHandle, (uint8 *)_NVSCache + offset, (NVS_BASE_ADDRESS + (offset/DRV_NVM_ROW_SIZE)), 1); //DRV_NVM_ROW_SIZE
-            }
+            while (DRV_NVM_CommandStatus(_NVMHandle, _NVMBufferHandle) != DRV_NVM_COMMAND_COMPLETED);
+            DRV_NVM_Write(_NVMHandle, &_NVMBufferHandle, (uint8 *)_NVSCache, NVS_BASE_ADDRESS, DRV_NVM_PAGE_SIZE/DRV_NVM_ROW_SIZE);
+            
             if (_NVMBufferHandle == DRV_NVM_COMMAND_HANDLE_INVALID)
             {
                 result = false;
@@ -170,6 +160,16 @@ bool NVS_Write(size_t offset, const void *value, size_t size)
 bool CreatorNVS_Write(size_t offset, const void *value, size_t size)
 {
     return NVS_Write(APPSTART_OFFSET + offset, value, size);
+}
+
+void CreatorNVS_SetCache(size_t offset, uint8_t value, size_t size)
+{
+    memset((void*)_NVSCache + APPSTART_OFFSET + offset, value, size);
+}
+
+void *CreatorNVS_GetCacheAddress(size_t offset)
+{
+    return (void*)_NVSCache + APPSTART_OFFSET + offset;
 }
 
 static ConfigCreatorKeyValue *GetCreatorKeyValuePair(const char *keyName)

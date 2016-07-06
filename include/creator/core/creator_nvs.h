@@ -28,6 +28,7 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -63,11 +64,50 @@ void CreatorNVS_Set(const char *key, const void *value, size_t size);
  */
 void *CreatorNVS_Get(const char *key, size_t *size);
 
-
+/**
+ * \brief Read non-volatile value.
+ *
+ * Read current value from cached non-volatile value.
+ *
+ * @param offset Offset into NV storage
+ * @param value Value set by read
+ * @param size Size to read
+ * @return true if data was read
+ */
 bool CreatorNVS_Read(size_t offset, void *value, size_t size);
 
-
+/**
+ * \brief Write non-volatile value.
+ *
+ * Write current value to non-volatile storage (updates cached values)
+ *
+ * @param offset Offset into NV storage
+ * @param value Value stored by write
+ * @param size Size to write
+ * @return true if data was stored
+ */
 bool CreatorNVS_Write(size_t offset, const void *value, size_t size);
+
+/**
+ * \brief Set cached data.
+ *
+ * Fill cached data with specified value. Note: cached data is stored on the next Write().
+ *
+ * @param offset Offset into NV storage
+ * @param value Value to fill cache
+ * @param size Size to fill
+ */
+void CreatorNVS_SetCache(size_t offset, uint8_t value, size_t size);
+
+/**
+ * \brief Get cache address.
+ *
+ * Returns address of current cached value. This is intended for use with large values stored in NV memory without needing to copy the data.
+ *
+ * @param offset Offset into NV storage
+ * @return 
+ */
+void *CreatorNVS_GetCacheAddress(size_t offset);
 
 void CreatorNVS_SetLocation(const char *location);
 

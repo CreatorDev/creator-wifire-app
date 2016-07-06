@@ -163,9 +163,10 @@ bool StandardCommands_FactoryResetHelper(void)
     // Reset configuration to default state
     if (ConfigStore_Config_Read() && ConfigStore_LoggingSettings_Read() && ConfigStore_DeviceServerConfig_Read())
     {
-        if (ConfigStore_Config_ResetToDefaults() && ConfigStore_Config_Write() &&
-            ConfigStore_LoggingSettings_ResetToDefaults()&& ConfigStore_LoggingSettings_Write() &&
-            ConfigStore_DeviceServerConfig_ResetToDefaults() && ConfigStore_DeviceServerConfig_Write())
+        bool result = (ConfigStore_Config_ResetToDefaults() && ConfigStore_Config_Write());
+        result |= (ConfigStore_LoggingSettings_ResetToDefaults()&& ConfigStore_LoggingSettings_Write());
+        result |= (ConfigStore_DeviceServerConfig_ResetToDefaults() && ConfigStore_DeviceServerConfig_Write());
+        if (result)
         {
             CreatorConsole_Puts("Successfully reset device to factory-default state\r\n");
             result = true;
@@ -1019,7 +1020,7 @@ static void StandardCommands_SetNetworkConfig(void)
 
 static void StandardCommands_SetDeviceServerConfig(void)
 {
-    if (ConfigStore_DeviceServerConfig_Read() && ConfigStore_DeviceServerConfig_IsValid())
+    if (ConfigStore_DeviceServerConfig_Read())
     {
         // Display current bootstrap URL
         char* bootstrapURL = (char *) ConfigStore_GetBootstrapURL();

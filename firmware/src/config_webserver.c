@@ -400,7 +400,7 @@ static void PostFactoryReset(CreatorHTTPServerRequest request)
 static void PostDeviceServer(CreatorHTTPServerRequest request)
 {
     SYS_ASSERT(ConfigStore_DeviceServerConfig_Read(), "ERROR: Could not read device server config_store memory.");
-    if (request && ConfigStore_DeviceServerConfig_IsValid())
+    if (request)
     {
         // Set up parser to parse the POST body
         TreeNode xmlTreeRoot = TreeNode_ParseXML((uint8_t*) CreatorHTTPServerRequest_GetContent(request), CreatorHTTPServerRequest_GetContentLength(request), true);

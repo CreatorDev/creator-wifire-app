@@ -58,10 +58,6 @@
 #include "creator/core/creator_threading.h"
 
 #define CONFIG_STORE_MAGIC_NUMBER (uint64_t) 0x0101020305080D15
-#define CREATOR_NVSKEY_DEVICE_CONFIGURATION     "starterapp.deviceconfigration"
-#define CREATOR_NVSKEY_LOG_SETTINGS             "starterapp.logsettings"
-
-#define MAX_SEMAPHORE_WAIT_TIME_MS	10
 
 // WEP key generation
 #define WEP_KEY_NUMBER 4
@@ -78,62 +74,55 @@ static LoggingSettingsStruct _LoggingSettings;
 static DeviceServerConfigStruct _DeviceServerConfig;
 static CreatorSemaphore _ConfigStoreLock;
 
-static const char* _EncryptionNames[WiFiEncryptionType_Max] =
+static const char *_EncryptionNames[WiFiEncryptionType_Max] =
 { "WEP", "WPA", "WPA2", "Open" }; // Definition must match 'WiFiEncryptionType' enum in config_store.h
 
-static const char* _SecurityModeNames[ServerSecurityMode_Max] =
+static const char *_SecurityModeNames[ServerSecurityMode_Max] =
 { "NoSec", "PSK", "Cert" }; // Definition must match 'ServerSecurityMode' enum in config_store.h
 
-static const char* _LoggingLevelNames[CreatorLogLevel_Max] =
+static const char *_LoggingLevelNames[CreatorLogLevel_Max] =
 { "0 - None", "1 - Error only", "2 - Error, Warning", "3 - Error, Warning, Info", "4 - All" }; // Definition must match 'loggingLevelType' enum in config_store.h
 
-static const char* _AddressingSchemeNames[AddressScheme_Max] =
+static const char *_AddressingSchemeNames[AddressScheme_Max] =
 { "dhcp", "static" }; // Definition must match 'AddressScheme' enum in config_store.h
 
 /********************************
- * Functions with Module scope
+ * Local functions
  */
+static uint8_t GetCheckbyte(const uint8_t *ptr, int length)
+{
+    uint32_t result = 0;
+    if (ptr)
+    {
+        while (length > 0)
+        {
+            result ^= *ptr;
+            ptr++;
+            length--;
+        }
+    }
+    return result;
+}
 
 static uint8_t ComputeConfigCheckbyte(void)
 {
-    ConfigStruct* config = (ConfigStruct*) &_DeviceConfig;
-    uint8_t* ptr = (uint8_t*) config;
-    uint8_t cb = 0;
-    uint32_t index;
-    for (index = 0; index < ((void*) &config->Checkbyte - (void*) config); index++)
-    {
-        cb ^= *ptr;
-        ptr++;
-    }
-    return cb;
+    int length = (int)((void *)&_DeviceConfig.Checkbyte - (void *)&_DeviceConfig);
+    uint8_t result = GetCheckbyte((uint8_t *)&_DeviceConfig, length);
+    return result;
 }
 
 static uint8_t ComputeLoggingSettingsCheckbyte(void)
 {
-    LoggingSettingsStruct* logSettings = (LoggingSettingsStruct*) &_LoggingSettings;
-    uint8_t* ptr = (uint8_t*) logSettings;
-    uint8_t cb = 0;
-    uint32_t index;
-    for (index = 0; index < ((void*) &logSettings->Checkbyte - (void*) logSettings); index++)
-    {
-        cb ^= *ptr;
-        ptr++;
-    }
-    return cb;
+    int length = (int)((void *)&_LoggingSettings.Checkbyte - (void *)&_LoggingSettings);
+    uint8_t result = GetCheckbyte((uint8_t *)&_LoggingSettings, length);
+    return result;
 }
 
 static uint8_t ComputeDeviceServerSettingsCheckbyte(void)
 {
-    DeviceServerConfigStruct* deviceServerConfig = (DeviceServerConfigStruct*) &_DeviceServerConfig;
-    uint8_t* ptr = (uint8_t*) deviceServerConfig;
-    uint8_t cb = 0;
-    uint32_t index;
-    for (index = 0; index < ((void*) &deviceServerConfig->Checkbyte - (void*) deviceServerConfig); index++)
-    {
-        cb ^= *ptr;
-        ptr++;
-    }
-    return cb;
+    int length = (int)((void *)&_DeviceServerConfig.Checkbyte - (void *)&_DeviceServerConfig);
+    uint8_t result = GetCheckbyte((uint8_t *)&_DeviceServerConfig, length);
+    return result;
 }
 
 bool GenerateWEPKey64(char *passphrase, unsigned char k64[WEP_KEY_NUMBER][WEP_KEY_LENGTH_BYTES])
@@ -192,7 +181,7 @@ bool GenerateNewSoftAPPassword(char *buff, uint32_t buffSize)
         srand(time(NULL));
         uint32_t randVal = rand();
 #endif
-        uint8_t* _randVal = (uint8_t*) &randVal;
+        uint8_t *_randVal = (uint8_t*) &randVal;
         int charIndex = 0;
         int byteCount;
         for (byteCount = 0; byteCount < 4; byteCount++)
@@ -235,15 +224,6 @@ bool ConfigStore_DeInitialize(void)
 {
 	bool result = false;
 
-	// Todo
-	//	if (xSemaphoreTake(_ConfigStoreLock, ( portTickType ) 1000/portTICK_PERIOD_MS ) == pdTRUE)
-	//	{
-	//		DRV_NVM_Deinitialize( SYS_MODULE_OBJ object )
-	//		DRV_NVM_Close(nvmHandle);
-	//		result = true;
-	//		vSemaphoreDelete(_ConfigStoreLock);
-	//	}
-
 	return result;
 }
 
@@ -252,12 +232,7 @@ bool ConfigStore_Config_Erase(void)
     // TODO - could erase current config? (to limit max stack size): review usage... use malloc if needed
     ConfigStruct configStruct;
     memset(&configStruct, 0, sizeof(ConfigStruct));
-#ifdef MICROCHIP_PIC32
     return CreatorNVS_Write(CONFIGSETTINGS_PAGEOFFSET, &configStruct, sizeof(ConfigStruct) );
-#else
-    CreatorNVS_Set(CREATOR_NVSKEY_DEVICE_CONFIGURATION, &configStruct, sizeof(ConfigStruct));
-    return true;
-#endif
 }
 
 AddressScheme ConfigStore_GetAddressingScheme(void)
@@ -265,20 +240,20 @@ AddressScheme ConfigStore_GetAddressingScheme(void)
     return _DeviceConfig.AddressingScheme;
 }
 
-const char* ConfigStore_GetAddressingSchemeName(AddressScheme addressingScheme)
+const char *ConfigStore_GetAddressingSchemeName(AddressScheme addressingScheme)
 {
-    const char* result = NULL;
+    const char *result = NULL;
     if (addressingScheme < AddressScheme_Max)
         result = _AddressingSchemeNames[addressingScheme];
     return result;
 }
 
-const char* ConfigStore_GetDeviceName(void)
+const char *ConfigStore_GetDeviceName(void)
 {
     return _DeviceConfig.DeviceName;
 }
 
-const char* ConfigStore_GetDeviceType(void)
+const char *ConfigStore_GetDeviceType(void)
 {
     return _DeviceConfig.DeviceType;
 }
@@ -288,17 +263,17 @@ WiFiEncryptionType ConfigStore_GetEncryptionType(void)
     return _DeviceConfig.Encryption;
 }
 
-const char* ConfigStore_GetMacAddress(void)
+const char *ConfigStore_GetMacAddress(void)
 {
     return _DeviceConfig.MacAddress;
 }
 
-const char* ConfigStore_GetNetworkSSID(void)
+const char *ConfigStore_GetNetworkSSID(void)
 {
     return _DeviceConfig.NetworkSSID;
 }
 
-const char* ConfigStore_GetNetworkPassword(void)
+const char *ConfigStore_GetNetworkPassword(void)
 {
     return _DeviceConfig.NetworkPassword;
 }
@@ -308,32 +283,32 @@ uint64_t ConfigStore_GetSerialNumber(void)
     return _DeviceConfig.CpuSerialNumber;
 }
 
-const char* ConfigStore_GetSoftAPSSID(void)
+const char *ConfigStore_GetSoftAPSSID(void)
 {
     return _DeviceConfig.SoftAPSSID;
 }
 
-const char* ConfigStore_GetSoftAPPassword(void)
+const char *ConfigStore_GetSoftAPPassword(void)
 {
     return _DeviceConfig.SoftAPPassword;
 }
 
-const char* ConfigStore_GetStaticDNS(void)
+const char *ConfigStore_GetStaticDNS(void)
 {
     return _DeviceConfig.StatDNS;
 }
 
-const char* ConfigStore_GetStaticGateway(void)
+const char *ConfigStore_GetStaticGateway(void)
 {
     return _DeviceConfig.StatGateway;
 }
 
-const char* ConfigStore_GetStaticNetmask(void)
+const char *ConfigStore_GetStaticNetmask(void)
 {
     return _DeviceConfig.StatNetmask;
 }
 
-const char* ConfigStore_GetStaticIP(void)
+const char *ConfigStore_GetStaticIP(void)
 {
     return _DeviceConfig.StatIP;
 }
@@ -343,7 +318,7 @@ bool ConfigStore_GetStartInConfigurationMode(void)
     return _DeviceConfig.StartInConfigurationMode;
 }
 
-const char* ConfigStore_GetKeyValue(const char *keyName, size_t *valueLength)
+const char *ConfigStore_GetKeyValue(const char *keyName, size_t *valueLength)
 {
     const char *result = NULL;
     if (valueLength)
@@ -352,7 +327,7 @@ const char* ConfigStore_GetKeyValue(const char *keyName, size_t *valueLength)
     return result;
 }
 
-const char* ConfigStore_GetBootstrapURL(void)
+const char *ConfigStore_GetBootstrapURL(void)
 {
     return _DeviceServerConfig.BootstrapURL;
 }
@@ -362,118 +337,38 @@ ServerSecurityMode ConfigStore_GetSecurityMode(void)
     return _DeviceServerConfig.SecurityMode;
 }
 
-const char* ConfigStore_GetSecurityModeName(ServerSecurityMode securityMode)
+const char *ConfigStore_GetSecurityModeName(ServerSecurityMode securityMode)
 {
-    const char* result = NULL;
+    const char *result = NULL;
     if (securityMode < ServerSecurityMode_Max)
         result = _SecurityModeNames[securityMode];
     return result;
 }
 
-const char* ConfigStore_GetPublicKey(void)
+const char *ConfigStore_GetPublicKey(void)
 {
     return _DeviceServerConfig.PublicKey;
 }
 
-const char* ConfigStore_GetPrivateKey(void)
+const char *ConfigStore_GetPrivateKey(void)
 {
     return _DeviceServerConfig.PrivateKey;
 }
 
-const char* ConfigStore_GetCertificate(void)
+const char *ConfigStore_GetCertificate(void)
 {
-    return _DeviceServerConfig.Certificate;
+    return CreatorNVS_GetCacheAddress(DEVICESERVERSETTINGS_CERTIFICATE_OFFSET);
 }
 
-const char* ConfigStore_GetBootstrapCertChain(void)
+const char *ConfigStore_GetBootstrapCertChain(void)
 {
-    return _DeviceServerConfig.BootstrapCertChain;
+    return CreatorNVS_GetCacheAddress(DEVICESERVERSETTINGS_BOOTSTRAPCHAINCERT_OFFSET);
 }
 
 bool ConfigStore_Initialize(void)
 {
     bool result = false;
-#ifndef MICROCHIP_PIC32
-    // TODO - delete or support debug build/linux?
-    bool isConfigured = true;
-    struct stat fileStat;
-    char configBuffer[BUFFERSIZE];
-    struct passwd *pw = getpwuid(getuid());
-    const char *homedir = pw->pw_dir;
-    snprintf(configBuffer, BUFFERSIZE, "%s/%s/%s/%s", homedir, CREATORCONFIG_BASEDIR, CREATORSTARTERAPP_CONFIGURATION_PATH,
-            CREATORSTARTERAPP_CONFIGURATION_FILE);
-    if (stat(configBuffer, &fileStat) < 0)
-    {
-        int fd;
-        snprintf(configBuffer, BUFFERSIZE, "%s/%s", homedir, CREATORCONFIG_BASEDIR);
-        if (stat(configBuffer, &fileStat) < 0)
-        {
-            if (mkdir(configBuffer, MODE) < 0)
-            {
-                printf("Failed to create configuration folder, Do not have access rights\r\n");
-                isConfigured = false;
-            }
-        }
-        snprintf(configBuffer, BUFFERSIZE, "%s/%s/%s", homedir, CREATORCONFIG_BASEDIR, CREATORSTARTERAPP_CONFIGURATION_PATH);
-        if (stat(configBuffer, &fileStat) < 0)
-        {
-            if (mkdir(configBuffer, MODE) < 0)
-            {
-                printf("Failed to create configuration folder, Do not have access rights\r\n");
-                isConfigured = false;
-            }
-        }
-        if (isConfigured)
-        {
-            snprintf(configBuffer, BUFFERSIZE, "%s/%s/%s/%s", homedir, CREATORCONFIG_BASEDIR, CREATORSTARTERAPP_CONFIGURATION_PATH,
-                    CREATORSTARTERAPP_CONFIGURATION_FILE);
-            if ((fd = open(configBuffer, O_RDWR | O_CREAT, MODE)) < 0)
-            {
-                printf("Failed to create configuration file, Do not have access rights\r\n");
-                isConfigured = false;
-            }
-            else
-                close(fd);
-        }
-    }
-    if (isConfigured && (stat(CREATORSTARTERAPP_CONFIGURATION_FILE, &fileStat) < 0))
-    {
-        snprintf(configBuffer, BUFFERSIZE, "%s/%s/%s/%s", homedir, CREATORCONFIG_BASEDIR, CREATORSTARTERAPP_CONFIGURATION_PATH,
-                CREATORSTARTERAPP_CONFIGURATION_FILE);
-        if (symlink(configBuffer, CREATORSTARTERAPP_CONFIGURATION_FILE) < 0)
-        {
-            printf("Failed to create configuration file, Do not have access rights - try with sudo / root");
-            isConfigured = false;
-        }
-    }
 
-    snprintf(configBuffer, BUFFERSIZE, "%s/%s/%s/%s", homedir, CREATORCONFIG_BASEDIR, CREATORSTARTERAPP_CONFIGURATION_PATH, CREATORSTARTERAPP_ACTIVITYLOG_FILE);
-    if (isConfigured)
-    {
-        int fd;
-        if ((fd = open(configBuffer, O_RDWR | O_CREAT, MODE)) < 0)
-        {
-            printf("Failed to create activity log file, Do not have access rights\r\n");
-            isConfigured = false;
-        }
-        else
-            close(fd);
-    }
-
-    if (isConfigured && (stat(CREATORSTARTERAPP_ACTIVITYLOG_FILE, &fileStat) < 0))
-    {
-        if (symlink(configBuffer, CREATORSTARTERAPP_ACTIVITYLOG_FILE) < 0)
-        {
-            printf("Failed to create activity log file, Do not have access rights - try with sudo / root");
-            isConfigured = false;
-        }
-    }
-
-    if (!isConfigured)
-    {
-        printf("\nplease try with sudo or root\n");
-    }
-#endif
     CreatorNVS_Initialise();
     _ConfigStoreLock = CreatorSemaphore_New(1, 0);
     if (_ConfigStoreLock)
@@ -491,20 +386,7 @@ bool ConfigStore_Config_IsMagicValid(void)
 
 bool ConfigStore_Config_Read(void)
 {
-#ifdef MICROCHIP_PIC32
     return CreatorNVS_Read(CONFIGSETTINGS_PAGEOFFSET, &_DeviceConfig, sizeof(ConfigStruct));
-#else
-    const char *result = NULL;
-    bool returnValue = false;
-    size_t size;
-    result = (const char*) CreatorNVS_Get(CREATOR_NVSKEY_DEVICE_CONFIGURATION, &size);
-    if (result)
-    {
-        returnValue = true;
-        memcpy(&_DeviceConfig, result, sizeof(ConfigStruct));
-    }
-    return returnValue;
-#endif
 }
 
 bool ConfigStore_Config_ResetToDefaults(void)
@@ -542,7 +424,7 @@ bool ConfigStore_SetAddressingScheme(const AddressScheme addressingScheme)
     return result;
 }
 
-bool ConfigStore_SetDeviceName(const char* value)
+bool ConfigStore_SetDeviceName(const char *value)
 {
     bool result = false;
     if (value)
@@ -561,7 +443,7 @@ bool ConfigStore_SetDeviceName(const char* value)
     return result;
 }
 
-bool ConfigStore_SetDeviceType(const char* value)
+bool ConfigStore_SetDeviceType(const char *value)
 {
     bool result = false;
     if (value)
@@ -583,7 +465,7 @@ bool ConfigStore_SetDeviceType(const char* value)
     return result;
 }
 
-bool ConfigStore_SetMacAddress(const char* value)
+bool ConfigStore_SetMacAddress(const char *value)
 {
     bool result = false;
     if (value)
@@ -630,7 +512,7 @@ bool ConfigStore_SetNetworkEncryption(WiFiEncryptionType encryption)
     return result;
 }
 
-bool ConfigStore_SetNetworkPassword(const char* value)
+bool ConfigStore_SetNetworkPassword(const char *value)
 {
     bool result = false;
     if (value)
@@ -650,15 +532,15 @@ bool ConfigStore_SetNetworkPassword(const char* value)
     return result;
 }
 
-const char* ConfigStore_GetEncryptionName(WiFiEncryptionType encryption)
+const char *ConfigStore_GetEncryptionName(WiFiEncryptionType encryption)
 {
-    const char* result = NULL;
+    const char *result = NULL;
     if (encryption < WiFiEncryptionType_Max)
         result = _EncryptionNames[encryption];
     return result;
 }
 
-bool ConfigStore_SetNetworkSSID(const char* value)
+bool ConfigStore_SetNetworkSSID(const char *value)
 {
     bool result = false;
     if (value)
@@ -688,7 +570,7 @@ bool ConfigStore_SetResetToConfigurationMode(bool value)
     return true;
 }
 
-bool ConfigStore_SetSoftAPPassword(const char* value)
+bool ConfigStore_SetSoftAPPassword(const char *value)
 {
     bool result = false;
     if (value)
@@ -707,7 +589,7 @@ bool ConfigStore_SetSoftAPPassword(const char* value)
     return result;
 }
 
-bool ConfigStore_SetStaticDNS(const char* value)
+bool ConfigStore_SetStaticDNS(const char *value)
 {
     bool result = false;
     if (value)
@@ -726,7 +608,7 @@ bool ConfigStore_SetStaticDNS(const char* value)
     return result;
 }
 
-bool ConfigStore_SetStaticGateway(const char* value)
+bool ConfigStore_SetStaticGateway(const char *value)
 {
     bool result = false;
     if (value)
@@ -745,7 +627,7 @@ bool ConfigStore_SetStaticGateway(const char* value)
     return result;
 }
 
-bool ConfigStore_SetStaticIP(const char* value)
+bool ConfigStore_SetStaticIP(const char *value)
 {
     bool result = false;
     if (value)
@@ -764,7 +646,7 @@ bool ConfigStore_SetStaticIP(const char* value)
     return result;
 }
 
-bool ConfigStore_SetStaticNetmask(const char* value)
+bool ConfigStore_SetStaticNetmask(const char *value)
 {
     bool result = false;
     if (value)
@@ -795,7 +677,7 @@ bool ConfigStore_StartInConfigMode(void)
     return _DeviceConfig.StartInConfigurationMode != 0x00;
 }
 
-bool ConfigStore_SetBootstrapURL(const char* value)
+bool ConfigStore_SetBootstrapURL(const char *value)
 {
     bool result = false;
     if (value)
@@ -826,7 +708,7 @@ bool ConfigStore_SetSecurityMode(ServerSecurityMode securityMode)
     return result;
 }
 
-bool ConfigStore_SetPublicKey(const char* value)
+bool ConfigStore_SetPublicKey(const char *value)
 {
     bool result = false;
     if (value)
@@ -845,7 +727,7 @@ bool ConfigStore_SetPublicKey(const char* value)
     return result;
 }
 
-bool ConfigStore_SetPrivateKey(const char* value)
+bool ConfigStore_SetPrivateKey(const char *value)
 {
     bool result = false;
     if (value)
@@ -864,40 +746,42 @@ bool ConfigStore_SetPrivateKey(const char* value)
     return result;
 }
 
-bool ConfigStore_SetCertificate(const char* value)
+bool ConfigStore_SetCertificate(const char *value)
 {
     bool result = false;
     if (value)
     {
-        uint32_t valueLength = strlen((char*) value);
-        memset((void*) _DeviceServerConfig.Certificate, 0, SECURITY_CERT_LENGTH);
-        if (valueLength > 0)
+        int length = strlen(value);
+        if (length > SECURITY_CERT_LENGTH-1)
         {
-            if (SECURITY_CERT_LENGTH < valueLength)
-                memcpy((void*) _DeviceServerConfig.Certificate, (void*) value, SECURITY_CERT_LENGTH);
-            else
-                memcpy((void*) _DeviceServerConfig.Certificate, (void*) value, valueLength);
+            length = SECURITY_CERT_LENGTH-1;    // ensure null terminated
         }
-        result = true;
+        _DeviceServerConfig.CertLength = length;
+        _DeviceServerConfig.CertCheckByte = GetCheckbyte((uint8_t *)value, length);
+        
+        // Flush old value first (in case it's longer)
+        CreatorNVS_SetCache(DEVICESERVERSETTINGS_CERTIFICATE_OFFSET, 0, SECURITY_CERT_LENGTH);
+        result = CreatorNVS_Write(DEVICESERVERSETTINGS_CERTIFICATE_OFFSET, value, length);
     }
     return result;
 }
 
-bool ConfigStore_SetBootstrapCertChain(const char* value)
+bool ConfigStore_SetBootstrapCertChain(const char *value)
 {
     bool result = false;
     if (value)
     {
-        uint32_t valueLength = strlen((char*) value);
-        memset((void*) _DeviceServerConfig.BootstrapCertChain, 0, SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH);
-        if (valueLength > 0)
+        int length = strlen(value);
+        if (length > SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH-1)
         {
-            if (SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH < valueLength)
-                memcpy((void*) _DeviceServerConfig.BootstrapCertChain, (void*) value, SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH);
-            else
-                memcpy((void*) _DeviceServerConfig.BootstrapCertChain, (void*) value, valueLength);
+            length = SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH-1;    // ensure null terminated
         }
-        result = true;
+        _DeviceServerConfig.BootstrapChainCertLength = length;
+        _DeviceServerConfig.BootstrapChainCertCheckByte = GetCheckbyte((uint8_t *)value, length);
+        
+        // Flush old value first (in case it's longer)
+        CreatorNVS_SetCache(DEVICESERVERSETTINGS_BOOTSTRAPCHAINCERT_OFFSET, 0, SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH);
+        result = CreatorNVS_Write(DEVICESERVERSETTINGS_BOOTSTRAPCHAINCERT_OFFSET, value, length);
     }
     return result;
 }
@@ -921,24 +805,14 @@ bool ConfigStore_Config_UpdateCheckbyte(void)
 
 bool ConfigStore_Config_Write(void)
 {
-#ifdef MICROCHIP_PIC32
     return CreatorNVS_Write(CONFIGSETTINGS_PAGEOFFSET, &_DeviceConfig, sizeof(ConfigStruct) );
-#else
-    CreatorNVS_Set(CREATOR_NVSKEY_DEVICE_CONFIGURATION, &_DeviceConfig, sizeof(ConfigStruct));
-    return true;
-#endif
 }
 
 bool ConfigStore_LoggingSettings_Erase(void)
 {
     LoggingSettingsStruct loggingSettingsStruct;
     memset(&loggingSettingsStruct, 0, sizeof(LoggingSettingsStruct));
-#ifdef MICROCHIP_PIC32
     return CreatorNVS_Write(LOGGINGSETTINGS_PAGEOFFSET, &loggingSettingsStruct, sizeof(LoggingSettingsStruct) );
-#else
-    CreatorNVS_Set(CREATOR_NVSKEY_LOG_SETTINGS, &loggingSettingsStruct, sizeof(LoggingSettingsStruct));
-    return true;
-#endif
 }
 
 CreatorLogLevel ConfigStore_GetLoggingLevel(void)
@@ -946,9 +820,9 @@ CreatorLogLevel ConfigStore_GetLoggingLevel(void)
     return _LoggingSettings.LoggingLevel;
 }
 
-const char* ConfigStore_GetLoggingLevelName(CreatorLogLevel level)
+const char *ConfigStore_GetLoggingLevelName(CreatorLogLevel level)
 {
-    const char* result = NULL;
+    const char *result = NULL;
     if (level < CreatorLogLevel_Max)
         result = _LoggingLevelNames[level];
     return result;
@@ -966,20 +840,7 @@ bool ConfigStore_LoggingSettings_IsValid(void)
 
 bool ConfigStore_LoggingSettings_Read(void)
 {
-#ifdef MICROCHIP_PIC32
     return CreatorNVS_Read(LOGGINGSETTINGS_PAGEOFFSET, &_LoggingSettings, sizeof(LoggingSettingsStruct));
-#else
-    bool returnValue = false;
-    size_t size;
-    const char *result = NULL;
-    result = (const char*) CreatorNVS_Get(CREATOR_NVSKEY_LOG_SETTINGS, &size);
-    if (result)
-    {
-        returnValue = true;
-        memcpy(&_LoggingSettings, result, sizeof(LoggingSettingsStruct));
-    }
-    return (returnValue);
-#endif
 }
 
 bool ConfigStore_LoggingSettings_ResetToDefaults(void)
@@ -1003,12 +864,7 @@ bool ConfigStore_LoggingSettings_UpdateCheckbyte(void)
 
 bool ConfigStore_LoggingSettings_Write(void)
 {
-#ifdef MICROCHIP_PIC32
     return CreatorNVS_Write(LOGGINGSETTINGS_PAGEOFFSET, &_LoggingSettings, sizeof(LoggingSettingsStruct) );
-#else
-    CreatorNVS_Set(CREATOR_NVSKEY_LOG_SETTINGS, &_LoggingSettings, sizeof(LoggingSettingsStruct));
-    return true;
-#endif
 }
 
 bool ConfigStore_SetLoggingLevel(CreatorLogLevel value)
@@ -1027,6 +883,9 @@ bool ConfigStore_DeviceServerConfig_Erase(void)
 {
     DeviceServerConfigStruct deviceServerConfig;
     memset(&deviceServerConfig, 0, sizeof(DeviceServerConfigStruct));
+    CreatorNVS_SetCache(DEVICESERVERSETTINGS_CERTIFICATE_OFFSET, 0, SECURITY_CERT_LENGTH);
+    CreatorNVS_SetCache(DEVICESERVERSETTINGS_BOOTSTRAPCHAINCERT_OFFSET, 0, SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH);
+    
     return CreatorNVS_Write(DEVICESERVERSETTINGS_PAGEOFFSET, &deviceServerConfig, sizeof(DeviceServerConfigStruct));
 }
 
@@ -1038,18 +897,41 @@ bool ConfigStore_DeviceServerConfig_Read(void)
 bool ConfigStore_DeviceServerConfig_ResetToDefaults(void)
 {
     memset((void*) &_DeviceServerConfig, 0, sizeof(DeviceServerConfigStruct));
+    CreatorNVS_SetCache(DEVICESERVERSETTINGS_CERTIFICATE_OFFSET, 0, SECURITY_CERT_LENGTH);
+    CreatorNVS_SetCache(DEVICESERVERSETTINGS_BOOTSTRAPCHAINCERT_OFFSET, 0, SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH);
+
     _DeviceServerConfig.MemFormatVer = CONFIGSTORE_DEVICESERVERSETTINGS_MEM_FORMAT_VERSION;
     *((uint64_t*) _DeviceServerConfig.Magic) = CONFIG_STORE_MAGIC_NUMBER;
 
     _DeviceServerConfig.SecurityMode = ServerSecurityMode_NoSec;
-
     _DeviceServerConfig.Checkbyte = ComputeDeviceServerSettingsCheckbyte();
     return true;
 }
 
 bool ConfigStore_DeviceServerConfig_IsValid(void)
 {
-    return ConfigStore_DeviceServerConfig_IsMagicValid() && (_DeviceServerConfig.Checkbyte == ComputeDeviceServerSettingsCheckbyte());
+    bool result = ConfigStore_DeviceServerConfig_IsMagicValid() && (_DeviceServerConfig.Checkbyte == ComputeDeviceServerSettingsCheckbyte());
+    if (result && _DeviceServerConfig.SecurityMode == ServerSecurityMode_Cert)
+    {
+        if (_DeviceServerConfig.CertLength > 0)
+        {
+            const char *cert = ConfigStore_GetCertificate();
+            if (_DeviceServerConfig.CertLength != strlen(cert) || _DeviceServerConfig.CertCheckByte != GetCheckbyte(cert, _DeviceServerConfig.CertLength))
+            {
+                result = false;
+            }
+        }
+        if (result && _DeviceServerConfig.BootstrapChainCertLength > 0)
+        {
+            const char *chainCert = ConfigStore_GetBootstrapCertChain();
+            if (_DeviceServerConfig.BootstrapChainCertLength != strlen(chainCert) ||
+                    _DeviceServerConfig.BootstrapChainCertCheckByte != GetCheckbyte(chainCert, _DeviceServerConfig.BootstrapChainCertLength))
+            {
+                result = false;
+            }
+        }
+    }
+    return result;
 }
 
 bool ConfigStore_DeviceServerConfig_IsMagicValid(void)
@@ -1067,71 +949,3 @@ bool ConfigStore_DeviceServerConfig_Write(void)
 {
     return CreatorNVS_Write(DEVICESERVERSETTINGS_PAGEOFFSET, &_DeviceServerConfig, sizeof(DeviceServerConfigStruct));
 }
-
-#ifndef MICROCHIP_PIC32
-char *getEncryptionTypeStringFormat(WiFiEncryptionType encryptionType)
-{
-    char *returnValue;
-    switch (encryptionType) {
-        case WiFiEncryptionType_WEP:
-            returnValue = "wep";
-            break;
-        case WiFiEncryptionType_WPA:
-            returnValue = "wpa";
-            break;
-        case WiFiEncryptionType_WPA2:
-            returnValue = "wpa-psk";
-            break;
-        case WiFiEncryptionType_Open:
-            returnValue = "";
-            break;
-        default:
-            returnValue = NULL;
-    }
-    return returnValue;
-}
-#include <sys/stat.h>
-#include <errno.h>
-#define WIFI_CONFIG_FILE_PATH  "/etc/NetworkManager/system-connections/" 
-#define MAX_CONFIG_FILE_NAME_LENGTH 256
-
-void CreatorWriteNetworkConfigFile()
-{
-    struct stat status;
-    ConfigStruct *deviceConfiguration = &_DeviceConfig;
-    char configFileName[MAX_CONFIG_FILE_NAME_LENGTH];
-    char command[MAX_CONFIG_FILE_NAME_LENGTH];
-    snprintf(configFileName, MAX_CONFIG_FILE_NAME_LENGTH, "%s/%s", WIFI_CONFIG_FILE_PATH, deviceConfiguration->NetworkSSID);
-    srand(time(NULL));
-
-    if (stat(configFileName, &status) == -1 && errno == ENOENT)
-    {
-        FILE *configFile = fopen(configFileName, "w");
-        if (configFile)
-        {
-            fprintf(configFile, "[connection]\n");
-            fprintf(configFile, "id=%s\n", deviceConfiguration->NetworkSSID);
-            fprintf(configFile, "uuid=%d\n", rand());
-            fprintf(configFile, "type=802-11-wireless\n\n");
-            fprintf(configFile, "[802-11-wireless]\n");
-            fprintf(configFile, "ssid=%s\n", deviceConfiguration->NetworkSSID);
-            fprintf(configFile, "mode=infrastructure\n");
-            fprintf(configFile, "security=802-11-wireless-security\n\n");
-            fprintf(configFile, "[802-11-wireless-security]\n");
-            fprintf(configFile, "key-mgmt=%s\n", getEncryptionTypeStringFormat(deviceConfiguration->Encryption));
-            fprintf(configFile, "auth-alg=open\n");
-            fprintf(configFile, "psk=%s\n\n", deviceConfiguration->NetworkPassword);
-            fprintf(configFile, "[ipv4]\nmethod=auto\n\n[ipv6]\nmethod=auto\n");
-            fclose(configFile);
-            snprintf(command, MAX_CONFIG_FILE_NAME_LENGTH, "chmod 0600 %s", configFileName);
-            system(command);
-        }
-        else
-        {
-            printf("Not able to create %s file. Check whether you have persmissions to create the file or not\r\n", configFileName);
-        }
-    }
-    return;
-}
-
-#endif
