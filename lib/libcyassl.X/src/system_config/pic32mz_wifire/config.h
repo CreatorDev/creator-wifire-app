@@ -44,24 +44,31 @@ extern "C" {
 #define NO_DEV_RANDOM
 #define NO_FILESYSTEM
 #define WOLFSSL_STATIC_RSA
+#define NO_RC4
+#define NO_RSA
 
 #define USE_FAST_MATH
 #define TFM_TIMING_RESISTANT
 	
-#define WOLFSSL_DTLS 1
-    
-// TODO - enable defines when ssl build conflict resolved
-//#define HAVE_ECC 1
-//#define HAVE_ECC_ENCRYPT 1
-//#define HAVE_HKDF 1
-//#define LARGE_STATIC_BUFFERS 1
+#define WOLFSSL_DTLS 1   
+#define HAVE_AESCCM
+#define HAVE_ECC 1
+#define HAVE_ECC_ENCRYPT 1
+#define HAVE_HKDF 1
+#define LARGE_STATIC_BUFFERS 1
+
+#define BUILD_TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8
+#define BUILD_TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+#define BUILD_TLS_PSK_WITH_AES_128_CCM_8
+#define BUILD_TLS_PSK_WITH_AES_128_CBC_SHA256
+
 
 
 // Use FlowTime instead of SNTP client
 // Note: SNTP client caused problems on WiFire with Harmony v0_80b. The SNTP client caused DNS requests to fail
 // when WiFi host was on stand-alone laptop and this that made CommonMessaging requests fail.
 //#include "flow_time.h"
-#define TCPIP_SNTP_UTCSecondsGet(t1)	Flow_GetTime(t1)
+#define TCPIP_SNTP_UTCSecondsGet(t1)	Creator_GetTime(t1)
 	
 #ifdef	__cplusplus
 }

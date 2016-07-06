@@ -169,7 +169,7 @@
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <item path="../../../../third_party/AwaLWM2M/core/src/common/dtls_abstraction_cyassl.c"
-            ex="true"
+            ex="false"
             overriding="false">
         <C32>
         </C32>
@@ -185,7 +185,7 @@
         </C32Global>
       </item>
       <item path="../../../../third_party/AwaLWM2M/core/src/common/dtls_abstraction_dummy.c"
-            ex="false"
+            ex="true"
             overriding="false">
         <C32>
         </C32>

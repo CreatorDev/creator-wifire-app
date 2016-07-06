@@ -35,6 +35,7 @@
 #include "lwm2m_util.h"
 #include "network_abstraction.h"
 #include "dtls_abstraction.h"
+#include "creator/core/creator_threading.h"
 
 //#define NETWORK_IPV6
 //#define NETWORK_TCP
@@ -644,6 +645,7 @@ bool sendUDP(NetworkSocket * networkSocket, NetworkAddress * destAddress, const 
             if (lastError == EWOULDBLOCK)
             {
                 sentBytes = 0;
+				CreatorThread_SleepMilliseconds(NULL, 10);
             }
             else if (lastError == ENOTCONN)
             {

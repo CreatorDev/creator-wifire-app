@@ -70,6 +70,7 @@
         <itemPath>../src/standard_commands.h</itemPath>
         <itemPath>../src/ui_control.h</itemPath>
         <itemPath>../src/app_client.h</itemPath>
+        <itemPath>../src/config.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="bsp" projectFiles="true">
         <logicalFolder name="f1" displayName="chipkit_wifire" projectFiles="true">
@@ -749,7 +750,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="SYS_CONSOLE_INCLUDE_APIS;MICROCHIP_PIC32;CREATOR_DEBUG_ON"/>
+                  value="SYS_CONSOLE_INCLUDE_APIS;MICROCHIP_PIC32;CREATOR_DEBUG_ON;HAVE_CONFIG_H"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
@@ -1196,7 +1197,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="SYS_CONSOLE_INCLUDE_APIS;MICROCHIP_PIC32;CREATOR_DEBUG_ON"/>
+                  value="SYS_CONSOLE_INCLUDE_APIS;MICROCHIP_PIC32;CREATOR_DEBUG_ON;HAVE_CONFIG_H"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="use-cci" value="false"/>
