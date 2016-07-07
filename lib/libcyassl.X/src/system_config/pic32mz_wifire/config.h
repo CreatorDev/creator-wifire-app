@@ -45,7 +45,7 @@ extern "C" {
 #define NO_FILESYSTEM
 #define WOLFSSL_STATIC_RSA
 #define NO_RC4
-#define NO_RSA
+//#define NO_RSA
 
 #define USE_FAST_MATH
 #define TFM_TIMING_RESISTANT
@@ -62,6 +62,7 @@ extern "C" {
 #define BUILD_TLS_PSK_WITH_AES_128_CCM_8
 #define BUILD_TLS_PSK_WITH_AES_128_CBC_SHA256
 
+#define BUILD_TLS_RSA_WITH_AES_256_CBC_SHA
 
 
 // Use FlowTime instead of SNTP client

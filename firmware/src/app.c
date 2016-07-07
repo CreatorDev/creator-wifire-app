@@ -78,11 +78,11 @@ APP_DATA appData;
 #endif
 
 #ifndef APP_VERSION
-#define APP_VERSION 0.0.12
+#define APP_VERSION 0.0.13
 #endif
 
-#ifndef APP_VERISONDATE
-#define APP_VERISONDATE 7 July 2016
+#ifndef APP_VERSIONDATE
+#define APP_VERSIONDATE 7 July 2016
 #endif
 
 #define STRINGIFY(x) #x
@@ -94,7 +94,7 @@ static AppInfo info =
 {
     .ApplicationName = TOSTRING(APP_NAME),
     .ApplicationVersion = TOSTRING(APP_VERSION),
-    .ApplicationVersionDate =  TOSTRING(APP_VERISONDATE),
+    .ApplicationVersionDate =  TOSTRING(APP_VERSIONDATE),
     .CommandShow = AppCommands_CommandShow,
     .AppCLI_ResetHandler = CommandHandlers_ResetHandler
 };

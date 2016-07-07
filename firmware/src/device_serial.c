@@ -54,13 +54,13 @@ bool DeviceSerial_GetCpuSerialNumberHexString (char* buffer, uint32_t buffSize)
     {
         uint8_t i = 0;
         for (i = 0; i < HEX_SN_SIZE_CHARS/2; i++)
-        sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", 0xFF);
+            sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", 0xFF);
 
         uint64_t serialNumber = ((uint64_t) DEVSN1 << 32 | (uint64_t) DEVSN0);
         uint8_t* _serialNumber = (uint8_t*) &serialNumber;
         memset(buffer, 0, sizeof(char) * (HEX_SN_SIZE_CHARS+1) );
         for (i = 0; i < HEX_SN_SIZE_CHARS/2; i++)
-        sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", *(_serialNumber+i));
+            sprintf((char*)buffer+(i*2*sizeof(char)), "%02X", *(_serialNumber+i));
 
         result = true;
     }

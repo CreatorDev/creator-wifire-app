@@ -142,6 +142,7 @@ bool CreatorTLS_StartSSLSession(CreatorCommonMessaging_ControlBlock *controlBloc
                 CyaSSL_CTX_use_certificate_buffer(session->Context, controlBlock->TLSCertificateData, controlBlock->TLSCertificateSize, SSL_FILETYPE_PEM);
                 CyaSSL_CTX_use_PrivateKey_buffer(session->Context, controlBlock->TLSCertificateData, controlBlock->TLSCertificateSize, SSL_FILETYPE_PEM);
                 CyaSSL_CTX_set_verify(session->Context, SSL_VERIFY_NONE, NULL);
+                CyaSSL_CTX_set_cipher_list(session->Context, "AES256-SHA" );
             }
             CyaSSL_SetIORecv(session->Context, SSLReceiveCallBack);
             CyaSSL_SetIOSend(session->Context, SSLSendCallBack);

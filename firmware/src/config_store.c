@@ -37,20 +37,18 @@
  
  *******************************************************************************/
 
+#include <string.h>
+#include <ctype.h>
+
 #include "config_store.h"
 #include "device_serial.h"
 
-#ifdef MICROCHIP_PIC32
 #include "driver/nvm/drv_nvm.h"
 #include "system/random/sys_random.h"
 #include "system/debug/sys_debug.h"
+
 // Coherent malloc/free support
 #include <xc.h>
-#else
-#include "assert.h"
-#include <time.h>
-#include <string.h>
-#endif
 
 #include "creator/core/creator_memalloc.h"
 #include "creator/core/creator_debug.h"
@@ -210,6 +208,29 @@ bool GenerateNewSoftAPPassword(char *buff, uint32_t buffSize)
     return true;
 }
 
+uint8_t HexToByte(const char *value)
+{
+    uint8_t result = 0;
+    if (value)
+    {
+        int count = 2;
+        while (count)
+        {
+            int hex = *value++;
+            if (hex >= '0' && hex <= '9')
+                result |= hex - '0';
+            else if (hex >= 'A' && hex <= 'F')
+                result |= 10 + (hex - 'A');
+            else if (hex >= 'a' && hex <= 'f')
+                result |= 10 + (hex - 'a');
+            count--;
+            if (count > 0)
+                result <<= 4;
+        }
+    }
+    return result;
+}
+
 
 /********************************
  * External Functions
@@ -350,9 +371,14 @@ const char *ConfigStore_GetPublicKey(void)
     return _DeviceServerConfig.PublicKey;
 }
 
-const char *ConfigStore_GetPrivateKey(void)
+const uint8_t *ConfigStore_GetPrivateKey(void)
 {
     return _DeviceServerConfig.PrivateKey;
+}
+
+uint16_t ConfigStore_GetPrivateKeyLength(void)
+{
+    return _DeviceServerConfig.PrivateKeyLength;
 }
 
 const char *ConfigStore_GetCertificate(void)
@@ -732,15 +758,24 @@ bool ConfigStore_SetPrivateKey(const char *value)
     bool result = false;
     if (value)
     {
-        uint32_t valueLength = strlen((char*) value);
+        int index;
+        int valueLength = strlen((char*) value);
         memset((void*) _DeviceServerConfig.PrivateKey, 0, SECURITY_PRIVATE_KEY_LENGTH);
         if (valueLength > 0)
         {
-            if (SECURITY_PRIVATE_KEY_LENGTH < valueLength)
-                memcpy((void*) _DeviceServerConfig.PrivateKey, (void*) value, SECURITY_PRIVATE_KEY_LENGTH);
-            else
-                memcpy((void*) _DeviceServerConfig.PrivateKey, (void*) value, valueLength);
+            int byteCount = valueLength >>= 1;
+            if (byteCount >= SECURITY_PRIVATE_KEY_LENGTH)
+            {
+                byteCount = SECURITY_PRIVATE_KEY_LENGTH;
+            }
+            // Convert ascii values ('00'-'FF') to bytes
+            for (index = 0; index < byteCount; index++)
+            {
+                _DeviceServerConfig.PrivateKey[index] = HexToByte(value);
+                value += 2;
+            }
         }
+        _DeviceServerConfig.PrivateKeyLength = valueLength;
         result = true;
     }
     return result;

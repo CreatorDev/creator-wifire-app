@@ -629,9 +629,9 @@ void StandardCommands_GetDeviceServerConfig(void)
             else
                 CreatorConsole_Printf("Public key:\t\tnot set" LINE_TERM);
 
-            char *privateKey = (char *) ConfigStore_GetPrivateKey();
-            if (privateKey && strlen(privateKey))
-                CreatorConsole_Printf("Private key:\t\tlength = %d" LINE_TERM, strlen(privateKey));
+            int privateKeyLength = ConfigStore_GetPrivateKeyLength();
+            if (privateKeyLength > 0)
+                CreatorConsole_Printf("Private key:\t\tlength = %d" LINE_TERM, privateKeyLength);
             else
                 CreatorConsole_Printf("Private key:\t\tnot set" LINE_TERM);
         }
@@ -1032,8 +1032,8 @@ static void StandardCommands_SetDeviceServerConfig(void)
 
         if (CreatorCommand_PromptUserWithQuery("Do you want to set a new bootstrap URL: (y/n) "))
         {
-            uint8_t settingBuffer[CONFIG_STORE_DEFAULT_FIELD_LENGTH + 1];
-            if (CreatorCommand_ReadInputStringWithQuery("Enter new bootstrap URL: ", settingBuffer, CONFIG_STORE_DEFAULT_FIELD_LENGTH + 1, false) > 0)
+            uint8_t settingBuffer[BOOTSTRAP_URL_LENGTH + 1];
+            if (CreatorCommand_ReadInputStringWithQuery("Enter new bootstrap URL: ", settingBuffer, BOOTSTRAP_URL_LENGTH + 1, false) > 0)
             {
                 if (ConfigStore_SetBootstrapURL((const char *) settingBuffer) && ConfigStore_DeviceServerConfig_UpdateCheckbyte()
                         && ConfigStore_DeviceServerConfig_Write())
@@ -1046,6 +1046,7 @@ static void StandardCommands_SetDeviceServerConfig(void)
                 CreatorConsole_Printf("Invalid setting value. Aborted" LINE_TERM);
             }
         }
+        
         // Display current security mode
         ServerSecurityMode securityMode = ConfigStore_GetSecurityMode();
         CreatorConsole_Printf("Current security mode: ");
@@ -1071,6 +1072,55 @@ static void StandardCommands_SetDeviceServerConfig(void)
             else
             {
                 CreatorConsole_Printf(LINE_TERM "Invalid selection. Aborted" LINE_TERM);
+            }
+        }
+        
+        if (ConfigStore_GetSecurityMode() == ServerSecurityMode_PSK)
+        {
+            char *publicKey = (char *) ConfigStore_GetPublicKey();
+            if (publicKey && strlen(publicKey))
+                CreatorConsole_Printf("Public key: %s" LINE_TERM, publicKey);
+            else
+                CreatorConsole_Printf("Public key: not set" LINE_TERM);
+            
+            if (CreatorCommand_PromptUserWithQuery("Do you want to set a new public key: (y/n) "))
+            {
+                uint8_t settingBuffer[SECURITY_PUBLIC_KEY_LENGTH + 1];
+                if (CreatorCommand_ReadInputStringWithQuery("Enter new public key: ", settingBuffer, SECURITY_PUBLIC_KEY_LENGTH + 1, false) > 0)
+                {
+                    if (ConfigStore_SetPublicKey((const char *) settingBuffer) && ConfigStore_DeviceServerConfig_UpdateCheckbyte()
+                            && ConfigStore_DeviceServerConfig_Write())
+                        CreatorConsole_Printf(LINE_TERM "Setting updated successfully." LINE_TERM);
+                    else
+                        CreatorConsole_Printf(LINE_TERM "Setting update failed." LINE_TERM);
+                }
+                else
+                {
+                    CreatorConsole_Printf("Invalid setting value. Aborted" LINE_TERM);
+                }
+            }
+
+            int privateKeyLength = ConfigStore_GetPrivateKeyLength();
+            if (privateKeyLength > 0)
+                CreatorConsole_Printf("Private key: length = %d" LINE_TERM, privateKeyLength);
+            else
+                CreatorConsole_Printf("Private key: not set" LINE_TERM);
+            
+            if (CreatorCommand_PromptUserWithQuery("Do you want to set a new private key: (y/n) "))
+            {
+                uint8_t settingBuffer[SECURITY_PRIVATE_KEY_HEX_LENGTH + 1];
+                if (CreatorCommand_ReadInputStringWithQuery("Enter new private key: ", settingBuffer, SECURITY_PRIVATE_KEY_HEX_LENGTH + 1, false) > 0)
+                {
+                    if (ConfigStore_SetPrivateKey((const char *) settingBuffer) && ConfigStore_DeviceServerConfig_UpdateCheckbyte()
+                            && ConfigStore_DeviceServerConfig_Write())
+                        CreatorConsole_Printf(LINE_TERM "Setting updated successfully." LINE_TERM);
+                    else
+                        CreatorConsole_Printf(LINE_TERM "Setting update failed." LINE_TERM);
+                }
+                else
+                {
+                    CreatorConsole_Printf("Invalid setting value. Aborted" LINE_TERM);
+                }
             }
         }
 
