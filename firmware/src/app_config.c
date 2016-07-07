@@ -140,7 +140,7 @@ void AppConfig_Initialise(AppInfo *info)
     AppConfig_InitCreatorCommandHandler();
     UIControl_SetUIState(AppUIState_None);
 
-    wolfSSL_SetLoggingCb(WolfDebug);
+    //wolfSSL_SetLoggingCb(WolfDebug);
     //wolfSSL_Debugging_ON();
     AppConfig_InitAppCoreTasks();
 }

@@ -65,6 +65,7 @@
 #define BOOTSTRAP_URL_LENGTH                    (64)
 #define SECURITY_PUBLIC_KEY_LENGTH              (64)
 #define SECURITY_PRIVATE_KEY_LENGTH             (64)
+#define SECURITY_PRIVATE_KEY_HEX_LENGTH         (SECURITY_PRIVATE_KEY_LENGTH << 1)
 #define SECURITY_CERT_LENGTH                    (3072)    // 3K max
 #define SECURITY_BOOTSTRAP_CERT_CHAIN_LENGTH    (8192)    // 8K max (TODO - review)
 
@@ -181,13 +182,14 @@ typedef struct
     ServerSecurityMode  SecurityMode;
     char        BootstrapURL[BOOTSTRAP_URL_LENGTH+1];                   //  Null terminated
     char        PublicKey[SECURITY_PUBLIC_KEY_LENGTH+1];                //  "       "
-    char        PrivateKey[SECURITY_PRIVATE_KEY_LENGTH+1];              //  "       "
+    uint8_t     PrivateKey[SECURITY_PRIVATE_KEY_LENGTH+1];
+    uint16_t    PrivateKeyLength;
     uint16_t    CertLength;
     uint8_t     CertCheckByte;
     uint16_t    BootstrapChainCertLength;
     uint8_t     BootstrapChainCertCheckByte;
     
-    char        Reserved[124];      // Reserved (to preserve offset to next NV section)
+    char        Reserved[122];      // Reserved (to preserve offset to next NV section)
 
     // Housekeeping
     uint16_t    Padding;
@@ -228,24 +230,24 @@ bool ConfigStore_GetNetworkConfigConfirmed(void);       // TODO - review if need
 bool ConfigStore_GetNetworkConfigSet(void);
 
 AddressScheme ConfigStore_GetAddressingScheme(void);
-const char* ConfigStore_GetAddressingSchemeName(AddressScheme addressingScheme);
-const char* ConfigStore_GetDeviceName(void);
-const char* ConfigStore_GetDeviceType(void);
-const char* ConfigStore_GetEncryptionName(WiFiEncryptionType encryption);
+const char *ConfigStore_GetAddressingSchemeName(AddressScheme addressingScheme);
+const char *ConfigStore_GetDeviceName(void);
+const char *ConfigStore_GetDeviceType(void);
+const char *ConfigStore_GetEncryptionName(WiFiEncryptionType encryption);
 WiFiEncryptionType  ConfigStore_GetEncryptionType(void);
-const char* ConfigStore_GetMacAddress(void);
-const char* ConfigStore_GetNetworkSSID(void);
+const char *ConfigStore_GetMacAddress(void);
+const char *ConfigStore_GetNetworkSSID(void);
 
-const char* ConfigStore_GetCreatorKeyValue(const char *keyName, size_t *valueLength);
+const char *ConfigStore_GetCreatorKeyValue(const char *keyName, size_t *valueLength);
 
-const char* ConfigStore_GetNetworkPassword(void);
+const char *ConfigStore_GetNetworkPassword(void);
 uint64_t ConfigStore_GetSerialNumber(void);
-const char* ConfigStore_GetSoftAPSSID(void);
-const char* ConfigStore_GetSoftAPPassword(void);
-const char* ConfigStore_GetStaticDNS(void);
-const char* ConfigStore_GetStaticGateway(void);
-const char* ConfigStore_GetStaticNetmask(void);
-const char* ConfigStore_GetStaticIP(void);
+const char *ConfigStore_GetSoftAPSSID(void);
+const char *ConfigStore_GetSoftAPPassword(void);
+const char *ConfigStore_GetStaticDNS(void);
+const char *ConfigStore_GetStaticGateway(void);
+const char *ConfigStore_GetStaticNetmask(void);
+const char *ConfigStore_GetStaticIP(void);
 
 bool ConfigStore_GetStartInConfigurationMode(void);
 
@@ -280,7 +282,7 @@ bool ConfigStore_LoggingSettings_Write(void);
 
 // APIs
 CreatorLogLevel ConfigStore_GetLoggingLevel(void);
-const char* ConfigStore_GetLoggingLevelName(CreatorLogLevel level);
+const char *ConfigStore_GetLoggingLevelName(CreatorLogLevel level);
 bool ConfigStore_SetLoggingLevel(CreatorLogLevel value);
 
 
@@ -296,13 +298,14 @@ bool ConfigStore_DeviceServerConfig_UpdateCheckbyte(void);
 bool ConfigStore_DeviceServerConfig_Write(void);
 
 // APIs
-const char* ConfigStore_GetBootstrapURL(void);
+const char *ConfigStore_GetBootstrapURL(void);
 ServerSecurityMode ConfigStore_GetSecurityMode(void);
-const char* ConfigStore_GetSecurityModeName(ServerSecurityMode securityMode);
-const char* ConfigStore_GetPublicKey(void);
-const char* ConfigStore_GetPrivateKey(void);
-const char* ConfigStore_GetCertificate(void);
-const char* ConfigStore_GetBootstrapCertChain(void);
+const char *ConfigStore_GetSecurityModeName(ServerSecurityMode securityMode);
+const char *ConfigStore_GetPublicKey(void);
+const uint8_t *ConfigStore_GetPrivateKey(void);
+uint16_t ConfigStore_GetPrivateKeyLength(void);
+const char *ConfigStore_GetCertificate(void);
+const char *ConfigStore_GetBootstrapCertChain(void);
 
 bool ConfigStore_SetBootstrapURL(const char *value);
 bool ConfigStore_SetSecurityMode(ServerSecurityMode securityMode);

@@ -78,7 +78,7 @@ APP_DATA appData;
 #endif
 
 #ifndef APP_VERSION
-#define APP_VERSION 0.0.12
+#define APP_VERSION 0.0.13
 #endif
 
 #ifndef APP_VERISONDATE
