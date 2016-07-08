@@ -107,31 +107,29 @@ uint8_t encryptBuffer[ENCRYPT_BUFFER_LENGTH];
 
 static NetworkTransmissionError SendDTLS(NetworkAddress * destAddress, const uint8_t * buffer, int bufferLength, void *context);
 
-#define WAIT_TIMEOUT_SECS					60	
+#define WAIT_TIMEOUT_SECS    60
 
 struct hostent * BlockingGetHostByName(const char *hostName)
 {
     struct hostent *resolvedAddress = NULL;
     int lastError;
+    int timeOutPeriod = CreatorTimer_GetTicksPerSecond() * WAIT_TIMEOUT_SECS;
+    uint startTick = CreatorTimer_GetTickCount();
 
-
-	int timeOutPeriod = CreatorTimer_GetTicksPerSecond() * WAIT_TIMEOUT_SECS;
-	uint startTick = CreatorTimer_GetTickCount();
-
-	h_errno = 0;
-	resolvedAddress = gethostbyname((char *)hostName);
-	lastError = h_errno;
-	while (!resolvedAddress && (lastError == TRY_AGAIN))
-	{
-		if ((CreatorTimer_GetTickCount() - startTick) >= timeOutPeriod)
-		{
-			break;
-		}
-		CreatorThread_SleepMilliseconds(NULL, 20);
-		h_errno = 0;
-		resolvedAddress = gethostbyname((char *)hostName);
-		lastError = h_errno;
-	}  
+    h_errno = 0;
+    resolvedAddress = gethostbyname((char *)hostName);
+    lastError = h_errno;
+    while (!resolvedAddress && (lastError == TRY_AGAIN))
+    {
+        if ((CreatorTimer_GetTickCount() - startTick) >= timeOutPeriod)
+        {
+            break;
+        }
+        CreatorThread_SleepMilliseconds(NULL, 20);
+        h_errno = 0;
+        resolvedAddress = gethostbyname((char *)hostName);
+        lastError = h_errno;
+    }
 
     return resolvedAddress;
 }
@@ -229,7 +227,7 @@ NetworkAddress * NetworkAddress_New(const char * uri, int uriLength)
             if (hostnameLength > 0 && port > 0)
             {
                 //struct hostent *resolvedAddress = gethostbyname(hostname);
-				struct hostent *resolvedAddress = BlockingGetHostByName(hostname);
+                struct hostent *resolvedAddress = BlockingGetHostByName(hostname);
                 if (resolvedAddress)
                 {
                     size_t size = sizeof(struct _NetworkAddress);
