@@ -153,9 +153,6 @@ static void CreateDevice(AwaStaticClient * awaClient);
 //    0x72, 0xDB, 0xF5, 0x15, 0x6A, 0x07, 0x26, 0x36, 0xC5, 0xF7, 0x90, 0x67, 0x1D, 0xB7, 0x75, 0x0B, 0xAD, 0xF4, 0xEF, 0x1C, 0x18, 0x93, 0xA4, 0x1A, 0x4E, 0xAD, 0x60, 0xA9, 0x2B, 0xE8, 0x20, 0x79
 //};
 
-extern void coap_SetCertificate(const uint8_t * cert, int certLength, int format);
-extern void coap_SetPSK(const char * identity, const uint8_t * key, int keyLength);
-
 void Client_Initialise(void)
 {
     _Terminate = false;
@@ -172,15 +169,14 @@ void Client_Initialise(void)
 	
     if (ConfigStore_GetSecurityMode() == ServerSecurityMode_Cert)
     {
-    	//coap_SetCertificate(clientCert, sizeof(clientCert), 2);
         const char *clientCert = ConfigStore_GetCertificate();
-    	coap_SetCertificate(clientCert, sizeof(clientCert), 2);
+    	AwaStaticClient_SetCertificate(_AwaClient, clientCert, sizeof(clientCert), AwaCertificateFormat_PEM);
     }
     
     if (ConfigStore_GetSecurityMode() == ServerSecurityMode_PSK)
     {
         //coap_SetPSK(testIdentity, testKey, sizeof(testKey));
-        coap_SetPSK(ConfigStore_GetPublicKey(), ConfigStore_GetPrivateKey(), (int)ConfigStore_GetPrivateKeyLength());
+        AwaStaticClient_SetPSK(_AwaClient, ConfigStore_GetPublicKey(), ConfigStore_GetPrivateKey(), (int)ConfigStore_GetPrivateKeyLength());
     }
 
     CreateDevice(_AwaClient);
