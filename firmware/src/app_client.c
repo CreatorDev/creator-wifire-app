@@ -156,12 +156,16 @@ static void CreateDevice(AwaStaticClient * awaClient);
 void Client_Initialise(void)
 {
     _Terminate = false;
-
+    CreatorLogLevel logLevel = ConfigStore_GetLoggingLevel();
+    
     Creator_Log(CreatorLogLevel_Info, "Client init started");
-
     _AwaClient = AwaStaticClient_New();
-    Client_SetLogLevel(ConfigStore_GetLoggingLevel());
 
+    if (logLevel == CreatorLogLevel_Debug)
+        Client_SetLogLevel(CreatorLogLevel_Info);   // reduce logging during startup
+    else
+        Client_SetLogLevel(logLevel);
+    
     AwaStaticClient_SetEndPointName(_AwaClient, ConfigStore_GetDeviceName());
     AwaStaticClient_SetBootstrapServerURI(_AwaClient, ConfigStore_GetBootstrapURL());
     AwaStaticClient_SetCoAPListenAddressPort(_AwaClient, "0.0.0.0", LOCAL_PORT);
@@ -184,6 +188,8 @@ void Client_Initialise(void)
     ButtonObject_Create(_AwaClient);
     TemperatureObject_Create(_AwaClient);
     
+    if (logLevel == CreatorLogLevel_Debug)
+        Client_SetLogLevel(logLevel);
     Creator_Log(CreatorLogLevel_Info, "Client init done");
     _ClientThread = CreatorThread_New("Lwm2mClient", 1, 4096, ClientProcess, NULL);
 }

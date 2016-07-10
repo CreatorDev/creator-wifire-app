@@ -107,7 +107,7 @@ uint8_t encryptBuffer[ENCRYPT_BUFFER_LENGTH];
 
 static NetworkTransmissionError SendDTLS(NetworkAddress * destAddress, const uint8_t * buffer, int bufferLength, void *context);
 
-#define WAIT_TIMEOUT_SECS    60
+#define WAIT_TIMEOUT_SECS 60
 
 struct hostent * BlockingGetHostByName(const char *hostName)
 {
@@ -115,14 +115,17 @@ struct hostent * BlockingGetHostByName(const char *hostName)
     int lastError;
     int timeOutPeriod = CreatorTimer_GetTicksPerSecond() * WAIT_TIMEOUT_SECS;
     uint startTick = CreatorTimer_GetTickCount();
+    bool timeout = false;
 
     h_errno = 0;
     resolvedAddress = gethostbyname((char *)hostName);
     lastError = h_errno;
-    while (!resolvedAddress && (lastError == TRY_AGAIN))
+
+    while (!resolvedAddress && (lastError == TRY_AGAIN || lastError == 0))
     {
         if ((CreatorTimer_GetTickCount() - startTick) >= timeOutPeriod)
         {
+            timeout = true;
             break;
         }
         CreatorThread_SleepMilliseconds(NULL, 20);
@@ -131,6 +134,19 @@ struct hostent * BlockingGetHostByName(const char *hostName)
         lastError = h_errno;
     }
 
+    if (resolvedAddress)
+    {
+        Lwm2m_Debug("GetHostByName %s success\n", hostName);
+    }
+    else
+    {
+        char *errorCause = "error";
+        if (timeout)
+            errorCause = "timeout";
+        else if (lastError == HOST_NOT_FOUND)
+            errorCause = "host not found";
+        Lwm2m_Error("GetHostByName %s failed: %s\n", hostName, errorCause);
+    }
     return resolvedAddress;
 }
 
@@ -320,7 +336,7 @@ void NetworkAddress_SetAddressType(NetworkAddress * address, AddressType * addre
     {
         memcpy(&addressType->Address, &address->Address.Sin.sin_addr, sizeof(addressType->Address));
         addressType->Secure = address->Secure;
-        addressType->Port = address->Address.Sin.sin_port;					// TODO - is swap needed c.f. linux abstraction?
+        addressType->Port = address->Address.Sin.sin_port;
         //addressType->Port = ntohs(address->Address.Sin.sin_port);
     }
 }
@@ -392,7 +408,7 @@ static void addCachedAddress(NetworkAddress * address, const char * uri, int uri
                 {
                     networkAddressCache[index].address = address;
                     networkAddressCache[index].uri = NULL;
-                    Lwm2m_Debug("Address add (received)\n");    // TODO - print remote address
+                    Lwm2m_Debug("Address add (received)\n");    // TODO - print remote IP address
                 }
                 break;
             }
@@ -571,7 +587,7 @@ bool readUDP(NetworkSocket * networkSocket, int socketHandle, uint8_t * buffer, 
         else
         {
             networkSocket->LastError = NetworkSocketError_ReadError;
-            //Lwm2m_Debug("UDP Read error %d\n", lastError);
+            Lwm2m_Debug("UDP Read error %d\n", lastError);
         }
     }
     else if (*readLength > 0)
@@ -583,6 +599,7 @@ bool readUDP(NetworkSocket * networkSocket, int socketHandle, uint8_t * buffer, 
         memset(&matchAddress, 0, size);
         memcpy(&matchAddress.Address.Sa, &sourceSocket, sourceSocketLength);
         matchAddress.Address.Sa.sa_family = AF_INET;        // Note: work around - Berkeley doesn't set socket type!
+        matchAddress.Secure = (networkSocket->SocketType & NetworkSocketType_Secure) == NetworkSocketType_Secure;
         networkAddress = getCachedAddress(&matchAddress, NULL, 0);
 
         if (networkAddress == NULL)
@@ -675,6 +692,7 @@ bool sendUDP(NetworkSocket * networkSocket, NetworkAddress * destAddress, const 
     bool result = false;
     int socketHandle = networkSocket->Socket;
     size_t addressLength = SOCKET_SIZE;
+    int requestLength = bufferLength;
     while (bufferLength > 0)
     {
         errno = 0;
@@ -685,7 +703,7 @@ bool sendUDP(NetworkSocket * networkSocket, NetworkAddress * destAddress, const 
             if (lastError == EWOULDBLOCK)
             {
                 sentBytes = 0;
-				CreatorThread_SleepMilliseconds(NULL, 10);
+                CreatorThread_SleepMilliseconds(NULL, 10);
             }
             else if (lastError == ENOTCONN)
             {
@@ -708,12 +726,21 @@ bool sendUDP(NetworkSocket * networkSocket, NetworkAddress * destAddress, const 
         }
 
     result = (bufferLength == 0);
+    if (result)
+    {
+        //Lwm2m_Debug("UDP Send(%d)\n", requestLength);
+    }
+    else
+    {
+        Lwm2m_Debug("UDP Send failed(req=%d, sent=%d)\n", requestLength, requestLength - bufferLength);
+    }
     return result;
 }
 
 bool NetworkSocket_Send(NetworkSocket * networkSocket, NetworkAddress * destAddress, uint8_t * buffer, int bufferLength)
 {
     bool result = false;
+    //Lwm2m_Debug("NetworkSocket_Send request(%d)\n", bufferLength);
     if (networkSocket)
     {
         networkSocket->LastError = NetworkSocketError_NoError;
@@ -728,16 +755,19 @@ bool NetworkSocket_Send(NetworkSocket * networkSocket, NetworkAddress * destAddr
                         int encryptedBytes;
                         if (DTLS_Encrypt(destAddress, buffer, bufferLength, encryptBuffer, ENCRYPT_BUFFER_LENGTH, &encryptedBytes, networkSocket))
                         {
+                            //Lwm2m_Debug("NetworkSocket_Send DTLS req(%d), encrypt(%d)\n", bufferLength, encryptedBytes);
                             buffer = encryptBuffer;
                             bufferLength = encryptedBytes;
                         }
                         else
                         {
+                            //Lwm2m_Debug("NetworkSocket_Send no encrypt req(%d), encrypt(%d)\n", bufferLength, encryptedBytes);
                             bufferLength = 0;
                         }
                     }
                     if (bufferLength > 0)
                     {
+                        //Lwm2m_Debug("NetworkSocket_Send UDP req(%d)\n", bufferLength);
                         result = sendUDP(networkSocket, destAddress, buffer, bufferLength);
                     }
                 }
@@ -752,6 +782,7 @@ bool NetworkSocket_Send(NetworkSocket * networkSocket, NetworkAddress * destAddr
             networkSocket->LastError = NetworkSocketError_InvalidArguments;
         }
     }
+    //Lwm2m_Debug("UDP Send result %s\n", result ? "Success" : "Fail");
     return result;
 }
 
