@@ -574,34 +574,13 @@ void AppConfig_NetworkInitialise(void)
 
 }
 
-// TODO - review: keep libcore init?
-//void AppConfig_CreatorInitialise(void)
-//{
-//	if (!_RunningInConfigurationMode)
-//	{
-//		UIControl_SetUIState(AppUIState_AppInitConnectingToServer);
-//		bool firstInit = true;
-//		CreatorCore_Initialise();
-//		CreatorCert_SetCertificate("*.creatorworld.com", NULL);
-//		CreatorCore_RegisterTypes();
-//		CreatorMessaging_Initialise();
-//		while (!CreatorClient_ConnectToServer(ConfigStore_GetRestRootURL(), ConfigStore_GetCreatorOauthKey(), ConfigStore_GetCreatorOauthSecret(), true ))
-//		{
-//			if (firstInit)
-//			{
-//				Creator_Log(CreatorLogLevel_Warning, "CreatorMessaging init failed, retry every 30sec...");
-//				firstInit = false;
-//			}
-//			else
-//			{
-//				Creator_Log(CreatorLogLevel_Error, "CreatorMessaging init failed, retry in 30sec...");
-//			}
-//			CreatorThread_Sleep(NULL, 30);
-//		}
-//
-//		Creator_Log(CreatorLogLevel_Info, "CreatorMessaging initialised successfully");
-//	}
-//}
+void AppConfig_CreatorInitialise(void)
+{
+    if (!_RunningInConfigurationMode)
+    {
+        CreatorCore_Initialise();
+    }
+}
 
 static uint8_t GetHexValue(char text)
 {

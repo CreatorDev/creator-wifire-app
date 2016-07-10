@@ -78,11 +78,11 @@ APP_DATA appData;
 #endif
 
 #ifndef APP_VERSION
-#define APP_VERSION 0.0.13
+#define APP_VERSION 0.0.14
 #endif
 
 #ifndef APP_VERSIONDATE
-#define APP_VERSIONDATE 7 July 2016
+#define APP_VERSIONDATE 8 July 2016
 #endif
 
 #define STRINGIFY(x) #x
@@ -178,11 +178,9 @@ void APP_Tasks ( void )
             }
             else
             {
-                // TODO - next functions and remove...
                 UIControl_SetUIState(AppUIState_AppInitConnectingToServer);
-                //AppConfig_CreatorInitialise();
-                //ConfigStore_SetDeviceType(STARTER_APP_DEVICE_TYPE);   // TODO - only set if changed + update checksum etc...
-                //UIControl_SetUIState(AppUIState_InteractiveConnectedToCreator);
+                AppConfig_CreatorInitialise();
+                //UIControl_SetUIState(AppUIState_InteractiveConnectedToCreator);   // TODO - update on client connected
 
                 // TODO - keep Arduino?
                 CreatorThread_New("ArduinoMonitor", 0, 4096, (CreatorThread_Callback) SYS_ArduinoMonitorTask, NULL);

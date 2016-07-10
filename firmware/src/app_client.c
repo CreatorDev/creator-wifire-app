@@ -277,3 +277,9 @@ void Client_SetLogLevel(CreatorLogLevel level)
             break;
     }
 }
+
+int random()
+{
+    // Support random numbers for Awa static client
+    return Creator_GetRandom();
+}
