@@ -169,45 +169,46 @@ void Creator_SetTime(time_t time)
     updateInterval = lastUpdated ? time - lastUpdated : 0;
     correctInterval = updateInterval && errorTime ? abs(updateInterval / errorTime) : 0;
 
-    if(IS_TIME_UPDATE_IN_RANGE(updateInterval))
+    if (IS_TIME_UPDATE_IN_RANGE(updateInterval))
     {
         time_t correctSum = 0;
         uint8 correctI = 0;
 
-        if(correctPos > CORRECT_AVG_SIZE - 1)
+        if (correctPos > CORRECT_AVG_SIZE - 1)
         correctPos = 0;
 
-        if(correctInterval < SERVERTIME_RESYNC_DELAY)
-        correctPrev[correctPos++] = correctInterval;
+        if (correctInterval < SERVERTIME_RESYNC_DELAY)
+            correctPrev[correctPos++] = correctInterval;
 
         correctSize = correctSize >= CORRECT_AVG_SIZE ? CORRECT_AVG_SIZE : correctPos;
 
         for(correctI = 0; correctI < correctSize; correctI++)
-        correctSum += correctPrev[correctI];
+            correctSum += correctPrev[correctI];
 
-        if(correctSize && correctSum)
+        if (correctSize && correctSum)
         {
             correctInterval = correctSum / (time_t)correctSize;
 
-            Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync [%d] diff: %d, error: %d, corrected: %d, sync interval: %d, correct interval: %d", time, (current_GetTime - time), errorTime, totalCorrected, updateInterval, correctInterval);
+            // TODO - update this module: libCreatorCore has no external time sync/updates)
+            //Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync [%d] diff: %d, error: %d, corrected: %d, sync interval: %d, correct interval: %d", time, (current_GetTime - time), errorTime, totalCorrected, updateInterval, correctInterval);
 
-            if(!_CorrectTask)
-            _CorrectTask = CreatorScheduler_ScheduleTask(TimeCorrectTask, NULL, correctInterval, true);
+            if (!_CorrectTask)
+                _CorrectTask = CreatorScheduler_ScheduleTask(TimeCorrectTask, NULL, correctInterval, true);
             else
-            CreatorScheduler_SetTaskInterval(_CorrectTask, correctInterval);
+                CreatorScheduler_SetTaskInterval(_CorrectTask, correctInterval);
         }
 
-        if ( abs(current_GetTime - time) < 2 )
+        if (abs(current_GetTime - time) < 2)
         {
             if(SERVERTIME_RESYNC_DELAY < SERVERTIME_RESYNC_DELAY_MAX)
             SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY << 2;
         }
-        else if ( abs(current_GetTime - time) < 5 )
+        else if (abs(current_GetTime - time) < 5)
         {
             if(SERVERTIME_RESYNC_DELAY < SERVERTIME_RESYNC_DELAY_MAX)
             SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY << 1;
         }
-        else if ( abs(current_GetTime - time) < 30 )
+        else if (abs(current_GetTime - time) < 30)
         {
             if(SERVERTIME_RESYNC_DELAY > SERVERTIME_RESYNC_DELAY_DEFAULT)
             SERVERTIME_RESYNC_DELAY = SERVERTIME_RESYNC_DELAY >> 1;
@@ -219,9 +220,9 @@ void Creator_SetTime(time_t time)
     }
     else
     {
-        if(!correctInterval)
+        if (!correctInterval)
         {
-            Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync reverting to %d interval (expected interval %d got %d)", SERVERTIME_RESYNC_DELAY_DEFAULT, SERVERTIME_RESYNC_DELAY, updateInterval);
+            //Creator_Log(CreatorLogLevel_Debug, "PIC32MZ time sync reverting to %d interval (expected interval %d got %d)", SERVERTIME_RESYNC_DELAY_DEFAULT, SERVERTIME_RESYNC_DELAY, updateInterval);
         }
         memset(&correctPrev[0], 0, sizeof(correctPrev));
         correctSize = 0;

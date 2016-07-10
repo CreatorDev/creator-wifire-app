@@ -635,13 +635,17 @@ void CreatorCommonMessaging_Receive(CreatorCommonMessaging_ControlBlock *control
             CreatorTLSError error = CreatorTLS_GetError(controlBlock);
             if (error != CreatorTLSError_RecieveBufferEmpty && error != CreatorTLSError_TransmitBufferFull)
             {
-                Creator_Log(CreatorLogLevel_Info, "TCP socket read error %d \r\n", error);
+                Creator_Log(CreatorLogLevel_Info, "TCP socket read error %d\r\n", error);
                 connectionLost = true;
             }
         }
         else if (receivedDataLength == 0)
         {
-            Creator_Log(CreatorLogLevel_Debug, "TCP socket port %d read no data (socket closed) \r\n", controlBlock->ConnectionDestinationPort);
+            // Ignore errors for server
+            if (controlBlock->ConnectionDestinationPort != 0)
+            {
+                Creator_Log(CreatorLogLevel_Debug, "TCP socket port %d read no data (socket closed)\r\n", controlBlock->ConnectionDestinationPort);
+            }
             connectionLost = true;
         }
     }

@@ -138,7 +138,7 @@ CreatorTaskID CreatorScheduler_ScheduleTask(CreatorScheduler_TaskCallback execut
     {
         CreatorSemaphore_Release(_TaskWait, 1);
         //CreatorThread_Wakeup(_TaskRunnerThread);
-        Creator_Log(CreatorLogLevel_Debug, "Scheduling task %u: [%p] in [%lu] seconds", result, executor, delayBeforeExecution);
+        //Creator_Log(CreatorLogLevel_Debug, "Scheduling task %u: [%p] in [%lu] seconds", result, executor, delayBeforeExecution);
     }
     else
     {
@@ -298,10 +298,10 @@ static void TaskRunnerMethod(CreatorThread thread, void *context)
         uint i;
         for (i = 0; i < taskToExecuteCount && !_TerminateTaskThread; i++)
         {
-            Creator_Log(CreatorLogLevel_Debug, "Executing task %u", pTasksToExecute[i].TaskID);
+            //Creator_Log(CreatorLogLevel_Debug, "Executing task %u", pTasksToExecute[i].TaskID);
             CreatorThread_ClearLastError();
             pTasksToExecute[i].TaskCallback(pTasksToExecute[i].TaskID, pTasksToExecute[i].TaskContext);
-            Creator_Log(CreatorLogLevel_Debug, "Done executing task %u", pTasksToExecute[i].TaskID);
+            //Creator_Log(CreatorLogLevel_Debug, "Done executing task %u", pTasksToExecute[i].TaskID);
         }
 
         if (!_TerminateTaskThread)
