@@ -83,7 +83,7 @@ static void StandardCommands_SetNetworkConfig(void);
 static void StandardCommands_ShowWiFireDetails(void);
 
 static setShowCommandInfo setShowCommands[setshow_cmd__max] =
-//  Name                    SetCallback?                    ShowCallback?
+//  Name                    SetCallback                    ShowCallback
 {{"device_name",    StandardCommands_SetDeviceName,    StandardCommands_GetDeviceName},
  {"log_config",     StandardCommands_SetLogConfig,     StandardCommands_GetLogConfig},
  {"network_config", StandardCommands_SetNetworkConfig, StandardCommands_GetNetworkConfig},
@@ -253,6 +253,21 @@ bool StandardCommands_Reboot(int argc, char** argv)
     return result;
 }
 
+bool StandardCommands_RebootApplicationMode(int argc, char** argv)
+{
+    int result;
+    if (AppConfig_CheckValidAppConfig(true) && ConfigStore_StartInConfigMode())
+    {
+        // Next boot should be into application mode
+        CreatorConsole_Printf("Set application mode" LINE_TERM);
+        ConfigStore_SetResetToConfigurationMode(false);
+        if (ConfigStore_Config_UpdateCheckbyte() && ConfigStore_Config_IsValid())
+            ConfigStore_Config_Write();
+    }
+    result = StandardCommands_Reboot(argc, argv);
+    return result;
+}
+
 bool StandardCommands_RebootSoftAP(int argc, char** argv)
 {
     int result = true;
@@ -314,7 +329,7 @@ bool StandardCommands_Set(int argc, char** argv)
 
         AppInfo *appInfo = AppConfig_GetAppInfo();
         CreatorConsole_Printf("'set' command usage:\tset <setting_name>" LINE_TERM);
-        CreatorConsole_Puts("Supported:\r\n");
+        CreatorConsole_Puts("Supported:" LINE_TERM);
         int index;
         for (index = 0; index < setshow_cmd__max; index++)
         {

@@ -742,6 +742,7 @@ void AppConfig_InitCreatorCommandHandler(void)
 
     CreatorCommand_RegisterCommand(NULL, "factory_reset", "Factory reset this device", StandardCommands_FactoryReset);
     CreatorCommand_RegisterCommand(NULL, "reboot", "Reboot device", StandardCommands_Reboot);
+    CreatorCommand_RegisterCommand(NULL, "reboot_app", "Reboot device into application mode", StandardCommands_RebootApplicationMode);
     CreatorCommand_RegisterCommand(NULL, "reboot_softap", "Reboot device into SoftAP mode", StandardCommands_RebootSoftAP);
     CreatorCommand_RegisterCommand(NULL, "show", "Display the current value of a device setting", StandardCommands_Show);
     CreatorCommand_RegisterCommand(NULL, "set", "Set the value of a device setting", StandardCommands_Set);

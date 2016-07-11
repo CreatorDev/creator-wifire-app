@@ -34,7 +34,8 @@ bool StandardCommands_ClearActivityLog(int argc, char** argv);    // Handler to 
 bool StandardCommands_FactoryReset(int argc, char** argv);        // Handler to factory_reset
 bool StandardCommands_Reboot(int argc, char** argv);              // Handler to reboot
 
-bool StandardCommands_RebootSoftAP(int argc, char** argv);        // Handler to Reboot softap
+bool StandardCommands_RebootApplicationMode(int argc, char** argv); // Handler to reboot into application mode
+bool StandardCommands_RebootSoftAP(int argc, char** argv);        // Handler to reboot into softAP (config) mode
 
 bool StandardCommands_Set(int argc, char** argv);                 // Handler for set
 bool StandardCommands_Show(int argc, char** argv);                // HAndler for show
