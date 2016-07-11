@@ -134,7 +134,6 @@ static bool CreatorCommand_ExecuteCommand(char *command);
 static bool CreatorCommand_FreeArguments(int argc, char *argv[]);
 static char **CreatorCommand_ParseArguments(char *command, int *argc);
 static bool CreatorCommand_PrintCommandHistory(int argc, char **argv);
-static bool CreatorCommand_QuitCommandHandler(int argc, char **argv);
 
 // Helpers
 static void CreatorCommand_DisplayPrompt(void);
@@ -551,11 +550,8 @@ bool CreatorCommand_Init(void)
                     {
                         commandModuleInitialised = true;
 
-                        if (CreatorCommand_RegisterCommand(NULL, "help", "help <optional group name>", CreatorCommand_DisplayHelp)
-                                && CreatorCommand_RegisterCommand(NULL, "history", "display recent command history", CreatorCommand_PrintCommandHistory)
-                                //CreatorCommand_RegisterCommand(NULL, "exit", "exit command handler", CreatorCommand_QuitCommandHandler) &&
-                                //CreatorCommand_RegisterCommand(NULL, "quit", "See 'exit' command", CreatorCommand_QuitCommandHandler)
-                                        )
+                        if (CreatorCommand_RegisterCommand(NULL, "help", "help <optional group name>", CreatorCommand_DisplayHelp) &&
+                            CreatorCommand_RegisterCommand(NULL, "history", "display recent command history", CreatorCommand_PrintCommandHistory))
                         {
                             CreatorCommand_DisplayPrompt();
                             result = true;
@@ -690,15 +686,9 @@ bool CreatorCommand_PromptUserWithQuery(char *query)
         return false;
 
     if (query != NULL)
-        CreatorConsole_Printf("%s", query);
+        CreatorConsole_Puts(query);
     return CreatorCommand_PromptUser();
 }
-
-//static int CreatorCommand_QuitCommandHandler(int argc, char **argv)
-//{
-//	commandModuleQuit = true;
-//	return 0;
-//}
 
 int32_t CreatorCommand_ReadInputIntegerOption(uint32_t inputRange, bool zeroBased, bool obscureCharacters)
 {
@@ -712,7 +702,7 @@ int32_t CreatorCommand_ReadInputIntegerOption(uint32_t inputRange, bool zeroBase
         else
             maxSetting = inputRange;
 
-#define READ_LENGTH	(10)
+#define READ_LENGTH (10)
         uint8_t readBuffer[READ_LENGTH + 1];
         do
         {
