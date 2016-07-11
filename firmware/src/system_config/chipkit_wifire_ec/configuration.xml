@@ -1068,7 +1068,7 @@
       <Template>
         <Name>system_tasks.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec</Path>
-        <Checksum>2E47F9F023F12B88CBE0E65C2AF1939E</Checksum>
+        <Checksum>793E6CEC0B05C077364E45BFD7E10AFB</Checksum>
       </Template>
       <Template>
         <Name>drv_spi_tasks.c</Name>

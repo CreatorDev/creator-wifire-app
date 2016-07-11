@@ -193,7 +193,7 @@ void Client_Initialise(void)
     if (logLevel == CreatorLogLevel_Debug)
         Client_SetLogLevel(logLevel);
     Creator_Log(CreatorLogLevel_Info, "Client init done");
-    _ClientThread = CreatorThread_New("Lwm2mClient", 1, 4096, ClientProcess, NULL);
+    _ClientThread = CreatorThread_New("Lwm2mClient", 1, 8192, ClientProcess, NULL);
 }
 
 void Client_Shutdown(void)
@@ -220,7 +220,7 @@ static void ClientProcess(CreatorThread thread, void *context)
     {
         AwaStaticClient_Process(_AwaClient);
         UpdateMonitor(_AwaClient);
-        CreatorThread_SleepMilliseconds(NULL, 1);
+        CreatorThread_SleepMilliseconds(NULL, 10);
     }
     // TODO - un-register (if registered) and wait for sent (with t/o)
     LedObject_Close();

@@ -808,6 +808,7 @@ static NetworkTransmissionError SendDTLS(NetworkAddress * destAddress, const uin
         {
             result = NetworkTransmissionError_TransmitBufferFull;
         }
+        CreatorThread_SleepMilliseconds(NULL, 5);
     }
     return result;
 }

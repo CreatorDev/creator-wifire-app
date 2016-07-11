@@ -119,7 +119,7 @@ void SYS_Tasks ( void )
     /* Create OS Thread for TCPIP Tasks. */
     xTaskCreate((TaskFunction_t) _TCPIP_Tasks,
                 "TCPIP Tasks",
-                1024, NULL, 1, NULL);
+                1024, NULL, 3, NULL);
 
     /* Create OS Thread for APP Tasks. */
     xTaskCreate((TaskFunction_t) _APP_Tasks,
