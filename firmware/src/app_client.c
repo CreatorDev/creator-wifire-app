@@ -40,6 +40,7 @@
 #include "led_object.h"
 #include "button_object.h"
 #include "temperature_object.h"
+#include "analog_input_object.h"
 #include "app_client.h"
 
 static CreatorThread _ClientThread;
@@ -187,6 +188,7 @@ void Client_Initialise(void)
     LedObject_Create(_AwaClient);
     ButtonObject_Create(_AwaClient);
     TemperatureObject_Create(_AwaClient);
+    AnalogInputObject_Create(_AwaClient);
     
     if (logLevel == CreatorLogLevel_Debug)
         Client_SetLogLevel(logLevel);
@@ -209,6 +211,7 @@ static void UpdateMonitor(AwaStaticClient * awaClient)
     LedObject_Update(awaClient);
     ButtonObject_Update(awaClient);
     TemperatureObject_Update(awaClient);
+    AnalogInputObject_Update(awaClient);
 }
 
 static void ClientProcess(CreatorThread thread, void *context)

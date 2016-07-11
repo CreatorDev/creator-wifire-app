@@ -42,15 +42,15 @@ typedef struct      // IPSO object: 3311 - Light control
 
 #define LED_INSTANCES 4
 
-static LEDObject leds[LED_INSTANCES];
-static LEDObject prevLeds[LED_INSTANCES];
+static LEDObject ledObject[LED_INSTANCES];
+static LEDObject prevLed[LED_INSTANCES];
 
 void LedObject_Create(AwaStaticClient * awaClient)
 {
     // Define LED objects
     AwaStaticClient_DefineObject(awaClient, IPSO_LIGHT_CONTROL_OBJECT, "Light", 0, LED_INSTANCES);
     AwaStaticClient_DefineResource(awaClient, IPSO_LIGHT_CONTROL_OBJECT, IPSO_ON_OFF, "OnOff", AwaResourceType_Boolean, 0, 1, AwaResourceOperations_ReadWrite);
-	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_LIGHT_CONTROL_OBJECT, IPSO_ON_OFF, &leds[0].OnOff, sizeof(leds[0].OnOff), sizeof(leds[0]));
+	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_LIGHT_CONTROL_OBJECT, IPSO_ON_OFF, &ledObject[0].OnOff, sizeof(ledObject[0].OnOff), sizeof(ledObject[0]));
 
     // Create object instances
     int instance;
@@ -58,8 +58,8 @@ void LedObject_Create(AwaStaticClient * awaClient)
     {
         AwaStaticClient_CreateObjectInstance(awaClient, IPSO_LIGHT_CONTROL_OBJECT, instance);
         AwaStaticClient_CreateResource(awaClient, IPSO_LIGHT_CONTROL_OBJECT, instance, IPSO_ON_OFF);
-        leds[instance].OnOff = true;
-        prevLeds[instance].OnOff = true;
+        ledObject[instance].OnOff = true;
+        prevLed[instance].OnOff = true;
     }
 }
 
@@ -74,16 +74,16 @@ void LedObject_Update(AwaStaticClient * awaClient)
 	for (index = 0; index < MAX_LEDS; index++)
     {
 		// Check if any LED changed
-        if (prevLeds[index].OnOff != leds[index].OnOff)
+        if (prevLed[index].OnOff != ledObject[index].OnOff)
         {
-            prevLeds[index].OnOff = leds[index].OnOff;
+            prevLed[index].OnOff = ledObject[index].OnOff;
             UIControl_SetLEDMode(index + 1, UILEDMode_Manual);
-            if (prevLeds[index].OnOff)
+            if (prevLed[index].OnOff)
                 UIControl_SetLEDState(index + 1, UILEDState_On);
             else
                 UIControl_SetLEDState(index + 1, UILEDState_Off);
 
-            Creator_Log(CreatorLogLevel_Info, "Set LED%d %s", index + 1, prevLeds[index].OnOff ? "On" : "Off");
+            Creator_Log(CreatorLogLevel_Info, "Set LED%d %s", index + 1, prevLed[index].OnOff ? "On" : "Off");
             AwaStaticClient_ResourceChanged(awaClient, IPSO_LIGHT_CONTROL_OBJECT, index, IPSO_ON_OFF);
         }
     }

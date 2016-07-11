@@ -26,6 +26,7 @@
 
 #include "button_object.h"
 #include "temperature_object.h"
+#include "analog_input_object.h"
 #include "ui_control.h"
 
 #ifdef MICROCHIP_PIC32
@@ -318,6 +319,7 @@ void UIControl_pollInputSensors(void)
 
     // TODO - read temperature
     TemperatureObject_Input(0, 19.4);
-    // TODO - read analogue input
+    // TODO - read potentiometer input
+    AnalogInputObject_Input(0, 2.75);
 }
 

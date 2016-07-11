@@ -52,23 +52,23 @@ typedef struct
 #define BUTTON_INSTANCES 2
 #define DEFAULT_DEBOUNCE_TIME_MS 100
 
-static ButtonObject buttons[BUTTON_INSTANCES];
-static ButtonInput buttonInputs[BUTTON_INSTANCES];
+static ButtonObject buttonObject[BUTTON_INSTANCES];
+static ButtonInput buttonInput[BUTTON_INSTANCES];
 
 void ButtonObject_Create(AwaStaticClient * awaClient)
 {
     // Define Button objects
     AwaStaticClient_DefineObject(awaClient, IPSO_DIGITAL_INPUT_OBJECT, "Button", 0, BUTTON_INSTANCES);
     AwaStaticClient_DefineResource(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_STATE, "State", AwaResourceType_Boolean, 0, 1, AwaResourceOperations_ReadOnly);
-	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_STATE, &buttons[0].State, sizeof(buttons[0].State), sizeof(buttons[0]));
+	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_STATE, &buttonObject[0].State, sizeof(buttonObject[0].State), sizeof(buttonObject[0]));
     AwaStaticClient_DefineResource(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_COUNTER, "Counter", AwaResourceType_Integer, 0, 1, AwaResourceOperations_ReadOnly);
-	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_COUNTER, &buttons[0].Counter, sizeof(buttons[0].Counter), sizeof(buttons[0]));
+	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_COUNTER, &buttonObject[0].Counter, sizeof(buttonObject[0].Counter), sizeof(buttonObject[0]));
     AwaStaticClient_DefineResource(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_DEBOUNCE_PERIOD, "Debounce", AwaResourceType_Integer, 0, 1, AwaResourceOperations_ReadWrite);
-	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_DEBOUNCE_PERIOD, &buttons[0].DebouncePeriod, sizeof(buttons[0].DebouncePeriod), sizeof(buttons[0]));
+	AwaStaticClient_SetResourceStorageWithPointer(awaClient, IPSO_DIGITAL_INPUT_OBJECT, IPSO_DIGITAL_INPUT_DEBOUNCE_PERIOD, &buttonObject[0].DebouncePeriod, sizeof(buttonObject[0].DebouncePeriod), sizeof(buttonObject[0]));
 
     // Create object instances
-    memset(&buttons, 0, sizeof(buttons));
-    memset(&buttonInputs, 0, sizeof(buttonInputs));
+    memset(&buttonObject, 0, sizeof(buttonObject));
+    memset(&buttonInput, 0, sizeof(buttonInput));
     int instance;
     for (instance = 0; instance < BUTTON_INSTANCES; instance++)
     {
@@ -76,7 +76,7 @@ void ButtonObject_Create(AwaStaticClient * awaClient)
         AwaStaticClient_CreateResource(awaClient, IPSO_DIGITAL_INPUT_OBJECT, instance, IPSO_DIGITAL_INPUT_STATE);
         AwaStaticClient_CreateResource(awaClient, IPSO_DIGITAL_INPUT_OBJECT, instance, IPSO_DIGITAL_INPUT_COUNTER);
         AwaStaticClient_CreateResource(awaClient, IPSO_DIGITAL_INPUT_OBJECT, instance, IPSO_DIGITAL_INPUT_DEBOUNCE_PERIOD);
-        buttons[instance].DebouncePeriod = DEFAULT_DEBOUNCE_TIME_MS;
+        buttonObject[instance].DebouncePeriod = DEFAULT_DEBOUNCE_TIME_MS;
     }
 }
 
@@ -86,12 +86,12 @@ void ButtonObject_Update(AwaStaticClient * awaClient)
 	for (index = 0; index < BUTTON_INSTANCES; index++)
     {
 		// Check if any Button changed
-        if (buttons[index].State != buttonInputs[index].DebouncedState)
+        if (buttonObject[index].State != buttonInput[index].DebouncedState)
         {
-            buttons[index].State = buttonInputs[index].DebouncedState;
-            if (buttons[index].State)
-                buttons[index].Counter++;
-            Creator_Log(CreatorLogLevel_Debug, "Button%d %s", index + 1, buttons[index].State ? "On" : "Off");
+            buttonObject[index].State = buttonInput[index].DebouncedState;
+            if (buttonObject[index].State)
+                buttonObject[index].Counter++;
+            Creator_Log(CreatorLogLevel_Debug, "Button%d %s", index + 1, buttonObject[index].State ? "On" : "Off");
             AwaStaticClient_ResourceChanged(awaClient, IPSO_DIGITAL_INPUT_OBJECT, index, IPSO_DIGITAL_INPUT_STATE);
         }
     }
@@ -101,17 +101,17 @@ void ButtonObject_Input(int buttonID, bool inputState)
 {
     if (buttonID < BUTTON_INSTANCES)
     {
-        if (buttonInputs[buttonID].CurrentState != inputState)
+        if (buttonInput[buttonID].CurrentState != inputState)
         {
-            buttonInputs[buttonID].StartTime = CreatorTimer_GetTickCount();
-            buttonInputs[buttonID].CurrentState = inputState;
+            buttonInput[buttonID].StartTime = CreatorTimer_GetTickCount();
+            buttonInput[buttonID].CurrentState = inputState;
         }
-        if (buttonInputs[buttonID].DebouncedState != inputState)
+        if (buttonInput[buttonID].DebouncedState != inputState)
         {
             // Debounce changes
-            if ((CreatorTimer_GetTickCount() - buttonInputs[buttonID].StartTime) >= buttons[buttonID].DebouncePeriod)
+            if ((CreatorTimer_GetTickCount() - buttonInput[buttonID].StartTime) >= buttonObject[buttonID].DebouncePeriod)
             {
-                buttonInputs[buttonID].DebouncedState = inputState;
+                buttonInput[buttonID].DebouncedState = inputState;
             }
         }
     }
