@@ -45,8 +45,6 @@
 #include "app_commands.h"   // LED control
 #include "app_client.h"
 
-#include "arduino_monitor.h"
-
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -78,11 +76,11 @@ APP_DATA appData;
 #endif
 
 #ifndef APP_VERSION
-#define APP_VERSION 0.0.16
+#define APP_VERSION 0.0.17
 #endif
 
-#ifndef APP_VERSIONDATE6
-#define APP_VERSIONDATE 11 July 2016
+#ifndef APP_VERSIONDATE
+#define APP_VERSIONDATE 12 July 2016
 #endif
 
 #define STRINGIFY(x) #x
@@ -181,15 +179,6 @@ void APP_Tasks ( void )
                 UIControl_SetUIState(AppUIState_AppInitConnectingToServer);
                 AppConfig_CreatorInitialise();
                 //UIControl_SetUIState(AppUIState_InteractiveConnectedToCreator);   // TODO - update on client connected
-
-                // TODO - keep Arduino?
-                CreatorThread_New("ArduinoMonitor", 0, 4096, (CreatorThread_Callback) SYS_ArduinoMonitorTask, NULL);
-
-                CreatorConsole_Puts("\r\n\r\n----------------------------------------------");
-                CreatorConsole_Puts("\r\nApplication started. Running...\r\n");
-                CreatorConsole_Puts("\r\n\r\n\r\n");
-
-                //ControlCommands_Initialise();       // TODO - review different command sets: is split historic?
                 AppCommands_Initialise();
 
                 Client_Initialise();

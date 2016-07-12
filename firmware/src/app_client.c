@@ -171,11 +171,11 @@ void Client_Initialise(void)
     AwaStaticClient_SetBootstrapServerURI(_AwaClient, ConfigStore_GetBootstrapURL());
     AwaStaticClient_SetCoAPListenAddressPort(_AwaClient, "0.0.0.0", LOCAL_PORT);
     AwaStaticClient_Init(_AwaClient);
-	
+
     if (ConfigStore_GetSecurityMode() == ServerSecurityMode_Cert)
     {
         const char *clientCert = ConfigStore_GetCertificate();
-    	AwaStaticClient_SetCertificate(_AwaClient, clientCert, sizeof(clientCert), AwaCertificateFormat_PEM);
+        AwaStaticClient_SetCertificate(_AwaClient, clientCert, sizeof(clientCert), AwaCertificateFormat_PEM);
     }
     
     if (ConfigStore_GetSecurityMode() == ServerSecurityMode_PSK)

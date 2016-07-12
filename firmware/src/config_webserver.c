@@ -20,6 +20,7 @@
  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ***********************************************************************************************************************/
 
+#include <string.h>
 #include "creator/core/core.h"
 #include "creator/core/creator_debug.h"
 #include "creator/core/http_server.h"

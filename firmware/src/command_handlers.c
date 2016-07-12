@@ -36,12 +36,9 @@
 #include "string_builder.h"
 #include "ui_control.h"
 
-#include "arduino_monitor.h"
-
 
 bool _ResetPending = false;
 bool _ResetToConfigurationMode = false;
-
 
 
 #ifdef CREATOR_PIC32MZ_ETHERNET

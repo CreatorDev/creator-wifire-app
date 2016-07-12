@@ -26,6 +26,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 #ifdef MICROCHIP_PIC32
     #include <xc.h>
     #include "system/debug/sys_debug.h"

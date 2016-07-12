@@ -29,6 +29,7 @@
 #include "creator/creator_serial.h"
 
 #include <stdarg.h>
+#include <string.h>
 #include <p32xxxx.h>
 #include <xc.h>
 #include <cp0defs.h>
