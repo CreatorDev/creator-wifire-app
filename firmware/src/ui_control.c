@@ -31,6 +31,7 @@
 
 #ifdef MICROCHIP_PIC32
 #include "bsp_config.h"
+#include "adc_driver.h"
 #endif
 
 #ifndef LED_UPDATE_IMMEDIATE
@@ -317,9 +318,8 @@ void UIControl_pollInputSensors(void)
     ButtonObject_Input(0, switch1);
     ButtonObject_Input(1, switch2);
 
-    // TODO - read temperature
-    TemperatureObject_Input(0, 19.4);
-    // TODO - read potentiometer input
-    AnalogInputObject_Input(0, 2.75);
+    // TODO - support build or config for Celcius/Fahrenheit
+    TemperatureObject_Input(0, AdcDriver_GetTemperatureDegrees(true));
+    AnalogInputObject_Input(0, AdcDriver_GetPotentiometerVoltage());
 }
 

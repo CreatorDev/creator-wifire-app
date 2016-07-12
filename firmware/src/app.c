@@ -148,7 +148,8 @@ void APP_Initialize(void)
     SYS_INT_Enable();
 
     SRAND_GetSeedInitialise();
-    SYS_RANDOM_PseudoSeedSet(SRAND_GetSeed());
+    uint32_t randomSeed = AdcDriver_GetPotentiometerLevel();
+    SYS_RANDOM_PseudoSeedSet(randomSeed);
 
     AppConfig_Initialise(&info);
 }

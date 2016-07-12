@@ -20,27 +20,34 @@
  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ***********************************************************************************************************************/
 
+#ifndef __BSP_SRAND_SEED_H_
+#define __BSP_SRAND_SEED_H_
 
-/*******************************************************************************
-  Arduino shield Monitor Task Headers
+#include <stdint.h>
+#include <stdbool.h>
 
-  File Name:
-    arduino_monitor.h
+/* Application specific ADC init
+ */
+void AdcDriver_Initialise(void);
 
-  Summary:
-    Task for monitoring comms from the Arduino-shield serial channel
+/* Read potentiometer level
+ * Returns: raw 12bit ADC value
+ */
+uint32_t AdcDriver_GetPotentiometerLevel(void);
 
-  Description:
+/* Read temperature level
+ * Returns: raw 12bit ADC value
+ */
+uint32_t AdcDriver_GetTemperatureLevel(void);
 
- *******************************************************************************/
+/* Read potentiometer voltage
+ * Returns: value in volts
+ */
+float AdcDriver_GetPotentiometerVoltage(void);
 
-#ifndef __ARDUINO_MONITOR_H_
-#define __ARDUINO_MONITOR_H_
+/* Read temperature
+ * Returns: temperature in Celcius or Fahrenheit
+ */
+float AdcDriver_GetTemperatureDegrees(bool isCelcius);
 
-// Creator threading
-#include "creator/core/creator_threading.h"
-
-void SYS_ArduinoMonitorTask(CreatorThread thread, void *taskParameters);
-void Arduino_SendCommand(const char* command);
-
-#endif	// __ARDUINO_MONITOR_H_
+#endif //__BSP_SRAND_SEED_H_

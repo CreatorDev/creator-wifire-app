@@ -23,33 +23,12 @@
 #include <string.h>
 #include <xc.h>
 
-#include "bsp_srand_seed.h"
+#include "adc_driver.h"
 
-uint32_t SRAND_GetSeed(void)
-{
 #define WIFIRE_POT_ADC_CH_INDEX (8)
-    unsigned int result = 0;
+#define WIFIRE_TEMPERATURE_ADC_CH_INDEX (44)
 
-#ifdef __32MZ2048ECG100__
-
-    AD1CON3bits.RQCONVRT = 1;
-    while (AD1DSTAT1bits.ARDY8 == 0);
-    result = AD1DATA8;
-
-#else	
-
-    DRV_ADC_Start();
-    while (!DRV_ADC_SamplesAvailable(WIFIRE_POT_ADC_CH_INDEX))
-        ;
-    result = DRV_ADC_SamplesRead(WIFIRE_POT_ADC_CH_INDEX);
-    DRV_ADC_Stop();
-
-#endif    
-
-    return result;
-}
-
-void SRAND_GetSeedInitialise(void)
+void AdcDriver_Initialise(void)
 {
 #ifdef __32MZ2048ECG100__
 
@@ -127,7 +106,7 @@ void SRAND_GetSeedInitialise(void)
     AD1IMODbits.SH4MOD = 0x0;//
     AD1IMODbits.SH5MOD = 0x0;//
 
-#else	
+#else
     /* Enable clock to analog circuit */
     ADCANCONbits.ANEN7 = 1;                 // Enable the clock to analog bias ADC7
     while (!ADCANCONbits.WKRDY7)
@@ -135,5 +114,75 @@ void SRAND_GetSeedInitialise(void)
 
     /* Enable the ADC module */
     ADCCON3bits.DIGEN7 = 1;                 // Enable ADC7
-#endif    
+#endif
 }
+
+
+uint32_t AdcDriver_GetPotentiometerLevel(void)
+{
+    unsigned int result = 0;
+
+#ifdef __32MZ2048ECG100__
+
+    AD1CON3bits.RQCONVRT = 1;
+    while (AD1DSTAT1bits.ARDY8 == 0);
+    result = AD1DATA8;
+
+#else
+
+    DRV_ADC_Start();
+    while (!DRV_ADC_SamplesAvailable(WIFIRE_POT_ADC_CH_INDEX))
+        ;
+    result = DRV_ADC_SamplesRead(WIFIRE_POT_ADC_CH_INDEX);
+    DRV_ADC_Stop();
+
+#endif
+
+    return result;
+}
+
+uint32_t AdcDriver_GetTemperatureLevel(void)
+{
+    unsigned int result = 0;
+
+// TODO - FIX TEMPERATURE READ
+#ifdef __32MZ2048ECG100__
+
+    AD1CON3bits.RQCONVRT = 1;
+    while (AD1DSTAT1bits.ARDY8 == 0);
+    result = AD1DATA8;
+
+#else
+
+    DRV_ADC_Start();
+    while (!DRV_ADC_SamplesAvailable(WIFIRE_TEMPERATURE_ADC_CH_INDEX))
+        ;
+    result = DRV_ADC_SamplesRead(WIFIRE_TEMPERATURE_ADC_CH_INDEX);
+    DRV_ADC_Stop();
+
+#endif
+
+    return result;
+}
+
+float AdcDriver_GetPotentiometerVoltage(void)
+{
+    float result;
+    uint32_t level = AdcDriver_GetPotentiometerLevel();
+    
+    // Voltage = level/(12bit scale 4095) * 3.3V
+    result = ((float)level * 3.3) / 4095;
+    return result;
+}
+
+float AdcDriver_GetTemperatureDegrees(bool isCelcius)
+{
+    float result;
+    if (isCelcius)
+        result = 19.5;
+    else
+        result = 60.9;      // Fahrenheit
+
+    return result;
+}
+
