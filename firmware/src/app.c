@@ -30,7 +30,6 @@
 #include "system/reset/sys_reset.h"
 
 #include "app.h"
-#include "bsp_srand_seed.h"
 #include "command_handlers.h" // CLI command handlers
 #include "server_cert.h"
 
@@ -44,6 +43,7 @@
 #include "ui_control.h"
 #include "app_commands.h"   // LED control
 #include "app_client.h"
+#include "adc_driver.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -147,7 +147,7 @@ void APP_Initialize(void)
 
     SYS_INT_Enable();
 
-    SRAND_GetSeedInitialise();
+    AdcDriver_Initialise();
     uint32_t randomSeed = AdcDriver_GetPotentiometerLevel();
     SYS_RANDOM_PseudoSeedSet(randomSeed);
 

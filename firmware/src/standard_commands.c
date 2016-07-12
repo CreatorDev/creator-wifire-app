@@ -640,15 +640,15 @@ void StandardCommands_GetDeviceServerConfig(void)
         {
             char *publicKey = (char *) ConfigStore_GetPublicKey();
             if (publicKey && strlen(publicKey))
-                CreatorConsole_Printf("Public key:\t\t%s" LINE_TERM, publicKey);
+                CreatorConsole_Printf("PSK identity:\t\t%s" LINE_TERM, publicKey);
             else
-                CreatorConsole_Printf("Public key:\t\tnot set" LINE_TERM);
+                CreatorConsole_Printf("PSK identity:\t\tnot set" LINE_TERM);
 
             int privateKeyLength = ConfigStore_GetPrivateKeyLength();
             if (privateKeyLength > 0)
-                CreatorConsole_Printf("Private key:\t\tlength = %d" LINE_TERM, privateKeyLength);
+                CreatorConsole_Printf("PSK secret:\t\tlength = %d" LINE_TERM, privateKeyLength);
             else
-                CreatorConsole_Printf("Private key:\t\tnot set" LINE_TERM);
+                CreatorConsole_Printf("PSK secret:\t\tnot set" LINE_TERM);
         }
 
         if (securityMode == ServerSecurityMode_Cert)
@@ -1094,14 +1094,14 @@ static void StandardCommands_SetDeviceServerConfig(void)
         {
             char *publicKey = (char *) ConfigStore_GetPublicKey();
             if (publicKey && strlen(publicKey))
-                CreatorConsole_Printf("Public key: %s" LINE_TERM, publicKey);
+                CreatorConsole_Printf("PSK identity: %s" LINE_TERM, publicKey);
             else
-                CreatorConsole_Printf("Public key: not set" LINE_TERM);
+                CreatorConsole_Printf("PSK identity: not set" LINE_TERM);
             
-            if (CreatorCommand_PromptUserWithQuery("Do you want to set a new public key: (y/n) "))
+            if (CreatorCommand_PromptUserWithQuery("Do you want to set a new identity: (y/n) "))
             {
                 uint8_t settingBuffer[SECURITY_PUBLIC_KEY_LENGTH + 1];
-                if (CreatorCommand_ReadInputStringWithQuery("Enter new public key: ", settingBuffer, SECURITY_PUBLIC_KEY_LENGTH + 1, false) > 0)
+                if (CreatorCommand_ReadInputStringWithQuery("Enter new identity: ", settingBuffer, SECURITY_PUBLIC_KEY_LENGTH + 1, false) > 0)
                 {
                     if (ConfigStore_SetPublicKey((const char *) settingBuffer) && ConfigStore_DeviceServerConfig_UpdateCheckbyte()
                             && ConfigStore_DeviceServerConfig_Write())
@@ -1117,14 +1117,14 @@ static void StandardCommands_SetDeviceServerConfig(void)
 
             int privateKeyLength = ConfigStore_GetPrivateKeyLength();
             if (privateKeyLength > 0)
-                CreatorConsole_Printf("Private key: length = %d" LINE_TERM, privateKeyLength);
+                CreatorConsole_Printf("PSK secret: length = %d" LINE_TERM, privateKeyLength);
             else
-                CreatorConsole_Printf("Private key: not set" LINE_TERM);
+                CreatorConsole_Printf("PSK secret: not set" LINE_TERM);
             
-            if (CreatorCommand_PromptUserWithQuery("Do you want to set a new private key: (y/n) "))
+            if (CreatorCommand_PromptUserWithQuery("Do you want to set a new secret: (y/n) "))
             {
                 uint8_t settingBuffer[SECURITY_PRIVATE_KEY_HEX_LENGTH + 1];
-                if (CreatorCommand_ReadInputStringWithQuery("Enter new private key: ", settingBuffer, SECURITY_PRIVATE_KEY_HEX_LENGTH + 1, false) > 0)
+                if (CreatorCommand_ReadInputStringWithQuery("Enter new secret: ", settingBuffer, SECURITY_PRIVATE_KEY_HEX_LENGTH + 1, false) > 0)
                 {
                     if (ConfigStore_SetPrivateKey((const char *) settingBuffer) && ConfigStore_DeviceServerConfig_UpdateCheckbyte()
                             && ConfigStore_DeviceServerConfig_Write())
