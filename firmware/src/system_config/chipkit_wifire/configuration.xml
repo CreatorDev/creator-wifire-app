@@ -1118,7 +1118,7 @@
       <Template>
         <Name>drv_adc_static.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire/framework/driver/adc/src</Path>
-        <Checksum>10DA3264A6DA49E01E053B2AAC6C1F69</Checksum>
+        <Checksum>6CB13716BA389AF420CF6B8D6EA3E93D</Checksum>
       </Template>
       <Template>
         <Name>sys_ports_static.c</Name>

@@ -112,6 +112,20 @@ void DRV_ADC_Initialize(void)
 			);	
 
 			
+	/* Include Analog input to Scan list */
+	PLIB_ADCHS_AnalogInputScanSelect
+	(
+		DRV_ADC_ID_1,
+		ADCHS_AN44
+	);
+	
+	PLIB_ADCHS_AnalogInputModeSelect(
+			DRV_ADC_ID_1,
+			ADCHS_AN44,
+			ADCHS_INPUT_MODE_SINGLE_ENDED_UNIPOLAR
+			);	
+
+			
 
 
 

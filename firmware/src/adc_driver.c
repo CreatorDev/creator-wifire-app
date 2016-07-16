@@ -20,13 +20,15 @@
  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ***********************************************************************************************************************/
 #include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include <xc.h>
 
+#include "creator/creator_console.h"
 #include "adc_driver.h"
 
-#define WIFIRE_POT_ADC_CH_INDEX (8)
-#define WIFIRE_TEMPERATURE_ADC_CH_INDEX (44)
+#define WIFIRE_POT_ADC_AN8 (8)
+#define WIFIRE_TEMPERATURE_ADC_AN44 (44)
 
 void AdcDriver_Initialise(void)
 {
@@ -93,7 +95,7 @@ void AdcDriver_Initialise(void)
     AD1TRG3 = 0;
 
     /* Select AN8 for conversion */
-    AD1CON3bits.ADINSEL = 8;
+    AD1CON3bits.ADINSEL = WIFIRE_POT_ADC_AN8;
 
     /* Turn the ADC on, start calibration */
     /* Wait for calibration to complete */
@@ -108,15 +110,16 @@ void AdcDriver_Initialise(void)
 
 #else
     /* Enable clock to analog circuit */
-    ADCANCONbits.ANEN7 = 1;                 // Enable the clock to analog bias ADC7
+    ADCCON2bits.ADCDIV = 20;        // Adcdiv for ADC7 (Tad = pbclk/clkdiv(5)/2*20)
+    ADCANCONbits.ANEN7 = 1;         // Enable the clock to analog bias ADC7
     while (!ADCANCONbits.WKRDY7)
         ;            // Wait until ADC7 is ready
 
     /* Enable the ADC module */
-    ADCCON3bits.DIGEN7 = 1;                 // Enable ADC7
+    ADCCON3bits.DIGEN7 = 1;         // Enable ADC7
+
 #endif
 }
-
 
 uint32_t AdcDriver_GetPotentiometerLevel(void)
 {
@@ -124,17 +127,21 @@ uint32_t AdcDriver_GetPotentiometerLevel(void)
 
 #ifdef __32MZ2048ECG100__
 
+    AD1CON3 = 0;
+    AD1CON3bits.ADINSEL = WIFIRE_POT_ADC_AN8;
     AD1CON3bits.RQCONVRT = 1;
     while (AD1DSTAT1bits.ARDY8 == 0);
     result = AD1DATA8;
 
 #else
 
-    DRV_ADC_Start();
-    while (!DRV_ADC_SamplesAvailable(WIFIRE_POT_ADC_CH_INDEX))
-        ;
-    result = DRV_ADC_SamplesRead(WIFIRE_POT_ADC_CH_INDEX);
-    DRV_ADC_Stop();
+    int loopCount = 0;
+    if (!DRV_ADC_SamplesAvailable(WIFIRE_POT_ADC_AN8))
+        DRV_ADC_Start();
+    while (!DRV_ADC_SamplesAvailable(WIFIRE_POT_ADC_AN8) && loopCount < 1000)
+        loopCount++;
+    result = DRV_ADC_SamplesRead(WIFIRE_POT_ADC_AN8);
+    //CreatorConsole_Printf("GetPOT - wait count = %d, adcInput = %d\r\n", loopCount, (int)result);
 
 #endif
 
@@ -145,44 +152,82 @@ uint32_t AdcDriver_GetTemperatureLevel(void)
 {
     unsigned int result = 0;
 
-// TODO - FIX TEMPERATURE READ
 #ifdef __32MZ2048ECG100__
 
+    AD1CON3 = 0;
+    AD1CON3bits.ADINSEL = WIFIRE_TEMPERATURE_ADC_AN44;
     AD1CON3bits.RQCONVRT = 1;
-    while (AD1DSTAT1bits.ARDY8 == 0);
-    result = AD1DATA8;
+    while (AD1DSTAT2bits.ARDY44 == 0);
+    result = AD1DATA44;
 
 #else
 
-    DRV_ADC_Start();
-    while (!DRV_ADC_SamplesAvailable(WIFIRE_TEMPERATURE_ADC_CH_INDEX))
-        ;
-    result = DRV_ADC_SamplesRead(WIFIRE_TEMPERATURE_ADC_CH_INDEX);
-    DRV_ADC_Stop();
+    int loopCount = 0;
+    if (!DRV_ADC_SamplesAvailable(WIFIRE_TEMPERATURE_ADC_AN44))
+        DRV_ADC_Start();
+    while (!DRV_ADC_SamplesAvailable(WIFIRE_TEMPERATURE_ADC_AN44) && loopCount < 1000)
+        loopCount++;
+    result = DRV_ADC_SamplesRead(WIFIRE_TEMPERATURE_ADC_AN44);
+    //CreatorConsole_Printf("GetTemperature - wait count = %d, adcInput = %d\r\n", loopCount, (int)result);
 
 #endif
 
     return result;
 }
 
+float AdcDriver_LevelToVoltage(uint32_t level)
+{
+    // Voltage = level/(12bit scale=4096) * 3.3V
+    float voltage = ((float)level * 3.3) / 4096;
+    return voltage;
+}
+
 float AdcDriver_GetPotentiometerVoltage(void)
 {
-    float result;
     uint32_t level = AdcDriver_GetPotentiometerLevel();
-    
-    // Voltage = level/(12bit scale 4095) * 3.3V
-    result = ((float)level * 3.3) / 4095;
-    return result;
+    float voltage = AdcDriver_LevelToVoltage(level);
+    return voltage;
 }
 
 float AdcDriver_GetTemperatureDegrees(bool isCelcius)
 {
-    float result;
-    if (isCelcius)
-        result = 19.5;
-    else
-        result = 60.9;      // Fahrenheit
+    float temperature;
+    uint32_t level = AdcDriver_GetTemperatureLevel();
+    float voltage = AdcDriver_LevelToVoltage(level);
 
-    return result;
+#ifdef __32MZ2048ECG100__
+    // PIC32MZ EC Datasheet - Table 37-41:
+    // Specification: Vout = 0.2V (160C) to 1.2V(-40C), -5mV/C
+    // Formula:
+    //      Vout = 1V - T*5 mV/C
+    //      T(C) = 200(C/V) * (1V - Vout))
+    temperature = 200 * (1 - voltage);
+#else
+    // PIC32MZ EF Datasheet - Table 37-41:
+    // Specification: Vout = 0.5V (-40C) to 1.5V(160C), +5mV/C
+    // Formula:
+    //      Vout = (40C + T)*5mV/C + 0.5V
+    //      T(C) = (200(C/V) * Vout) - 140
+    temperature = (200 * voltage) - 140;
+#endif
+    
+    // Limit invalid temperatures for safety
+    if (temperature < -40)
+        temperature = -40;
+    if (temperature > 160)
+        temperature = 160;
+
+    if (!isCelcius)
+    {
+        // Convert to fahrenheit
+        temperature = (temperature * 1.8) + 32;
+    }
+    return temperature;
 }
 
+void AdcDriver_ScanStart(void)
+{
+#ifdef __32MZ2048EFG100__
+    DRV_ADC_Start();
+#endif
+}

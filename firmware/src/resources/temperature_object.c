@@ -48,9 +48,12 @@ typedef struct          // IPSO object: 3303 - Temperature
     bool IsInitialised;
 } TemperatureObject;
 
+#define TEMPERATURE_AVERAGE_COUNT 20
 typedef struct
 {
     float Value;
+    int AverageCount;
+    float AverageTotal;
 } TemperatureInput;
 
 #define TEMPERATURE_INSTANCES 1
@@ -120,7 +123,28 @@ void TemperatureObject_Input(int temperatureID, float value)
 {
     if (temperatureID < TEMPERATURE_INSTANCES)
     {
+#if TEMPERATURE_AVERAGE_COUNT
+        // Update average temperature (ADC values read have a lot of jitter)
+        TemperatureInput *input = &temperatureInput[temperatureID];
+        input->AverageTotal += value;
+        if (++input->AverageCount >= TEMPERATURE_AVERAGE_COUNT)
+        {
+            float average = input->AverageTotal / TEMPERATURE_AVERAGE_COUNT;
+            if (input->Value != average)
+            {
+                Creator_Log(CreatorLogLevel_Debug, "Temperature changed = %d (raw = %d, %3.2f)", (int)average, (int)value, (float)value);
+            }
+            else
+            {
+                Creator_Log(CreatorLogLevel_Debug, "Temperature same = %d (raw = %d, %3.2f)", (int)average, (int)value, (float)value);
+            }
+            input->Value = average;
+            input->AverageTotal = 0;
+            input->AverageCount = 0;
+        }
+#else
         temperatureInput[temperatureID].Value = value;
+#endif
     }
 }
 

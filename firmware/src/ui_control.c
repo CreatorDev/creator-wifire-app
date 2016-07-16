@@ -318,8 +318,9 @@ void UIControl_pollInputSensors(void)
     ButtonObject_Input(0, switch1);
     ButtonObject_Input(1, switch2);
 
+    AnalogInputObject_Input(0, AdcDriver_GetPotentiometerVoltage());
     // TODO - support build or config for Celcius/Fahrenheit
     TemperatureObject_Input(0, AdcDriver_GetTemperatureDegrees(true));
-    AnalogInputObject_Input(0, AdcDriver_GetPotentiometerVoltage());
+    AdcDriver_ScanStart();
 }
 

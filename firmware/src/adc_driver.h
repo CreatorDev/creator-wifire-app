@@ -50,4 +50,9 @@ float AdcDriver_GetPotentiometerVoltage(void);
  */
 float AdcDriver_GetTemperatureDegrees(bool isCelcius);
 
+/* Start next ADC scan
+ * Note: use this to minimise wait for value ready on next read
+ */
+void AdcDriver_ScanStart(void);
+
 #endif //__BSP_SRAND_SEED_H_

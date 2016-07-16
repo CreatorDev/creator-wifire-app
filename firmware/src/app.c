@@ -76,11 +76,11 @@ APP_DATA appData;
 #endif
 
 #ifndef APP_VERSION
-#define APP_VERSION 0.0.17
+#define APP_VERSION 0.0.18
 #endif
 
 #ifndef APP_VERSIONDATE
-#define APP_VERSIONDATE 12 July 2016
+#define APP_VERSIONDATE 13 July 2016
 #endif
 
 #define STRINGIFY(x) #x
