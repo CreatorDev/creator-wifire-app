@@ -108,7 +108,7 @@ static AppInfo info =
 // *****************************************************************************
 
 void ApplicationModeTasks(void);
-bool Shutdown(void);
+bool App_Shutdown(void);
 
 
 // *****************************************************************************
@@ -234,7 +234,7 @@ void ApplicationModeTasks(void)
     //Handle device reset request.
     if (CommandHandlers_IsResetPending())
     {
-        if (Shutdown())
+        if (App_Shutdown())
         {
             AppConfig_SoftwareReset(CommandHandlers_ResetToConfigurationMode());
         }
@@ -248,18 +248,12 @@ void ApplicationModeTasks(void)
 }
 
 /*
- * APP shut down and initiate device reset.
+ * Application shut down and initiate device reset.
  */
-bool Shutdown(void)
+bool App_Shutdown(void)
 {
     bool result = true;
-    // TODO - close connections, release resources
     Client_Shutdown();
 
     return result;
 }
-
-
-/*******************************************************************************
- End of File
- */

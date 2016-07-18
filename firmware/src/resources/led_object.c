@@ -65,7 +65,12 @@ void LedObject_Create(AwaStaticClient * awaClient)
 
 void LedObject_Close(void)
 {
-    // TODO - set default LED pattern...
+    // Clear leds to display shutdown
+    int index;
+	for (index = 0; index < MAX_LEDS; index++)
+    {
+        UIControl_SetLEDState(index + 1, UILEDState_Off);
+    }
 }
 
 void LedObject_Update(AwaStaticClient * awaClient)

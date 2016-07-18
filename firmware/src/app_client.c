@@ -41,14 +41,16 @@
 #include "button_object.h"
 #include "temperature_object.h"
 #include "analog_input_object.h"
+#include "ui_control.h"
 #include "app_client.h"
 
 static CreatorThread _ClientThread;
 static AwaStaticClient * _AwaClient;
 static bool _Terminate;
+static bool _ClientClosed;
 
 #define LOCAL_PORT  6000
-
+#define WAIT_SHUTDOWN_TIME 100      // 1s in 10ms units
 #define DEVICE_INSTANCES 1
 
 #define LABEL_SIZE 64
@@ -65,7 +67,7 @@ typedef struct      // urn:oma:lwm2m:oma:3
 static DeviceObject device[DEVICE_INSTANCES];
 
 static void ClientProcess(CreatorThread thread, void *context);
-static void CreateDevice(AwaStaticClient * awaClient);
+static void DeviceObject_Create(AwaStaticClient * awaClient);
 
 
 //const unsigned char clientCert[] = {
@@ -157,6 +159,7 @@ static void CreateDevice(AwaStaticClient * awaClient);
 void Client_Initialise(void)
 {
     _Terminate = false;
+    _ClientClosed = false;
     CreatorLogLevel logLevel = ConfigStore_GetLoggingLevel();
     
     Creator_Log(CreatorLogLevel_Info, "Client init started");
@@ -184,7 +187,8 @@ void Client_Initialise(void)
         AwaStaticClient_SetPSK(_AwaClient, ConfigStore_GetPublicKey(), ConfigStore_GetPrivateKey(), (int)ConfigStore_GetPrivateKeyLength());
     }
 
-    CreateDevice(_AwaClient);
+    // Create resources
+    DeviceObject_Create(_AwaClient);
     LedObject_Create(_AwaClient);
     ButtonObject_Create(_AwaClient);
     TemperatureObject_Create(_AwaClient);
@@ -201,12 +205,19 @@ void Client_Shutdown(void)
     _Terminate = true;
     if (_ClientThread)
     {
+        // TODO - app call shutdown
+        int waitTime = WAIT_SHUTDOWN_TIME;
+        while (!_ClientClosed && waitTime > 0)
+        {
+            CreatorThread_SleepMilliseconds(NULL, 10);
+            waitTime--;
+        }
         CreatorThread_Join(_ClientThread);     // Beware join ignored for FreeRTOS. Free too soon could assert before reset
         CreatorThread_Free(&_ClientThread);
     }
 }
 
-static void UpdateMonitor(AwaStaticClient * awaClient)
+static void UpdateResources(AwaStaticClient * awaClient)
 {
     LedObject_Update(awaClient);
     ButtonObject_Update(awaClient);
@@ -216,18 +227,24 @@ static void UpdateMonitor(AwaStaticClient * awaClient)
 
 static void ClientProcess(CreatorThread thread, void *context)
 {
+    AppConfig_SetDeviceOnline(true);
+    // TODO - set LED4 on when client has registered
+    UIControl_SetUIState(AppUIState_AppConnectedToServer);
     while (!_Terminate)
     {
         AwaStaticClient_Process(_AwaClient);
-        UpdateMonitor(_AwaClient);
+        UpdateResources(_AwaClient);
         CreatorThread_SleepMilliseconds(NULL, 10);
     }
     // TODO - un-register (if registered) and wait for sent (with t/o)
+    AwaStaticClient_Free(&_AwaClient);
     LedObject_Close();
     Creator_Log(CreatorLogLevel_Warning, "Client closed");
+    CreatorThread_SleepMilliseconds(NULL, 10);  // wait to send unregister
+    _ClientClosed = true;
 }
 
-static void CreateDevice(AwaStaticClient * awaClient)
+static void DeviceObject_Create(AwaStaticClient * awaClient)
 {
     char softwareVersion[LABEL_SIZE];
     char serialNumber[17];
