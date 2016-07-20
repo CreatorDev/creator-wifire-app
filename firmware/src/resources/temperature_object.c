@@ -130,14 +130,6 @@ void TemperatureObject_Input(int temperatureID, float value)
         if (++input->AverageCount >= TEMPERATURE_AVERAGE_COUNT)
         {
             float average = input->AverageTotal / TEMPERATURE_AVERAGE_COUNT;
-            if (input->Value != average)
-            {
-                Creator_Log(CreatorLogLevel_Debug, "Temperature changed = %d (raw = %d, %3.2f)", (int)average, (int)value, (float)value);
-            }
-            else
-            {
-                Creator_Log(CreatorLogLevel_Debug, "Temperature same = %d (raw = %d, %3.2f)", (int)average, (int)value, (float)value);
-            }
             input->Value = average;
             input->AverageTotal = 0;
             input->AverageCount = 0;
