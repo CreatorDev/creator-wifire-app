@@ -38,16 +38,13 @@ bool StandardCommands_RebootApplicationMode(int argc, char** argv); // Handler t
 bool StandardCommands_RebootSoftAP(int argc, char** argv);        // Handler to reboot into softAP (config) mode
 
 bool StandardCommands_Set(int argc, char** argv);                 // Handler for set
-bool StandardCommands_Show(int argc, char** argv);                // HAndler for show
+bool StandardCommands_Show(int argc, char** argv);                // Handler for show
 bool StandardCommands_Uptime(int argc, char** argv);              // Handler for uptime
 
 bool StandardCommands_BoardDetails(int argc, char** argv);
-bool StandardCommands_DisplayBoardDetails(int argc, char** argv);
+//bool StandardCommands_DisplayBoardDetails(int argc, char** argv);
 
 int StandardCommands_ResetHandler(bool resetToConfigurationMode);
-bool StandardCommands_SaveNewValue(int argc, char** argv);
-bool StandardCommands_SendAsyncMessageCommand(int argc, char** argv);
-bool StandardCommands_UpdateOwnedDevices(int argc, char** argv);
 
 
 
@@ -58,7 +55,6 @@ void StandardCommands_GetDevRegKey(void);            // Handler to get Device Re
 void StandardCommands_GetCreatorConfig(void);           // Handler to get CreatorConfiguration
 void StandardCommands_GetLogConfig(void);            // Handler to get LogConfiguration
 void StandardCommands_GetNetworkConfig(void);        // Handler to get NetworkConfiguration
-void StandardCommands_GetActivityLog(void);          // Handler to get ActivityLogs
 
 /*Set Command Handlers*/
 void StandardCommands_SetDeviceName(void);           // Handler to Set DeviceName

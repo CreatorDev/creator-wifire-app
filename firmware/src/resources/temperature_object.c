@@ -140,3 +140,17 @@ void TemperatureObject_Input(int temperatureID, float value)
     }
 }
 
+void TemperatureObject_ResetStatistics(void)
+{
+    int index;
+    for (index = 0; index < TEMPERATURE_INSTANCES; index++)
+    {
+        TemperatureObject * temperature = &temperatureObject[index];
+        if (temperature->IsInitialised)
+        {
+            temperature->Min = temperature->Value;
+            temperature->Max = temperature->Value;
+        }
+    }
+}
+

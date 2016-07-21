@@ -41,6 +41,7 @@
 #include "button_object.h"
 #include "temperature_object.h"
 #include "analog_input_object.h"
+#include "execute_command_object.h"
 #include "ui_control.h"
 #include "app_client.h"
 
@@ -193,6 +194,7 @@ void Client_Initialise(void)
     ButtonObject_Create(_AwaClient);
     TemperatureObject_Create(_AwaClient);
     AnalogInputObject_Create(_AwaClient);
+    ExecuteCommandObject_Create(_AwaClient);
     
     if (logLevel == CreatorLogLevel_Debug)
         Client_SetLogLevel(logLevel);
@@ -215,6 +217,14 @@ void Client_Shutdown(void)
         CreatorThread_Join(_ClientThread);     // Beware join ignored for FreeRTOS. Free too soon could assert before reset
         CreatorThread_Free(&_ClientThread);
     }
+}
+
+void Client_ResetStatistics(void)
+{
+    ButtonObject_ResetStatistics();
+    TemperatureObject_ResetStatistics();
+    AnalogInputObject_ResetStatistics();
+    ExecuteCommandObject_ResetStatistics();
 }
 
 static void UpdateResources(AwaStaticClient * awaClient)

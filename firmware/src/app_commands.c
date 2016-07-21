@@ -28,162 +28,161 @@
 #include "config_store.h"
 #include "device_serial.h"
 #include "string_builder.h"
+#include "app_client.h"
+#include "ui_control.h"
 #include "creator/creator_console.h"
 
 
-typedef struct
-{
-    int temperatureReading_whole;
-    int temperatureReading_fractional;
-    int humidityReading_whole;
-    int humidityReading_fractional;
-} AppDataStoreItem;
+//typedef enum
+//{
+//    app_setshow_app_values1,
+//    app_setshow_app_values2,
+//    app_setshow_cmd__max
+//} app_SetShowCommand;
+//
+//typedef struct
+//{
+//    const char* Name;
+//    bool IsSetCommand;
+//    bool IsShowCommand;
+//} setShowCommandInfo;
 
-typedef enum
-{
-    app_setshow_cmd_owned_devices,      // TODO - replace app commands
-    app_setshow_cmd_saved_values,
-    app_setshow_cmd__max
-} app_SetShowCommand;
+//static setShowCommandInfo app_SetShowCommands[app_setshow_cmd__max] =
+//{      //   Name            Set?    Show?
+//        { "show_app_values1", false, true },
+//        { "show_app_values2", false, true } };
 
-typedef struct
-{
-    const char* Name;
-    bool IsSetCommand;
-    bool IsShowCommand;
-} setShowCommandInfo;
-
-static setShowCommandInfo app_SetShowCommands[app_setshow_cmd__max] =
-{      //   Name            Set?    Show?
-        { "owned_devices", false, true },
-        { "saved_values", false, true } };
-
-static bool CommandBoardDetails(int argc, char** argv);			// command board_details
-static bool CommandClearSavedValues(int argc, char** argv);		// command clear_saved_values
-static bool CommandSaveValue(int argc, char** argv);				// command save_value
-static bool CommandUpdateOwnedDevices(int argc, char** argv);		// command update_owned_devices
-static bool CommandSendPublishCommand(int argc, char** argv);	// command send_message
-static bool CommandRemoveOwnership(int argc, char** argv);			// command delete device
+//static bool CommandBoardDetails(int argc, char** argv);
 
 #define STATERAPP_COMMAND_GROUP "app_commands"
 #define LINE_TERM "\r\n"          // line terminator
 
 void AppCommands_Initialise(void)
 {
-    // TODO - Application specific commands
+    // TODO - Add application specific commands
     CreatorCommand_RegisterCommandGroup(STATERAPP_COMMAND_GROUP, ": Application Commands");
-    CreatorCommand_RegisterCommand(STATERAPP_COMMAND_GROUP, "board_details", "Display board information for output to label printing software",
-            CommandBoardDetails);
-//	CreatorCommand_RegisterCommand(STATERAPP_COMMAND_GROUP, "send_command", "Publish command to this device's owner, or a peer device", CommandSendPublishCommand);
+    //CreatorCommand_RegisterCommand(STATERAPP_COMMAND_GROUP, "board_details", "Display board information for output to label printing software", CommandBoardDetails, false);
+}
+
+bool AppCommands_Echo(int argc, char** argv)
+{
+    bool result = true;
+    if (argc > 1)
+    {
+        int index;
+        CreatorConsole_Puts("Echo:");
+        for (index = 1; index < argc; index++)
+        {
+            CreatorConsole_Puts(" ");
+            CreatorConsole_Puts(argv[index]);
+        }
+        CreatorConsole_Puts(LINE_TERM);
+    }
+    return result;
+}
+
+bool AppCommands_Leds(int argc, char** argv)
+{
+    bool result = false;
+    bool allLeds = false;
+    bool ledOn = false;
+    int ledID = 0;
+    if (argc == 3)
+    {
+        if (strcmp(argv[1], "all") == 0)
+        {
+            allLeds = true;
+            result = true;
+        }
+        else
+        {
+            
+            ledID = atoi(argv[1]);
+            if (ledID >= 1 && ledID <= 4)
+            {
+                ledID--;    // convert led number to index
+                result = true;
+            }
+        }
+        
+        if (result)
+        {
+            if (strcmp(argv[2], "on") == 0)
+                ledOn = true;
+            else if (strcmp(argv[2], "off") != 0)
+                result = false;
+        }
+    }
+    if (result)
+    {
+        if (allLeds)
+        {
+            for (ledID = 0; ledID < NUMBER_OF_LEDS; ledID++)
+            {
+                UIControl_LEDCommand(ledID, ledOn);
+            }
+        }
+        else
+        {
+            UIControl_LEDCommand(ledID, ledOn);
+        }
+    }
+    else
+    {
+        CreatorConsole_Puts("Invalid LED command. Syntax: 'leds <id> <on|off>', where id = all,1,2,3,4" LINE_TERM);
+    }
+    return result;
+}
+
+bool AppCommands_ResetStatistics(int argc, char** argv)
+{
+    bool result = true;
+    Client_ResetStatistics();
+    CreatorConsole_Printf("Statistics reset" LINE_TERM);
+    return result;
 }
 
 bool AppCommands_CommandShow(int argc, char** argv)
 {
     bool result = true;
-//	if (argc == 2)
-//	{
-//		if (argv[1])
-//		{
-//			if (strcmp(argv[1], app_SetShowCommands[app_setshow_cmd_owned_devices].Name) == 0)
-//			{
-//         		CreatorConsole_Puts("Owned devices - not supported" LINE_TERM);        // TODO - delete/update Creator commands
-//			}
-//			else if (strcmp(argv[1], app_SetShowCommands[app_setshow_cmd_saved_values].Name) == 0)
-//			{
-//         		CreatorConsole_Puts("Measurement commands - not supported" LINE_TERM);
-//			}
-//			else
-//			{
-//				result = false;
-//			}
-//		}
-//		else
-//		{
-//			result = false;
-//		}
-//	}
-//	else
-//	{
-//		if (argc > 2)
-//			result = false;
-//
-//        // TODO - delete?
-//		CreatorConsole_Puts("Starter App Supported:" LINE_TERM);
-//		int index;
-//		for (index = 0; index < app_setshow_cmd__max; index++)
-//		{
+//    if (argc == 2)
+//    {
+//        if (argv[1])
+//        {
+//            if (strcmp(argv[1], app_SetShowCommands[app_setshow_app_values1].Name) == 0)
+//            {
+//                CreatorConsole_Puts("App command1 - not supported" LINE_TERM);
+//            }
+//            else if (strcmp(argv[1], app_SetShowCommands[app_setshow_app_values2].Name) == 0)
+//            {
+//                CreatorConsole_Puts("App command2 - not supported" LINE_TERM);
+//            }
+//            else
+//            {
+//                result = false;
+//            }
+//        }
+//        else
+//        {
+//            result = false;
+//        }
+//    }
+//    else
+//    {
+//        if (argc > 2)
+//            result = false;
+//        CreatorConsole_Puts("Starter App Supported:" LINE_TERM);
+//        int index;
+//        for (index = 0; index < app_setshow_cmd__max; index++)
+//        {
 //            if (app_SetShowCommands[index].IsShowCommand)
-//            {                
+//            {
 //                CreatorConsole_Puts("\t\t");
 //                CreatorConsole_Puts(app_SetShowCommands[index].Name);
 //                CreatorConsole_Puts(LINE_TERM);
 //            }
-//		}
-//	}
+//        }
+//    }
     return result;
 }
-
-static bool CommandBoardDetails(int argc, char** argv)
-{
-    bool result = false;
-    if (ConfigStore_Config_Read() && ConfigStore_Config_IsValid() && ConfigStore_Config_IsMagicValid())
-    {
-        StringBuilder response = StringBuilder_New(256);
-
-        // DeviceType
-        response = StringBuilder_Append(response, ConfigStore_GetDeviceType());
-        response = StringBuilder_Append(response, LINE_TERM);
-
-        // MAC address
-        response = StringBuilder_Append(response, ConfigStore_GetMacAddress());
-        response = StringBuilder_Append(response, LINE_TERM);
-
-        // Serial number
-        char snString[17];
-        memset((void*) snString, 0, 17);
-        if (DeviceSerial_GetCpuSerialNumberHexString(snString, 17))
-            response = StringBuilder_Append(response, snString);
-        else
-            response = StringBuilder_Append(response, " ");
-        response = StringBuilder_Append(response, LINE_TERM);
-        // WiFi SoftAP SSID
-        response = StringBuilder_Append(response, ConfigStore_GetSoftAPSSID());
-        response = StringBuilder_Append(response, LINE_TERM);
-
-        // WiFi SoftAP password
-        response = StringBuilder_Append(response, ConfigStore_GetSoftAPPassword());
-        response = StringBuilder_Append(response, LINE_TERM);
-        char CB[2] =
-        { 0, 0 };
-        int32_t byteCount = StringBuilder_GetLength(response);
-        int32_t byteIndex = 0;
-        for (byteIndex = 0; byteIndex < byteCount; byteIndex++)
-        {
-            CB[0] += (StringBuilder_GetCString(response))[byteIndex];
-        }
-        // Compute checkbyte - 2's compliment of MOD-256 sum
-        CB[0] ^= 0xFF;
-        CB[0]++;
-        response = StringBuilder_Append(response, CB);
-        response = StringBuilder_Append(response, LINE_TERM);
-        CreatorConsole_Puts(response);
-
-        // Output entire response  // TODO - delete?
-//		byteCount = StringBuilder_GetLength(response);
-//		uint8_t* _response = (uint8_t*) StringBuilder_GetCString(response);
-//		for (byteIndex = 0; byteIndex < byteCount; byteIndex++)
-//		{
-//			if (((char *) _response)[byteIndex] == '\n')
-//				CreatorConsole_Puts(LINE_TERM);
-//			else
-//				CreatorConsole_Putc(((char *) _response)[byteIndex]);
-//		}
-        //CreatorConsole_Puts(LINE_TERM);
-
-        StringBuilder_Free(&response);
-        result = true;
-    }
-    return result;
-}
-
 

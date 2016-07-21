@@ -29,10 +29,8 @@
 #include "analog_input_object.h"
 #include "ui_control.h"
 
-#ifdef MICROCHIP_PIC32
 #include "bsp_config.h"
 #include "adc_driver.h"
-#endif
 
 #ifndef LED_UPDATE_IMMEDIATE
 #define LED_UPDATE_IMMEDIATE 1
@@ -40,77 +38,52 @@
 
 typedef struct
 {
-#ifdef MICROCHIP_PIC32
-    BSP_LED		LedId;
-#else
-    bool 		StateChanged;
-#endif
-    UILEDState	State;
-    UILEDMode	Mode;
+    BSP_LED     LedId;
+    UILEDState  State;
+    UILEDMode   Mode;
 
 } LedControlConfig;
 
+static bool _UIConnectedToServer = false;
 
-static LedControlConfig leds[MAX_LEDS] =
+static LedControlConfig leds[NUMBER_OF_LEDS] =
 {
-#ifdef MICROCHIP_PIC32
     {BSP_LED_1, UILEDState_Off, UILEDMode_Manual},		// BSP LED 1
     {BSP_LED_2, UILEDState_Off, UILEDMode_Manual},		// BSP LED 2
     {BSP_LED_3, UILEDState_Off, UILEDMode_Manual},		// BSP LED 3
-#ifndef CREATOR_PIC32MZ_ETHERNET
     {BSP_LED_4, UILEDState_Off, UILEDMode_Manual},		// BSP LED 4
-#endif
-#else
-    {false, UILEDState_Off, UILEDMode_Manual},		// BSP LED 1
-    {false, UILEDState_Off, UILEDMode_Manual},		// BSP LED 2
-    {false, UILEDState_Off, UILEDMode_Manual},		// BSP LED 3
-    {false, UILEDState_Off, UILEDMode_Manual},		// BSP LED 4
-#endif
 };
 
 
 void UIControl_ClearLEDs(void)
 {
-#ifdef MICROCHIP_PIC32
-
+    UIControl_SetLEDMode(0, UILEDMode_Manual);
     UIControl_SetLEDMode(1, UILEDMode_Manual);
     UIControl_SetLEDMode(2, UILEDMode_Manual);
     UIControl_SetLEDMode(3, UILEDMode_Manual);
-    UIControl_SetLEDMode(4, UILEDMode_Manual);
 
+    UIControl_SetLEDState(0, UILEDState_Off);
     UIControl_SetLEDState(1, UILEDState_Off);
     UIControl_SetLEDState(2, UILEDState_Off);
     UIControl_SetLEDState(3, UILEDState_Off);
-    UIControl_SetLEDState(4, UILEDState_Off);
-#else
-    UIControl_SetLEDMode(4, UILEDMode_Manual);
-    UIControl_SetLEDState(4, UILEDState_Off);
-#endif
+    _UIConnectedToServer = false;
 }
 
 bool UIControl_SetLEDMode(uint8_t led, UILEDMode newMode)
 {
     bool result = false;
-    if (led > 0 && led <= MAX_LEDS)
+    if (led >= 0 && led < NUMBER_OF_LEDS)
     {
-        leds[led - 1].Mode = newMode;
+        leds[led].Mode = newMode;
         switch (newMode) {
             case UILEDMode_Off:
             case UILEDMode_FlashStartOff:
-#ifndef MICROCHIP_PIC32
-                if (leds[led - 1].State != UILEDState_Off)
-                    leds[led - 1].StateChanged = true;
-#endif
-                leds[led - 1].State = UILEDState_Off;
+                leds[led].State = UILEDState_Off;
                 break;
 
             case UILEDMode_On:
             case UILEDMode_FlashStartOn:
-#ifndef MICROCHIP_PIC32
-                if (leds[led - 1].State != UILEDState_On)
-                    leds[led - 1].StateChanged = true;
-#endif
-                leds[led - 1].State = UILEDState_On;
+                leds[led].State = UILEDState_On;
                 break;
 
             case UILEDMode_Manual:
@@ -125,22 +98,18 @@ bool UIControl_SetLEDMode(uint8_t led, UILEDMode newMode)
 bool UIControl_SetLEDState(uint8_t led, UILEDState newState)
 {
     bool result = false;
-    if (led > 0 && led <= MAX_LEDS)
+    if (led >= 0 && led < NUMBER_OF_LEDS)
     {
-#ifndef MICROCHIP_PIC32
-        if (leds[led - 1].State != newState)
-            leds[led - 1].StateChanged = true;
-#endif
-        leds[led - 1].State = newState;
+        leds[led].State = newState;
 
 #if LED_UPDATE_IMMEDIATE
         // Don't wait for task to call UIStep()
-        if (leds[led - 1].Mode == UILEDMode_Manual)
+        if (leds[led].Mode == UILEDMode_Manual)
         {
-            if (leds[led - 1].State == UILEDState_On)
-                BSP_LEDStateSet(leds[led - 1].LedId, BSP_LED_STATE_ON);
+            if (leds[led].State == UILEDState_On)
+                BSP_LEDStateSet(leds[led].LedId, BSP_LED_STATE_ON);
             else
-                BSP_LEDStateSet(leds[led - 1].LedId, BSP_LED_STATE_OFF);
+                BSP_LEDStateSet(leds[led].LedId, BSP_LED_STATE_OFF);
         }
 #endif
         result = true;
@@ -151,47 +120,27 @@ bool UIControl_SetLEDState(uint8_t led, UILEDState newState)
 void UIControl_UIStep(void)
 {
     uint8_t led;
-    for (led = 1; led <= MAX_LEDS; led++)
+    for (led = 0; led < NUMBER_OF_LEDS; led++)
     {
-        UILEDMode ledMode = leds[led - 1].Mode;
+        UILEDMode ledMode = leds[led].Mode;
 
-        switch (ledMode) {
+        switch (ledMode)
+        {
             case UILEDMode_On:
-#ifndef MICROCHIP_PIC32
-                if (leds[led - 1].State != UILEDState_On)
-                    leds[led - 1].StateChanged = true;
-#endif
-                leds[led - 1].State = UILEDState_On;
+                leds[led].State = UILEDState_On;
                 break;
 
             case UILEDMode_Off:
-#ifndef MICROCHIP_PIC32
-                if (leds[led - 1].State != UILEDState_Off)
-                    leds[led - 1].StateChanged = true;
-#endif
-                leds[led - 1].State = UILEDState_Off;
+                leds[led].State = UILEDState_Off;
                 break;
 
             case UILEDMode_FlashStartOn:
             case UILEDMode_FlashStartOff:
             {
-#ifdef MICROCHIP_PIC32
-                if (leds[led-1].State == UILEDState_Off)
-                leds[led-1].State = UILEDState_On;
+                if (leds[led].State == UILEDState_Off)
+                    leds[led].State = UILEDState_On;
                 else
-                leds[led-1].State = UILEDState_Off;
-#else
-                if (leds[led - 1].State == UILEDState_Off)
-                {
-                    leds[led - 1].State = UILEDState_On;
-                    leds[led - 1].StateChanged = true;
-                }
-                else
-                {
-                    leds[led - 1].State = UILEDState_Off;
-                    leds[led - 1].StateChanged = true;
-                }
-#endif
+                    leds[led].State = UILEDState_Off;
             }
                 break;
 
@@ -201,23 +150,12 @@ void UIControl_UIStep(void)
         }
     }
 
-    for (led = 1; led <= MAX_LEDS; led++)
+    for (led = 0; led < NUMBER_OF_LEDS; led++)
     {
-#ifdef MICROCHIP_PIC32
-        if(leds[led-1].State == UILEDState_On)
-        BSP_LEDStateSet(leds[led-1].LedId, BSP_LED_STATE_ON);
+        if (leds[led].State == UILEDState_On)
+            BSP_LEDStateSet(leds[led].LedId, BSP_LED_STATE_ON);
         else
-        BSP_LEDStateSet(leds[led-1].LedId, BSP_LED_STATE_OFF);
-#else
-        if (leds[led - 1].StateChanged == true)
-        {
-            if (leds[led - 1].State == UILEDState_On)
-                SetLED(led, 1);
-            else
-                SetLED(led, 0);
-            leds[led - 1].StateChanged = false;
-        }
-#endif
+            BSP_LEDStateSet(leds[led].LedId, BSP_LED_STATE_OFF);
     }
 }
 
@@ -228,84 +166,101 @@ bool UIControl_SetUIState(AppUIState newState)
     {
         switch (newState) {
             case AppUIState_SoftApHardwareError:
+                UIControl_SetLEDMode(0, UILEDMode_FlashStartOn);
                 UIControl_SetLEDMode(1, UILEDMode_FlashStartOn);
                 UIControl_SetLEDMode(2, UILEDMode_FlashStartOn);
                 UIControl_SetLEDMode(3, UILEDMode_FlashStartOn);
-                UIControl_SetLEDMode(4, UILEDMode_FlashStartOn);
                 break;
 
             case AppUIState_SoftApNotConnected:
-                UIControl_SetLEDMode(1, UILEDMode_FlashStartOn);
+                UIControl_SetLEDMode(0, UILEDMode_FlashStartOn);
+                UIControl_SetLEDMode(1, UILEDMode_Off);
                 UIControl_SetLEDMode(2, UILEDMode_Off);
                 UIControl_SetLEDMode(3, UILEDMode_Off);
-                UIControl_SetLEDMode(4, UILEDMode_Off);
                 break;
 
             case AppUIState_SoftApConnected:
-                UIControl_SetLEDMode(1, UILEDMode_On);
+                UIControl_SetLEDMode(0, UILEDMode_On);
+                UIControl_SetLEDMode(1, UILEDMode_Off);
                 UIControl_SetLEDMode(2, UILEDMode_Off);
                 UIControl_SetLEDMode(3, UILEDMode_Off);
-                UIControl_SetLEDMode(4, UILEDMode_Off);
                 break;
 
             case AppUIState_SoftApNotConfigured:
-                UIControl_SetLEDMode(1, UILEDMode_On);
-                UIControl_SetLEDMode(2, UILEDMode_FlashStartOn);
+                UIControl_SetLEDMode(0, UILEDMode_On);
+                UIControl_SetLEDMode(1, UILEDMode_FlashStartOn);
+                UIControl_SetLEDMode(2, UILEDMode_Off);
                 UIControl_SetLEDMode(3, UILEDMode_Off);
-                UIControl_SetLEDMode(4, UILEDMode_Off);
                 break;
 
             case AppUIState_SoftApConfigured:
+                UIControl_SetLEDMode(0, UILEDMode_On);
                 UIControl_SetLEDMode(1, UILEDMode_On);
-                UIControl_SetLEDMode(2, UILEDMode_On);
+                UIControl_SetLEDMode(2, UILEDMode_Off);
                 UIControl_SetLEDMode(3, UILEDMode_Off);
-                UIControl_SetLEDMode(4, UILEDMode_Off);
                 break;
 
             case AppUIState_AppInitConnectingToNetwork:
+                UIControl_SetLEDMode(0, UILEDMode_On);
                 UIControl_SetLEDMode(1, UILEDMode_On);
-                UIControl_SetLEDMode(2, UILEDMode_On);
-                UIControl_SetLEDMode(3, UILEDMode_FlashStartOn);
-                UIControl_SetLEDMode(4, UILEDMode_Off);
+                UIControl_SetLEDMode(2, UILEDMode_FlashStartOn);
+                UIControl_SetLEDMode(3, UILEDMode_Off);
                 break;
 
             case AppUIState_AppInitConnectedToNetwork:
+                UIControl_SetLEDMode(0, UILEDMode_On);
                 UIControl_SetLEDMode(1, UILEDMode_On);
                 UIControl_SetLEDMode(2, UILEDMode_On);
-                UIControl_SetLEDMode(3, UILEDMode_On);
-                UIControl_SetLEDMode(4, UILEDMode_Off);
+                UIControl_SetLEDMode(3, UILEDMode_Off);
                 break;
 
             case AppUIState_AppInitConnectingToServer:
+                UIControl_SetLEDMode(0, UILEDMode_On);
                 UIControl_SetLEDMode(1, UILEDMode_On);
                 UIControl_SetLEDMode(2, UILEDMode_On);
-                UIControl_SetLEDMode(3, UILEDMode_On);
-                UIControl_SetLEDMode(4, UILEDMode_FlashStartOn);
+                UIControl_SetLEDMode(3, UILEDMode_FlashStartOn);
                 break;
 
             case AppUIState_AppConnectedToServer:
+                UIControl_SetLEDMode(0, UILEDMode_On);
                 UIControl_SetLEDMode(1, UILEDMode_On);
                 UIControl_SetLEDMode(2, UILEDMode_On);
                 UIControl_SetLEDMode(3, UILEDMode_On);
-                UIControl_SetLEDMode(4, UILEDMode_On);
+                _UIConnectedToServer = true;
                 break;
 
             case AppUIState_AppHardwareError:
+                UIControl_SetLEDMode(0, UILEDMode_FlashStartOn);
                 UIControl_SetLEDMode(1, UILEDMode_FlashStartOn);
                 UIControl_SetLEDMode(2, UILEDMode_FlashStartOn);
                 UIControl_SetLEDMode(3, UILEDMode_FlashStartOn);
-                UIControl_SetLEDMode(4, UILEDMode_FlashStartOn);
                 break;
 
             case AppUIState_None:
             default:
+                UIControl_SetLEDMode(0, UILEDMode_Off);
                 UIControl_SetLEDMode(1, UILEDMode_Off);
-                UIControl_SetLEDMode(3, UILEDMode_Off);
                 UIControl_SetLEDMode(2, UILEDMode_Off);
-                UIControl_SetLEDMode(4, UILEDMode_Off);
+                UIControl_SetLEDMode(3, UILEDMode_Off);
                 break;
         }
         result = true;
+    }
+    return result;
+}
+
+bool UIControl_LEDCommand(int ledID, bool ledOn)
+{
+    bool result = false;
+    if (_UIConnectedToServer)
+    {
+        // Use managed LED objects to control the LEDs
+        result = LedObject_Command(ledID, ledOn);
+    }
+    else
+    {
+        UIControl_SetLEDMode(ledID, UILEDMode_Manual);
+        result = UIControl_SetLEDState(ledID, ledOn ? UILEDState_On : UILEDState_Off);
     }
     return result;
 }
@@ -319,8 +274,7 @@ void UIControl_pollInputSensors(void)
     ButtonObject_Input(1, switch2);
 
     AnalogInputObject_Input(0, AdcDriver_GetPotentiometerVoltage());
-    // TODO - support build or config for Celcius/Fahrenheit
-    TemperatureObject_Input(0, AdcDriver_GetTemperatureDegrees(true));
+    TemperatureObject_Input(0, AdcDriver_GetTemperatureDegrees(true));  // Read temperature in celcius
     AdcDriver_ScanStart();
 }
 

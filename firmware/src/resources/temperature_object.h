@@ -28,6 +28,7 @@
 void TemperatureObject_Create(AwaStaticClient * awaClient);
 void TemperatureObject_Update(AwaStaticClient * awaClient);
 void TemperatureObject_Input(int TemperatureID, float temperature);
+void TemperatureObject_ResetStatistics(void);
 
 #endif // __TEMPERATURE_OBJECT_H_
 

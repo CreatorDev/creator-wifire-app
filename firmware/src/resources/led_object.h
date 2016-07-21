@@ -28,6 +28,7 @@
 void LedObject_Create(AwaStaticClient * awaClient);
 void LedObject_Close(void);
 void LedObject_Update(AwaStaticClient * awaClient);
+bool LedObject_Command(int ledID, bool ledOn);
 
 #endif // __LED_OBJECT_H_
 

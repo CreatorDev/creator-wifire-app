@@ -34,6 +34,7 @@
 #include "config_store.h"
 #include "ui_control.h"
 #include "standard_commands.h"
+#include "app_commands.h"
 #include "creator/creatorcore.h"
 
 
@@ -740,15 +741,18 @@ void AppConfig_InitCreatorCommandHandler(void)
 {
     CreatorCommand_Init();
 
-    CreatorCommand_RegisterCommand(NULL, "factory_reset", "Factory reset this device", StandardCommands_FactoryReset);
-    CreatorCommand_RegisterCommand(NULL, "reboot", "Reboot device", StandardCommands_Reboot);
-    CreatorCommand_RegisterCommand(NULL, "reboot_app", "Reboot device into application mode", StandardCommands_RebootApplicationMode);
-    CreatorCommand_RegisterCommand(NULL, "reboot_softap", "Reboot device into SoftAP mode", StandardCommands_RebootSoftAP);
-    CreatorCommand_RegisterCommand(NULL, "show", "Display the current value of a device setting", StandardCommands_Show);
-    CreatorCommand_RegisterCommand(NULL, "set", "Set the value of a device setting", StandardCommands_Set);
-    CreatorCommand_RegisterCommand(NULL, "uptime", "Display the time the device has been running since last reset", StandardCommands_Uptime);
+    CreatorCommand_RegisterCommand(NULL, "echo", "Echo command line to console", AppCommands_Echo, true);
+    CreatorCommand_RegisterCommand(NULL, "factory_reset", "Factory reset this device", StandardCommands_FactoryReset, false);
+    CreatorCommand_RegisterCommand(NULL, "leds", "LED control: 'leds <id> <on|off>', where id = all,1,2,3,4", AppCommands_Leds, true);
+    CreatorCommand_RegisterCommand(NULL, "reboot", "Reboot device", StandardCommands_Reboot, true);
+    CreatorCommand_RegisterCommand(NULL, "reboot_app", "Reboot device into application mode", StandardCommands_RebootApplicationMode, true);
+    CreatorCommand_RegisterCommand(NULL, "reboot_softap", "Reboot device into SoftAP mode", StandardCommands_RebootSoftAP, true);
+    CreatorCommand_RegisterCommand(NULL, "reset_stats", "Reset statistics (counters and min/max peaks)", AppCommands_ResetStatistics, true);
+    CreatorCommand_RegisterCommand(NULL, "show", "Display the current value of a device setting", StandardCommands_Show, true);
+    CreatorCommand_RegisterCommand(NULL, "set", "Set the value of a device setting", StandardCommands_Set, false);
+    CreatorCommand_RegisterCommand(NULL, "uptime", "Display the time the device has been running since last reset", StandardCommands_Uptime, true);
 
-    CreatorCommand_RegisterCommand(NULL, "board_details", "Display board information for output to label printing software", StandardCommands_BoardDetails);
+    CreatorCommand_RegisterCommand(NULL, "board_details", "Display board information for output to label printing software", StandardCommands_BoardDetails, false);
 }
 
 void AppConfig_SoftwareReset(bool resetToConfigurationMode)

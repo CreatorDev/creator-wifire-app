@@ -41,6 +41,7 @@ typedef struct
     char *name;
     char *description;
     CreatorCommand_Handler handler;
+    bool allowRemoteCommand;
 
 } Command;
 
@@ -130,7 +131,6 @@ static CommandGroup *CreatorCommand_FindCommandGroup(char* name);
 static bool CreatorCommand_DisplayHelp(int argc, char **argv);
 
 // Command Execution
-static bool CreatorCommand_ExecuteCommand(char *command);
 static bool CreatorCommand_FreeArguments(int argc, char *argv[]);
 static char **CreatorCommand_ParseArguments(char *command, int *argc);
 static bool CreatorCommand_PrintCommandHistory(int argc, char **argv);
@@ -394,7 +394,7 @@ static void CreatorCommand_DisplayPrompt(void)
     CreatorConsole_Printf("%c ", PROMPT_CHARACTER);
 }
 
-static bool CreatorCommand_ExecuteCommand(char *command)
+bool CreatorCommand_ExecuteCommand(char *command, bool isRemoteCommand)
 {
     bool result = false;
     int argc = 0;
@@ -412,7 +412,7 @@ static bool CreatorCommand_ExecuteCommand(char *command)
                 Command *commandInfo = CreatorCommand_FindCommand(groupPtr, argv[0]);
                 if (commandInfo != NULL)
                 {
-                    if (commandInfo->handler != NULL)
+                    if (commandInfo->handler != NULL && (!isRemoteCommand || commandInfo->allowRemoteCommand))
                     {
                         commandInfo->handler(argc, argv);
                         result = true;
@@ -550,8 +550,8 @@ bool CreatorCommand_Init(void)
                     {
                         commandModuleInitialised = true;
 
-                        if (CreatorCommand_RegisterCommand(NULL, "help", "help <optional group name>", CreatorCommand_DisplayHelp) &&
-                            CreatorCommand_RegisterCommand(NULL, "history", "display recent command history", CreatorCommand_PrintCommandHistory))
+                        if (CreatorCommand_RegisterCommand(NULL, "help", "help <optional group name>", CreatorCommand_DisplayHelp, true) &&
+                            CreatorCommand_RegisterCommand(NULL, "history", "display recent command history", CreatorCommand_PrintCommandHistory, true))
                         {
                             CreatorCommand_DisplayPrompt();
                             result = true;
@@ -807,7 +807,7 @@ int32_t CreatorCommand_ReadInputStringWithQuery(char *query, uint8_t* buffer, ui
     return CreatorCommand_ReadInputString(buffer, buffSize, obscureCharacters);
 }
 
-bool CreatorCommand_RegisterCommand(char *groupName, char *name, char *description, CreatorCommand_Handler handler)
+bool CreatorCommand_RegisterCommand(char *groupName, char *name, char *description, CreatorCommand_Handler handler, bool allowRemoteCommand)
 {
     bool result = false;
     int index = 0;
@@ -863,6 +863,7 @@ bool CreatorCommand_RegisterCommand(char *groupName, char *name, char *descripti
         if (newCommand != NULL)
         {
             newCommand->handler = handler;
+            newCommand->allowRemoteCommand = allowRemoteCommand;
             newCommand->name = Creator_MemAlloc(nameLength + 1);
             if (newCommand->name != NULL)
             {
@@ -1017,7 +1018,7 @@ bool CreatorCommand_Task(void)
                 if (strlen(commandBufferStart) > 0)
                 {
                     CreatorCommand_AddCommandToHistory(commandBufferStart);
-                    if (!CreatorCommand_ExecuteCommand(commandBufferStart))
+                    if (!CreatorCommand_ExecuteCommand(commandBufferStart, false))
                     {
                         CreatorConsole_Printf("Invalid command '%s'.", commandBufferStart);
                         CreatorCommand_PrintLineTerminators(2);

@@ -29,6 +29,10 @@ extern "C" {
 
 bool AppCommands_CommandShow(int argc, char** argv);
 void AppCommands_Initialise(void);
+bool AppCommands_Echo(int argc, char** argv);
+bool AppCommands_Leds(int argc, char** argv);
+bool AppCommands_ResetStatistics(int argc, char** argv);
+
 
 #ifdef __cplusplus
 }

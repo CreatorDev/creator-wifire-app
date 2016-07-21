@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- Copyright (c) 2016, Imagination Technologies Limited
+ Copyright (c) 2016, Imagination Technologies Limited and/or its affiliated group companies.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -20,37 +20,12 @@
  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ***********************************************************************************************************************/
 
-#ifndef _CREATOR_COMMAND_H_
-#define _CREATOR_COMMAND_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef __EXECUTE_COMMAND_OBJECT_H_
+#define __EXECUTE_COMMAND_OBJECT_H_
 
-#include <stdbool.h>
-#include <stdint.h>
+#include "awa\static.h"
 
-typedef bool (*CreatorCommand_Handler)(int argc, char **argv);		// Function pointer type representing a command handler.
+void ExecuteCommandObject_Create(AwaStaticClient * awaClient);
+void ExecuteCommandObject_ResetStatistics(void);
 
-void CreatorCommand_Cleanup(void);
-bool CreatorCommand_Initialise(void);
-
-bool CreatorCommand_PromptUser(void);
-bool CreatorCommand_PromptUserWithQuery(char *query);
-int32_t CreatorCommand_ReadInputIntegerOption(uint32_t inputRange, bool zeroBased, bool obscureCharacters);
-int32_t CreatorCommand_ReadInputIntegerOptionWithQuery(char *query, uint32_t inputRange, bool zeroBased, bool obscureCharacters);
-int32_t CreatorCommand_ReadInputString(uint8_t* buffer, uint32_t buffSize, bool obscureCharacters);
-int32_t CreatorCommand_ReadInputStringWithQuery(char *query, uint8_t* buffer, uint32_t buffSize, bool obscureCharacters);
-
-bool CreatorCommand_RegisterCommand(char *groupName, char *name, char *description, CreatorCommand_Handler handler, bool allowRemoteCommand);
-bool CreatorCommand_RegisterCommandGroup(char *groupName, char *groupDescription);
-bool CreatorCommand_ExecuteCommand(char *command, bool isRemoteCommand);
-
-bool CreatorCommand_SetLineTerminator(char *lineTerminator);
-bool CreatorCommand_Task(void);
-
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+#endif // __EXECUTE_COMMAND_OBJECT_H_

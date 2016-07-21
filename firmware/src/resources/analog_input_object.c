@@ -121,3 +121,16 @@ void AnalogInputObject_Input(int analogInputID, float value)
     }
 }
 
+void AnalogInputObject_ResetStatistics(void)
+{
+    int index;
+    for (index = 0; index < ANALOGINPUT_INSTANCES; index++)
+    {
+        AnalogInputObject * analogInput = &analogInputObject[index];
+        if (analogInput->IsInitialised)
+        {
+            analogInput->Min = analogInput->Value;
+            analogInput->Max = analogInput->Value;
+        }
+    }
+}

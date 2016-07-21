@@ -41,7 +41,7 @@
 #include <stdint.h>
 
 
-#define MAX_LEDS			(4)
+#define NUMBER_OF_LEDS (4)
 
 typedef enum
 {
@@ -51,7 +51,7 @@ typedef enum
 
 typedef enum
 {
-    UILEDMode_Manual = 0,					// Manually controlled (the ui controller module will not modify the LED's state)
+    UILEDMode_Manual = 0,   // Manually controlled (UI controller module will not modify the LED's state)
     UILEDMode_Off,
     UILEDMode_On,
     UILEDMode_FlashStartOn,
@@ -84,7 +84,8 @@ void UIControl_ClearLEDs(void);
 bool UIControl_SetUIState(AppUIState newState);
 bool UIControl_SetLEDMode(uint8_t led, UILEDMode newMode);
 bool UIControl_SetLEDState(uint8_t led, UILEDState newState);
+bool UIControl_LEDCommand(int led, bool ledOn);         // user console command
 
 void UIControl_pollInputSensors(void);
 
-#endif	// __UI_CONTROL_H_
+#endif // __UI_CONTROL_H_

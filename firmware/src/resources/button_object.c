@@ -117,3 +117,12 @@ void ButtonObject_Input(int buttonID, bool inputState)
     }
 }
 
+void ButtonObject_ResetStatistics(void)
+{
+    int index;
+    for (index = 0; index < BUTTON_INSTANCES; index++)
+    {
+        buttonObject[index].Counter = 0;
+    }
+}
+

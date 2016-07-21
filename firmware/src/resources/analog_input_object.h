@@ -28,5 +28,6 @@
 void AnalogInputObject_Create(AwaStaticClient * awaClient);
 void AnalogInputObject_Update(AwaStaticClient * awaClient);
 void AnalogInputObject_Input(int analogInputID, float value);
+void AnalogInputObject_ResetStatistics(void);
 
 #endif // __ANALOG_INPUT_OBJECT_H_

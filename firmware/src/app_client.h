@@ -42,6 +42,7 @@
 void Client_Initialise(void);
 void Client_Shutdown(void);
 void Client_SetLogLevel(CreatorLogLevel level);
+void Client_ResetStatistics(void);
 
 #endif // __APP_CLIENT_H_
 

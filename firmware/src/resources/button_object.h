@@ -28,6 +28,7 @@
 void ButtonObject_Create(AwaStaticClient * awaClient);
 void ButtonObject_Update(AwaStaticClient * awaClient);
 void ButtonObject_Input(int buttonID, bool inputState);
+void ButtonObject_ResetStatistics(void);
 
 #endif // __BUTTON_OBJECT_H_
 

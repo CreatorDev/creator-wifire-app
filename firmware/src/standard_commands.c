@@ -105,7 +105,7 @@ bool StandardCommands_BoardDetails(int argc, char** argv)
         StringBuilder response = StringBuilder_New(256);
         // DeviceType
         response = StringBuilder_Append(response, ConfigStore_GetDeviceType());
-        response = StringBuilder_Append(response, "\n");
+        response = StringBuilder_Append(response, LINE_TERM);
         // MAC address
         response = StringBuilder_Append(response, ConfigStore_GetMacAddress());
         response = StringBuilder_Append(response, "\n");
@@ -415,12 +415,6 @@ bool StandardCommands_Show(int argc, char** argv)
     }
 
     return result;
-}
-
-bool StandardCommands_UpdateOwnedDevices(int argc, char** argv)
-{
-    CommandHandlers_UpdateOwnedDevices();
-    return true;
 }
 
 bool StandardCommands_Uptime(int argc, char** argv)
