@@ -72,10 +72,10 @@ const char * Lwm2mCore_DebugPrintAddress(AddressType * addr)
     return (const char *)&result;
 }
 
-int Lwm2mCore_ResolveAddressByName(unsigned char * address, int addressLength, AddressType * addr)
+bool Lwm2mCore_ResolveAddressByName(unsigned char * address, int addressLength, AddressType * addr)
 {
-    /* Not used by Erbium coap abstraction */
-    int result = -1;
+    /* Not used by Erbium client */
+    bool result = false;
     return result;
 }
 

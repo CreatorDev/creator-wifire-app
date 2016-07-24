@@ -251,7 +251,6 @@ NetworkAddress * NetworkAddress_New(const char * uri, int uriLength)
                     if (networkAddress)
                     {
                         memset(networkAddress, 0, size);
-                        networkAddress->Secure = secure;
                         if (resolvedAddress->h_addrtype == AF_INET)
                         {
                             networkAddress->Address.Sin.sin_family = AF_INET;
@@ -274,6 +273,7 @@ NetworkAddress * NetworkAddress_New(const char * uri, int uriLength)
                     }
                     if (networkAddress)
                     {
+                        networkAddress->Secure = secure;
                         result = getCachedAddress(networkAddress, uri, uriHostLength);
                         if (result)
                         {
@@ -487,7 +487,7 @@ static int getUriHostLength(const char * uri, int uriLength)
 }
 
 
-NetworkSocket * NetworkSocket_New(NetworkSocketType socketType, uint16_t port)
+NetworkSocket * NetworkSocket_New(const char * ipAddress, NetworkSocketType socketType, uint16_t port)
 {
     size_t size = sizeof(struct _NetworkSocket);
     NetworkSocket * result = (NetworkSocket *)malloc(size);
@@ -566,8 +566,6 @@ bool NetworkSocket_StartListening(NetworkSocket * networkSocket)
     }
     return result;
 }
-
-//bool NetworkSocket_Connect(NetworkSocket networkSocket, NetworkAddress * destAddress);
 
 bool readUDP(NetworkSocket * networkSocket, int socketHandle, uint8_t * buffer, int bufferLength, NetworkAddress ** sourceAddress, int *readLength)
 {
