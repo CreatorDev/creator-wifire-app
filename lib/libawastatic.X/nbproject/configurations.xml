@@ -18,7 +18,6 @@
         <logicalFolder name="client" displayName="client" projectFiles="true">
           <itemPath>../../../../third_party/AwaLWM2M/core/src/client/lwm2m_acl_object.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/client/lwm2m_bootstrap.h</itemPath>
-          <itemPath>../../../../third_party/AwaLWM2M/core/src/client/lwm2m_connectivity_object.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/client/lwm2m_core.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/client/lwm2m_object_tree.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/client/lwm2m_registration.h</itemPath>
