@@ -226,7 +226,6 @@ bool UIControl_SetUIState(AppUIState newState)
                 UIControl_SetLEDMode(1, UILEDMode_On);
                 UIControl_SetLEDMode(2, UILEDMode_On);
                 UIControl_SetLEDMode(3, UILEDMode_On);
-                _UIConnectedToServer = true;
                 break;
 
             case AppUIState_AppHardwareError:
@@ -244,6 +243,12 @@ bool UIControl_SetUIState(AppUIState newState)
                 UIControl_SetLEDMode(3, UILEDMode_Off);
                 break;
         }
+        
+        if (newState == AppUIState_AppConnectedToServer)
+            _UIConnectedToServer = true;
+        else
+            _UIConnectedToServer = false;
+        
         result = true;
     }
     return result;

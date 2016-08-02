@@ -90,6 +90,18 @@ void LedObject_Update(AwaStaticClient * awaClient)
     }
 }
 
+void LedObject_Refresh(void)
+{
+    // Refresh all LEDs (e.g. to restore the settings after connection lost/recovery)
+    int index;
+    for (index = 0; index < NUMBER_OF_LEDS; index++)
+    {
+        prevLed[index].On = ledObject[index].On;
+        UIControl_SetLEDMode(index, UILEDMode_Manual);
+        UIControl_SetLEDState(index, prevLed[index].On ? UILEDState_On : UILEDState_Off);
+    }
+}
+
 bool LedObject_Command(int ledID, bool ledOn)
 {
     // LED control from user console command

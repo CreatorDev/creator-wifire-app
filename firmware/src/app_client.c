@@ -49,6 +49,7 @@ static CreatorThread _ClientThread;
 static AwaStaticClient * _AwaClient;
 static bool _Terminate;
 static bool _ClientClosed;
+static bool _ClientRegistered;
 
 #define LOCAL_PORT  6000
 #define WAIT_SHUTDOWN_TIME 100      // 1s in 10ms units
@@ -161,6 +162,7 @@ void Client_Initialise(void)
 {
     _Terminate = false;
     _ClientClosed = false;
+    _ClientRegistered = false;
     CreatorLogLevel logLevel = ConfigStore_GetLoggingLevel();
     
     Creator_Log(CreatorLogLevel_Info, "Client init started");
@@ -233,20 +235,32 @@ static void UpdateResources(AwaStaticClient * awaClient)
     ButtonObject_Update(awaClient);
     TemperatureObject_Update(awaClient);
     AnalogInputObject_Update(awaClient);
+    
+    // Update connection status
+    AwaClientRegistrationStatus status = AwaStaticClient_GetRegistrationStatus(awaClient);
+    bool registered = (status == AwaClientRegistrationStatus_Registered);
+    if (_ClientRegistered != registered)
+    {
+        if (registered)
+        {
+            UIControl_SetUIState(AppUIState_AppConnectedToServer);
+            LedObject_Refresh();
+        }
+        else
+            UIControl_SetUIState(AppUIState_AppInitConnectingToServer);
+        _ClientRegistered = registered;
+    }
 }
 
 static void ClientProcess(CreatorThread thread, void *context)
 {
     AppConfig_SetDeviceOnline(true);
-    // TODO - set LED4 on when client has registered
-    UIControl_SetUIState(AppUIState_AppConnectedToServer);
     while (!_Terminate)
     {
         AwaStaticClient_Process(_AwaClient);
         UpdateResources(_AwaClient);
         CreatorThread_SleepMilliseconds(NULL, 10);
     }
-    // TODO - un-register (if registered) and wait for sent (with t/o)
     AwaStaticClient_Free(&_AwaClient);
     LedObject_Close();
     Creator_Log(CreatorLogLevel_Warning, "Client closed");
