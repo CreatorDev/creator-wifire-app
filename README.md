@@ -10,7 +10,7 @@ The Creator WiFire application runs on a [ChipKIT WiFire](http://www.microchip.c
 ## Dependencies  
 The complete IoT demonstration requires:
 * a device, or several devices, to monitor and manage (in this case the WiFire)  
-* a device management server supporting suitable Lightweight machine to machine (LWM2M) protocols (see the Creator device server)  
+* a device management server supporting suitable Lightweight machine to machine (LWM2M) protocols (see the [Creator device server](https://github.com/CreatorDev/DeviceServer))  
 * a mobile application to configure and manage devices remotely via the device server (see the Creator mobile application)  
 
 ## WiFire application specific dependencies
