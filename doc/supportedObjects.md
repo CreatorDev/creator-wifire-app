@@ -1,5 +1,5 @@
 ﻿
-![](img.png)
+![](../img.png)
 ----
 ## IPSO objects used in the Creator WiFire application 
 
