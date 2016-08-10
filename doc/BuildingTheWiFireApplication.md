@@ -1,5 +1,5 @@
 
-![](img.png)  
+![](../img.png)  
 
 # Building the Creator WiFire application
 ----
@@ -76,9 +76,9 @@ Error: Project "creator_wifireapp" refers to file "bsp_config.h" which does not 
 Error: Project "creator_wifireapp" refers to file "bsp_sys_init.c" which does not exist in the disk. The project failed to load.  
 ```  
 The above errors may be ignored since the named files are not required for a successful build.  
-![](images/mplab_chipkit_selected.png)  
+![](../images/mplab_chipkit_selected.png)  
 4. Build the application.  
-![](images/mplab_build_icon.png)  
+![](../images/mplab_build_icon.png)  
 
 
 ### Building the WiFire application code for the first time using the EC board 
@@ -105,7 +105,7 @@ Select (ctrl+click), and open all of the following project libraries:
     * Click the *Manage Configurations* button in the Project Properties dialogue box   
     * Select *pic32mz_ec* in the Configurations dialogue and click the *Set Active* button  
     * Repeat for each project library  
-![](images/setActiveCropped.png)
+![](../images/setActiveCropped.png)
 	
 3. Open the application project:  
 *C:\microchip\harmony\current\apps\creator-wifire-app\firmware\creator_wifireapp.X*  
@@ -114,10 +114,10 @@ Ensure that '*chipkit_wifire_ec*' is selected as the main project.
 `Error: Project "creator_wifireapp" refers to file "bsp_config.h" which does not exist in the disk. The project failed to load.`  
 `Error: Project "creator_wifireapp" refers to file "bsp_sys_init.c" which does not exist in the disk. The project failed to load.`   
 The above errors may be ignored since the named files are not required for a successful build.  
-![](images/mplab_chipkit_ec_selected.png)  
+![](../images/mplab_chipkit_ec_selected.png)  
 
 4. Build the application.  
-![](images/mplab_build_icon_ec.png)  
+![](../images/mplab_build_icon_ec.png)  
 
 
 
