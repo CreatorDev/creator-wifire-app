@@ -131,7 +131,7 @@ Reboot after installing the tools to finalise the installation process.
 
 ### Next  
 
-[Building the WiFire application.](BuildingTheWiFireApplication.md)  
+[Building the WiFire application](BuildingTheWiFireApplication.md)  
 
 ### Previous
 
