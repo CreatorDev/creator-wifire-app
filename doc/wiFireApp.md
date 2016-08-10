@@ -109,7 +109,7 @@ Supported operations and resources:
 
 The Creator WiFire application supports LWM2M objects to enable the device server to control resources over CoAP, (see *WiFire supported objects*).
 
-Secure CoAP communication will be supported over DTLS (UDP transport with an encrypted payload) using the PSK or Certificate provided in configuration mode. For further details see [device certificates](devCerts.md).  
+Secure CoAP communication will be supported over DTLS (UDP transport with an encrypted payload) using the PSK or Certificate provided in configuration mode.  
 
 ----
 
