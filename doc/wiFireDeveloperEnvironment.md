@@ -1,5 +1,5 @@
 
-![](img.png)  
+![](../img.png)  
 
 ## Creator WiFire development environment setup
 ----
@@ -131,7 +131,7 @@ Reboot after installing the tools to finalise the installation process.
 
 ### Next  
 
-[Building the WiFir application.](BuildingTheWiFireApplication.md)  
+[Building the WiFire application.](BuildingTheWiFireApplication.md)  
 
 ### Previous
 
