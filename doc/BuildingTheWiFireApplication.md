@@ -44,7 +44,7 @@ After cloning, the Wifire application firmware and libraries should be available
 2. **The Awa LightweightM2M repository:**  
 In your command prompt, navigate to your Harmony *third_party* folder, which should be: *C:\microchip\harmony\current\third_party*    
 Clone the repository:  
-**C:\microchip\harmony\current\third_party git clone https://github.com/FlowM2M/AwaLWM2M.git**  
+**C:\microchip\harmony\current\third_party> git clone https://github.com/FlowM2M/AwaLWM2M.git**  
 After cloning, the Awa LightweightM2M libraries should be available in the *C:\microchip\harmony\current\third_party\AwaLWM2M* folder.
 
 There are two WiFire development boards available, the EC and the EF. The application has slightly different configuration and build requirements depending on the board used:  
