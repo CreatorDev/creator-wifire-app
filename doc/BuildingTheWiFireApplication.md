@@ -44,13 +44,13 @@ After cloning, the Wifire application firmware and libraries should be available
 2. **The Awa LightweightM2M repository:**  
 In your command prompt, navigate to your Harmony *third_party* folder, which should be: *C:\microchip\harmony\current\third_party*    
 Clone the repository:  
-**C:\microchip\harmony\current\third_party git clone https://github.com/FlowM2M/AwaLWM2M.git**  
-After cloning, the Awa LightweightM2M libraries shoud be available in the *C:\microchip\harmony\current\third_party\AwaLWM2M* folder.
+**C:\microchip\harmony\current\third_party> git clone https://github.com/FlowM2M/AwaLWM2M.git**  
+After cloning, the Awa LightweightM2M libraries should be available in the *C:\microchip\harmony\current\third_party\AwaLWM2M* folder.
 
 There are two WiFire development boards available, the EC and the EF. The application has slightly different configuration and build requirements depending on the board used:  
 
-* [Building for the EF board](BuildingTheWifireApplication.md#building-the-wifire-application-code-for-the-first-time-using-the-ef-board)  
-* [Building for the EC board](BuildingTheWifireApplication.md#building-the-wifire-application-code-for-the-first-time-using-the-ec-board)  
+* [Building for the EF board](https://github.com/CreatorDev/creator-wifire-app/blob/master/doc/BuildingTheWiFireApplication.md#building-the-wifire-application-code-for-the-first-time-using-the-ef-board)  
+* [Building for the EC board](https://github.com/CreatorDev/creator-wifire-app/blob/master/doc/BuildingTheWiFireApplication.md#building-the-wifire-application-code-for-the-first-time-using-the-ec-board)  
 
 ### Building the WiFire application code for the first time using the EF board  
 
@@ -75,7 +75,7 @@ Ensure that '*chipkit_wifire*' is selected as the main project (if you're using 
 Error: Project "creator_wifireapp" refers to file "bsp_config.h" which does not exist in the disk. The project failed to load.  
 Error: Project "creator_wifireapp" refers to file "bsp_sys_init.c" which does not exist in the disk. The project failed to load.  
 ```  
-The above errors may be ignored since the named files are not required for a successful build.  
+The above errors may be ignored.  
 ![](../images/mplab_chipkit_selected.png)  
 4. Build the application.  
 ![](../images/mplab_build_icon.png)  
@@ -113,7 +113,7 @@ Ensure that '*chipkit_wifire_ec*' is selected as the main project.
 **Note.** The load process may report the following errors:  
 `Error: Project "creator_wifireapp" refers to file "bsp_config.h" which does not exist in the disk. The project failed to load.`  
 `Error: Project "creator_wifireapp" refers to file "bsp_sys_init.c" which does not exist in the disk. The project failed to load.`   
-The above errors may be ignored since the named files are not required for a successful build.  
+The above errors may be ignored.  
 ![](../images/mplab_chipkit_ec_selected.png)  
 
 4. Build the application.  
