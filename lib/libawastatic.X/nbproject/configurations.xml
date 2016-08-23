@@ -32,7 +32,6 @@
           <itemPath>../../../../third_party/AwaLWM2M/core/src/common/lwm2m_debug.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/common/lwm2m_definition.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/common/lwm2m_endpoints.h</itemPath>
-          <itemPath>../../../../third_party/AwaLWM2M/core/src/common/lwm2m_events.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/common/lwm2m_limits.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/common/lwm2m_list.h</itemPath>
           <itemPath>../../../../third_party/AwaLWM2M/core/src/common/lwm2m_objects.h</itemPath>
