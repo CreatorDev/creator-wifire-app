@@ -13,8 +13,8 @@ This section applies to the *ChipKIT WiFire development board* and describes:
 ## WiFire application basics
 The board supports two modes of operation:  
 
-* **Configuration mode** – the default power up mode adopted when the board is not configured with WiFi, bootstrap or application settings. Configuration mode uses SoftAP to connect directly to a mobile device for the purpose of acquiring WiFi settings. Once set up for WiFi connectivity and boostrap server connection, the board can be configured to use application mode on the next reset.  
-* **Application mode** – the normal working mode of the device. The device will automatically connect to a WiFi network, connect to a bootstrap server and obtain a device server URI. Once in application mode, the only way to return to configuration mode is via the *reboot* executable resource stating SoftAP as a command parameter.  
+* **Configuration mode** – the default power up mode adopted when the board is not configured with WiFi, bootstrap or application settings. Configuration mode uses SoftAP to connect directly to a mobile device for the purpose of acquiring WiFi settings. Once set up for WiFi connectivity and bootstrap server connection, the board can be configured to use application mode on the next reset.  
+* **Application mode** – the normal working mode of the device. The device will automatically connect to a WiFi network, connect to a bootstrap server and obtain a device server URI. Once in application mode, the device can be made to return to configuration mode by executing the *reboot* executable resource stating SoftAP as a command parameter, or by resetting the device (using the reset button) while simultaneously pressing buttons 1 and 2.  
 
 
 ## Configuration mode
@@ -33,7 +33,7 @@ In configuration mode the board's WiFi functionality defaults to SoftAP and will
 | WiFi network settings | type | description |  
 |-----|-----|-----|  
 | WiFi SSID | string | WiFi network name |  
-| WiFi Encryption | string | WPA2, WEP, ... |  
+| WiFi Encryption | string | WEP, WPA, WPA2 (default), Open |  
 | WiFi Password | string | WiFi network password |  
 | Network addressing scheme | string | DHCP, Static |  
 | Static: <ul><li>DNS server</li><li>IPv4 address</li><li>subnet mask</li><li>default gateway</li></ul> | strings | Static mode only |  
@@ -42,7 +42,7 @@ In configuration mode the board's WiFi functionality defaults to SoftAP and will
 
 ### Bootstrap server settings  
 
-The WiFire device also needs to be provided with a boostrap server URI and the security credentials required to access bootstrap services. On power up in *application mode*, the device will connect to the bootstrap server at the given URI. The bootstrap server will then respond with a management server (device server) URI and suitable authentication credentials. The WiFire device will then connect to the given management server.
+The WiFire device also needs to be provided with a bootstrap server URI and the security credentials required to access bootstrap services. On power up in *application mode*, the device will connect to the bootstrap server at the given URI. The bootstrap server will then respond with a management server (device server) URI and suitable authentication credentials. The WiFire device will then connect to the given management server.
 <br>
 
  
