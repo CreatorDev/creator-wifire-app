@@ -25,7 +25,7 @@ Standard IPSO smart objects are supported where possible:
 | 3200 | IPSO Digital Input | InstanceIDs 0-1 = WiFire buttons 1..2. Device server can *observe* (subscribe to) button presses. |  
 | 3311 | IPSO Light Control | InstanceIDs 0-3 = WiFire LEDs 1..4. |  
 | 3202 | IPSO Analogue Input | InstanceID 0 = WiFire input voltage from potentiometer (0 to 3.3V). Server can read current value + min/max values (since startup or last reset_stats command) |  
-| 3303 | IPSO Temperature Sensor | InstanceID 0 = Read temperature from WiFire (internal sensor). Server can read current value + min/max values (since startup or last reset_stats command). Temperature is returned in Celsius (units = 'Cel'). Note: The internal temperature of the WiFire is normally ~40ºC so this sensor is not useful for measuring ambient temperature.|  
+| 3303 | IPSO Temperature Sensor | InstanceID 0 = Read temperature from WiFire's PIC32MZ internal chip temperature sensor. The server can read current value + min/max values (since startup or last reset_stats command). Temperature is returned in Celsius (units = 'Cel'). Note: The internal temperature of the WiFire is normally ≈40ºC so this sensor is not useful for measuring ambient temperature.|  
 ||||  
  
 
