@@ -7,12 +7,12 @@
 This section applies to the *ChipKIT WiFire development board* and describes:  
 
 * WiFire hardware setup and virtual COM port configuration on a PC  
-* Terminal configuration and the command line interface (CLI)  
+* Terminal configuration and the command line interface (CLI). *Note that all command line interface examples show the device in configuration mode although the same commands are also available in application mode*.  
 * WiFire application supported commands  
   
 
 ### Virtual COM port setup  
-The WiFire board can be powered and configured via its UART (a USB 2.0 micro-B female connector) by connecting to the USB port of a PC. In this case the UART must be configured as a virtual COM port by installing an appropriate device driver which is downloadable free as an .exe file from [ftdichip.com](http://www.ftdichip.com/Drivers/VCP.htm).  
+The WiFire board can be powered and configured via its UART (a Mini-USB 2.0 female connector) by connecting to the USB port of a PC. In this case the UART must be configured as a virtual COM port by installing an appropriate device driver which is downloadable free as an .exe file from [ftdichip.com](http://www.ftdichip.com/Drivers/VCP.htm).  
 Having installed the appropriate Virtual com Port (VCP) driver, open Windows Device Manager and expand the Ports (COM & LPT) menu:  
 
 ![](../images/device_manager.png)
