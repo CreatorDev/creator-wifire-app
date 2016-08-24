@@ -67,7 +67,7 @@ Standard IPSO smart objects are supported where possible:
 
 ----
 
-For further infomation please visit:  
+For further information please visit:  
 * [The CreatorDev forum](Forum.creatordev.io)  
 * [CreatorDev online documentation](Docs.creatordev.io/wifire)  
 
