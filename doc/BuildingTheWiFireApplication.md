@@ -120,7 +120,7 @@ The above errors may be ignored.
 ![](../images/mplab_build_icon_ec.png)  
 
 ---    
-For further infomation please visit:  
+For further information please visit:  
 * [The CreatorDev forum](Forum.creatordev.io)  
 * [CreatorDev online documentation](Docs.creatordev.io/wifire)  
 
