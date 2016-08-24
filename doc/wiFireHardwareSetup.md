@@ -63,9 +63,13 @@ As a further example, we'll change the device name using *set*, and then use the
 
 It's worth playing around with the WiFire command line to familiarise yourself with its properties and settings.  
 
+---   
+For further information please visit:  
+* [The CreatorDev forum](Forum.creatordev.io)  
+* [CreatorDev online documentation](Docs.creatordev.io/wifire)  
 
+---
 
-----
 
 ### Next
 
