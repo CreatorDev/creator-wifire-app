@@ -10,15 +10,14 @@ This guide describes the object definitions used in the Creator Wifire applicati
 
 | ObjectID | Name | Description |
 |-----|-----|-----|
-| 0 | Security | Bootstrap server could override configured security settings. Not currently supported |
+| 0 | Security | Bootstrap server could override configured security settings. |
 | 1 | Server | Device server LWM2M settings - set by the Bootstrap server |
 | 2 | Access Control | Access control - set by the bootstrap server. WiFire currently ignores this. |
-| 3 | Device | Device object - default values set by the application. WiFire currently ignores the device reboot command because it's not supported by device server.<br>Read only values provided by WiFire: <ul><li>Manufacturer</li><li>Device type</li><li>Serial number</li><li>Software version</li></ul>**discuss**: could override default values for some fields and store in non-volatile memory |  
+| 3 | Device | Device object - default values set by the application. WiFire currently ignores the device reboot command.<br>Read only values provided by WiFire: <ul><li>Manufacturer</li><li>Device type</li><li>Serial number</li><li>Software version</li></ul> |  
 ||||  
 
 
-### IPSO objects for WiFire resources  
-Standard IPSO smart objects are supported where possible:  
+### Standard IPSO smart objects for WiFire resources  
 
 | Object/ID | Name | Description |  
 |-----|-----|-----|  
@@ -36,7 +35,7 @@ Standard IPSO smart objects are supported where possible:
 
 | Object/ID | Name | Description |  
 |-----|-----|-----|
-| 20001 | ExecuteCommand | InstanceID 0 = Execute an application command |  
+| 20001 | ExecuteCommand | InstanceID 0 = Execute a WiFire console command |  
 ||||  
 
 
@@ -50,12 +49,12 @@ Standard IPSO smart objects are supported where possible:
  
 | Resource ID | Resource | Description | Operations | Instances | Mandatory | Type |  
 |-----|-----|-----|-----|-----|-----|-----| 
-| 0 | Value | Execute command to be executed. WiFire supports most of the commands that can be executed from the console command line. | Read, write | Single | Mandatory | String |  
+| 0 | Value | Execute command to be executed. WiFire supports the commands that can be executed from the console command line with the exception of interactive commands.  | Read, write | Single | Mandatory | String |  
 | 1 | Count | Number of execute commands received by WiFire. Note: both valid and invalid commands are counted | Read |  Single | Mandatory | Integer |  
 ||||||||  
 
 
-### Standard objects *not* currently supported by the Creator WiFire application  
+### Standard LWM2M objects *not* currently supported by the Creator WiFire application  
 
 | ObjectID | Name |  
 |-----|-----|  
