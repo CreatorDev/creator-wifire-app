@@ -112,7 +112,7 @@ The Creator WiFire application supports LWM2M objects to enable the device serve
 Secure CoAP communication will be supported over DTLS (UDP transport with an encrypted payload) using the PSK or Certificate provided in configuration mode.  
 
 ---   
-For further infomation please visit:  
+For further information please visit:  
 * [The CreatorDev forum](Forum.creatordev.io)  
 * [CreatorDev online documentation](Docs.creatordev.io/wifire)  
 ---
