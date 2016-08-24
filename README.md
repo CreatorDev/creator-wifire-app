@@ -22,6 +22,13 @@ An application overview, a list of IPSO supported objects, and command line setu
 
 ---
 
+For further infomation please visit:  
+* [The CreatorDev forum](Forum.creatordev.io)  
+* [CreatorDev online documentation](Docs.creatordev.io/wifire)  
+
+---
+
+
 ## License  
  Copyright (c) 2016, Imagination Technologies Limited and/or its affiliated group companies.
  All rights reserved.  
