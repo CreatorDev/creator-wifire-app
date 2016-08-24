@@ -18,7 +18,7 @@ This application uses the [Awa LightweightM2M](https://github.com/FlowM2M/AwaLWM
 
 ## Documentation  
 The full documentation detailing a suitable, free of charge developer environment and application build instructions are available [here.](doc/wiFireDeveloperEnvironment.md)  
-An application overview, a list of IPSO supported objects, and console setup guide are available [here.](doc/wiFireApp.md)  
+An application overview, a list of IPSO supported objects, and command line setup guide are available [here.](doc/wiFireApp.md)  
 
 ---
 
