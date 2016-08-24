@@ -119,9 +119,12 @@ The above errors may be ignored.
 4. Build the application.  
 ![](../images/mplab_build_icon_ec.png)  
 
+---    
+For further information please visit:  
+* [The CreatorDev forum](Forum.creatordev.io)  
+* [CreatorDev online documentation](Docs.creatordev.io/wifire)  
 
-
-----
+---
 
 ### Next
 

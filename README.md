@@ -10,7 +10,7 @@ The Creator WiFire application runs on a [ChipKIT WiFire](http://www.microchip.c
 ## Dependencies  
 The complete IoT demonstration requires:
 * a device, or several devices, to monitor and manage (in this case the WiFire)  
-* a device management server supporting suitable Lightweight machine to machine (LWM2M) protocols (see the [Creator device server](https://github.com/CreatorDev/DeviceServer))  
+* a device management server supporting suitable Lightweight machine to machine (LWM2M) protocols (see the [Creator device server](https://github.com/CreatorDev/creator-wifire-mobile-app))  
 * a mobile application to configure and manage devices remotely via the device server (see the Creator mobile application)  
 
 ## WiFire application specific dependencies
@@ -18,9 +18,16 @@ This application uses the [Awa LightweightM2M](https://github.com/FlowM2M/AwaLWM
 
 ## Documentation  
 The full documentation detailing a suitable, free of charge developer environment and application build instructions are available [here.](doc/wiFireDeveloperEnvironment.md)  
-An application overview, a list of IPSO supported objects, and console setup guide are available [here.](doc/wiFireApp.md)  
+An application overview, a list of IPSO supported objects, and command line setup guide are available [here.](doc/wiFireApp.md)  
 
 ---
+
+For further information please visit:  
+* [The CreatorDev forum](Forum.creatordev.io)  
+* [CreatorDev online documentation](Docs.creatordev.io/wifire)  
+
+---
+
 
 ## License  
  Copyright (c) 2016, Imagination Technologies Limited and/or its affiliated group companies.

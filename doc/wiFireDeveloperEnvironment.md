@@ -126,8 +126,13 @@ sudo ./MPLABX-vX.XX-linux-installer.sh
 
 Reboot after installing the tools to finalise the installation process.  
 
+---   
+For further information please visit:  
+* [The CreatorDev forum](Forum.creatordev.io)  
+* [CreatorDev online documentation](Docs.creatordev.io/wifire)  
 
-----
+---
+
 
 ### Next  
 
