@@ -85,6 +85,9 @@
         <logicalFolder name="f1" displayName="crypto" projectFiles="true">
           <logicalFolder name="f1" displayName="src" projectFiles="true">
             <logicalFolder name="f1" displayName="zlib-1.2.7" projectFiles="true">
+              <logicalFolder name="f1" displayName="examples" projectFiles="true">
+                <itemPath>../../../../framework/crypto/src/zlib-1.2.7/examples/gzlog.h</itemPath>
+              </logicalFolder>
               <itemPath>../../../../framework/crypto/src/zlib-1.2.7/crc32.h</itemPath>
               <itemPath>../../../../framework/crypto/src/zlib-1.2.7/deflate.h</itemPath>
               <itemPath>../../../../framework/crypto/src/zlib-1.2.7/inffast.h</itemPath>
@@ -95,6 +98,7 @@
               <itemPath>../../../../framework/crypto/src/zlib-1.2.7/zconf.h</itemPath>
               <itemPath>../../../../framework/crypto/src/zlib-1.2.7/zlib.h</itemPath>
               <itemPath>../../../../framework/crypto/src/zlib-1.2.7/zutil.h</itemPath>
+              <itemPath>../../../../framework/crypto/src/zlib-1.2.7/gzguts.h</itemPath>
             </logicalFolder>
             <itemPath>../../../../framework/crypto/src/ecc.h</itemPath>
             <itemPath>../../../../framework/crypto/src/arc4.h</itemPath>
@@ -124,11 +128,29 @@
             <itemPath>../../../../framework/crypto/src/types.h</itemPath>
             <itemPath>../../../../framework/crypto/src/version.h</itemPath>
             <itemPath>../../../../framework/crypto/src/visibility.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/asn_public.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/camellia.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/certs_test.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/dh.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/dsa.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/ec.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/hc128.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/md2.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/md4.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/mpi_class.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/mpi_superclass.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/rabbit.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/ripemd.h</itemPath>
+            <itemPath>../../../../framework/crypto/src/ssl.h</itemPath>
           </logicalFolder>
           <itemPath>../../../../framework/crypto/crypto.h</itemPath>
         </logicalFolder>
         <logicalFolder name="f2" displayName="driver" projectFiles="true">
           <logicalFolder name="f1" displayName="nvm" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/driver/nvm/src/drv_nvm_local.h</itemPath>
+              <itemPath>../../../../framework/driver/nvm/src/drv_nvm_variant_mapping.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/driver/nvm/drv_nvm.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f2" displayName="spi" projectFiles="true">
@@ -139,10 +161,19 @@
               <itemPath>../../../../framework/driver/spi/src/drv_spi_sys_queue.h</itemPath>
               <itemPath>../../../../framework/driver/spi/src/drv_spi_sys_queue_local_fifo.h</itemPath>
             </logicalFolder>
+            <logicalFolder name="f2" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/driver/spi/src/drv_spi_variant_mapping.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/driver/spi/drv_spi.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f3" displayName="tmr" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/driver/tmr/src/drv_tmr_variant_mapping.h</itemPath>
+              <itemPath>../../../../framework/driver/tmr/src/drv_tmr_local.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/driver/tmr/drv_tmr.h</itemPath>
+            <itemPath>../../../../framework/driver/tmr/drv_tmr_mapping.h</itemPath>
+            <itemPath>../../../../framework/driver/tmr/drv_tmr_compatibility.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f4" displayName="wifi" projectFiles="true">
             <logicalFolder name="f1" displayName="mrf24w" projectFiles="true">
@@ -165,6 +196,10 @@
             </logicalFolder>
           </logicalFolder>
           <itemPath>../../../../framework/driver/driver.h</itemPath>
+          <itemPath>../../../../framework/driver/driver_common.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f6" displayName="gfx" projectFiles="true">
+          <itemPath>../../../../framework/gfx/gfx_palette.h</itemPath>
         </logicalFolder>
         <logicalFolder name="f3" displayName="net" projectFiles="true">
           <logicalFolder name="f1" displayName="pres" projectFiles="true">
@@ -176,33 +211,76 @@
             <itemPath>../../../../framework/net/pres/net_pres_encryptionproviderapi.h</itemPath>
             <itemPath>../../../../framework/net/pres/net_pres_socketapi.h</itemPath>
             <itemPath>../../../../framework/net/pres/net_pres_transportapi.h</itemPath>
+            <itemPath>../../../../framework/net/pres/net_pres_socketapiconversion.h</itemPath>
           </logicalFolder>
         </logicalFolder>
+        <logicalFolder name="f7" displayName="osal" projectFiles="true">
+          <logicalFolder name="f1" displayName="src" projectFiles="true">
+            <itemPath>../../../../framework/osal/src/osal_impl_basic.h</itemPath>
+            <itemPath>../../../../framework/osal/src/osal_impl_none.h</itemPath>
+            <itemPath>../../../../framework/osal/src/osal_freertos.h</itemPath>
+          </logicalFolder>
+          <itemPath>../../../../framework/osal/osal.h</itemPath>
+          <itemPath>../../../../framework/osal/osal_definitions.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f8" displayName="peripheral" projectFiles="true">
+          <itemPath>../../../../framework/peripheral/peripheral.h</itemPath>
+          <itemPath>../../../../framework/peripheral/peripheral_common.h</itemPath>
+          <itemPath>../../../../framework/peripheral/peripheral_common_32bit.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="f4" displayName="system" projectFiles="true">
+          <logicalFolder name="f9" displayName="clk" projectFiles="true">
+            <itemPath>../../../../framework/system/clk/sys_clk.h</itemPath>
+            <itemPath>../../../../framework/system/clk/sys_clk_mapping.h</itemPath>
+          </logicalFolder>
           <logicalFolder name="f1" displayName="common" projectFiles="true">
             <itemPath>../../../../framework/system/common/sys_common.h</itemPath>
             <itemPath>../../../../framework/system/common/sys_module.h</itemPath>
+            <itemPath>../../../../framework/system/common/sys_buffer.h</itemPath>
+            <itemPath>../../../../framework/system/common/sys_queue.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f10" displayName="debug" projectFiles="true">
+            <itemPath>../../../../framework/system/debug/sys_debug.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f2" displayName="devcon" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/system/devcon/src/sys_devcon_local.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/system/devcon/sys_devcon.h</itemPath>
-            <itemPath>../../../../framework/system/devcon/src/sys_devcon_cache.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f3" displayName="dma" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/system/dma/src/sys_dma_local.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/system/dma/sys_dma.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f4" displayName="int" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/system/int/src/sys_int_private.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/system/int/sys_int.h</itemPath>
+            <itemPath>../../../../framework/system/int/sys_int_mapping.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f5" displayName="ports" projectFiles="true">
             <itemPath>../../../../framework/system/ports/sys_ports.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f6" displayName="random" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/system/random/src/sys_random_local.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/system/random/sys_random.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f7" displayName="reset" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/system/reset/src/sys_reset_local.h</itemPath>
+              <itemPath>../../../../framework/system/reset/src/sys_reset_mapping.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/system/reset/sys_reset.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f8" displayName="tmr" projectFiles="true">
+            <logicalFolder name="f1" displayName="src" projectFiles="true">
+              <itemPath>../../../../framework/system/tmr/src/sys_tmr_local.h</itemPath>
+            </logicalFolder>
             <itemPath>../../../../framework/system/tmr/sys_tmr.h</itemPath>
           </logicalFolder>
           <itemPath>../../../../framework/system/system.h</itemPath>
@@ -210,7 +288,14 @@
         <logicalFolder name="f5" displayName="tcpip" projectFiles="true">
           <logicalFolder name="f2" displayName="common" projectFiles="true">
             <itemPath>../../../../framework/tcpip/src/common/helpers.h</itemPath>
-            <itemPath>../../../../framework/tcpip/src/common/lfsr.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f3" displayName="src" projectFiles="true">
+            <itemPath>../../../../framework/tcpip/src/berkeley_manager.h</itemPath>
+            <itemPath>../../../../framework/tcpip/src/dhcpv6_manager.h</itemPath>
+            <itemPath>../../../../framework/tcpip/src/dhcpv6_private.h</itemPath>
+            <itemPath>../../../../framework/tcpip/src/lldp_manager.h</itemPath>
+            <itemPath>../../../../framework/tcpip/src/lldp_private.h</itemPath>
+            <itemPath>../../../../framework/tcpip/src/lldp_tlv.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f1" displayName="stack" projectFiles="true">
             <itemPath>../../../../framework/tcpip/src/tcp_private.h</itemPath>
@@ -262,6 +347,10 @@
           <itemPath>../../../../framework/tcpip/tcpip_mac.h</itemPath>
           <itemPath>../../../../framework/tcpip/tcpip_mac_object.h</itemPath>
           <itemPath>../../../../framework/tcpip/tcpip_ethernet.h</itemPath>
+          <itemPath>../../../../framework/tcpip/dhcpv6.h</itemPath>
+          <itemPath>../../../../framework/tcpip/lldp.h</itemPath>
+          <itemPath>../../../../framework/tcpip/tcpip_announce.h</itemPath>
+          <itemPath>../../../../framework/tcpip/tcpip_reboot.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f3" displayName="FreeRTOS" projectFiles="true">
@@ -285,6 +374,7 @@
         <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/StackMacros.h</itemPath>
         <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/task.h</itemPath>
         <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/timers.h</itemPath>
+        <itemPath>../../../../third_party/rtos/FreeRTOS/Source/include/deprecated_definitions.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -425,7 +515,6 @@
               <itemPath>../../../../framework/crypto/src/zlib-1.2.7/zutil.c</itemPath>
             </logicalFolder>
             <itemPath>../../../../framework/crypto/src/ecc.c</itemPath>
-            <itemPath>../../../../framework/crypto/src/ssl-dummy.c</itemPath>
             <itemPath>../../../../framework/crypto/src/arc4.c</itemPath>
             <itemPath>../../../../framework/crypto/src/pwdbased.c</itemPath>
             <itemPath>../../../../framework/crypto/src/tfm.c</itemPath>
@@ -521,6 +610,7 @@
               <itemPath>../../../../framework/system/devcon/src/sys_devcon.c</itemPath>
               <itemPath>../../../../framework/system/devcon/src/sys_devcon_pic32mz.c</itemPath>
               <itemPath>../../../../framework/system/devcon/src/sys_devcon_cache_pic32mz.S</itemPath>
+              <itemPath>../../../../framework/system/devcon/src/sys_devcon_cache.h</itemPath>
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="f2" displayName="dma" projectFiles="true">
@@ -529,11 +619,6 @@
           <logicalFolder name="f3" displayName="int" projectFiles="true">
             <logicalFolder name="f1" displayName="src" projectFiles="true">
               <itemPath>../../../../framework/system/int/src/sys_int_pic32.c</itemPath>
-            </logicalFolder>
-          </logicalFolder>
-          <logicalFolder name="f4" displayName="ports" projectFiles="true">
-            <logicalFolder name="f1" displayName="src" projectFiles="true">
-              <itemPath>../../../../framework/system/ports/src/sys_ports.c</itemPath>
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="f5" displayName="random" projectFiles="true">
@@ -555,7 +640,6 @@
         <logicalFolder name="f6" displayName="tcpip" projectFiles="true">
           <logicalFolder name="f2" displayName="common" projectFiles="true">
             <itemPath>../../../../framework/tcpip/src/common/helpers.c</itemPath>
-            <itemPath>../../../../framework/tcpip/src/common/lfsr.c</itemPath>
           </logicalFolder>
           <logicalFolder name="f1" displayName="stack" projectFiles="true">
             <itemPath>../../../../framework/tcpip/src/tcp.c</itemPath>
@@ -614,6 +698,11 @@
     <Elem>../src/chipkit_wifire_ec</Elem>
     <Elem>../src/system_config/chipkit_wifire_ec</Elem>
     <Elem>../..</Elem>
+    <Elem>..\src</Elem>
+    <Elem>..\src\chipkit_wifire</Elem>
+    <Elem>..\src\system_config\chipkit_wifire</Elem>
+    <Elem>..\src\chipkit_wifire_ec</Elem>
+    <Elem>..\src\system_config\chipkit_wifire_ec</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -635,6 +724,7 @@
             <linkerLibFileItem>../../../../bin/third_party/libawastatic_ef.a</linkerLibFileItem>
             <linkerLibFileItem>../../../../bin/third_party/libcyassl_ef.a</linkerLibFileItem>
             <linkerLibFileItem>../../../../bin/framework/peripheral/PIC32MZ2048EFG100_peripherals.a</linkerLibFileItem>
+            <linkerLibFileItem>../../../../framework/tcpip/src/crypto/aes_pic32mx.a</linkerLibFileItem>
           </linkerLibItems>
         </linkerTool>
         <archiverTool>
@@ -657,322 +747,86 @@
       <item path="../../../../bsp/chipkit_wifire_ec/bsp_config.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../../../../bsp/chipkit_wifire_ec/bsp_sys_init.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
+      </item>
+      <item path="../../../../framework/system/devcon/src/sys_devcon_cache.h"
+            ex="true"
+            overriding="false">
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/FreeRTOSConfig.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/driver/spi/dynamic/drv_spi_api.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/driver/spi/dynamic/drv_spi_master_dma_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/driver/spi/dynamic/drv_spi_master_ebm_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/driver/spi/dynamic/drv_spi_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/net/pres/net_pres_enc_glue.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/net/pres/net_pres_enc_glue.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/system/clk/src/sys_clk_static.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/system/clk/sys_clk_static.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/framework/system/ports/src/sys_ports_static.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/rtos_hooks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/system_config.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/system_definitions.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/system_exceptions.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/system_init.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/system_interrupt.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/system_interrupt_a.S"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire_ec/system_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <C32>
         <property key="additional-warnings" value="false"/>
@@ -1314,6 +1168,7 @@
             <linkerLibFileItem>../../../../bin/third_party/libawastatic_ec.a</linkerLibFileItem>
             <linkerLibFileItem>../../../../bin/third_party/libcyassl_ec.a</linkerLibFileItem>
             <linkerLibFileItem>../../../../bin/framework/peripheral/PIC32MZ2048ECG100_peripherals.a</linkerLibFileItem>
+            <linkerLibFileItem>../../../../framework/tcpip/src/crypto/aes_pic32mx.a</linkerLibFileItem>
           </linkerLibItems>
         </linkerTool>
         <archiverTool>
@@ -1336,354 +1191,90 @@
       <item path="../../../../bsp/chipkit_wifire/bsp_config.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../../../../bsp/chipkit_wifire/bsp_sys_init.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/FreeRTOSConfig.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/driver/adc/drv_adc_static.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/driver/adc/src/drv_adc_static.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/driver/spi/dynamic/drv_spi_api.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/driver/spi/dynamic/drv_spi_master_dma_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/driver/spi/dynamic/drv_spi_master_ebm_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/driver/spi/dynamic/drv_spi_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/net/pres/net_pres_enc_glue.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/net/pres/net_pres_enc_glue.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/system/clk/src/sys_clk_static.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/system/clk/sys_clk_static.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/framework/system/ports/src/sys_ports_static.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/rtos_hooks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/system_config.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/system_definitions.h"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/system_exceptions.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/system_init.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/system_interrupt.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/system_interrupt_a.S"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <item path="../src/system_config/chipkit_wifire/system_tasks.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
       </item>
       <C32>
         <property key="additional-warnings" value="false"/>
@@ -1693,7 +1284,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/resources;../../../../framework;../../include;../../../../third_party/AwaLWM2M/api/include;C:\Program Files (x86)\Microchip\xc32\v1.42\pic32mx\include;../src/chipkit_wifire_ec;../src/system_config/chipkit_wifire_ec/framework;../src/system_config/chipkit_wifire_ec;../../../../bsp/chipkit_wifire_ec;../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include"/>
+                  value="../src;../src/resources;../../../../framework;../../include;../../../../third_party/AwaLWM2M/api/include;C:/Program Files (x86)/Microchip/xc32/v1.42/pic32mx/include;../src/chipkit_wifire_ec;../src/system_config/chipkit_wifire_ec/framework;../src/system_config/chipkit_wifire_ec;../../../../bsp/chipkit_wifire_ec;../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -1715,7 +1306,7 @@
         <property key="additional-options-chop-files" value="false"/>
       </C32-AR>
       <C32-AS>
-        <property key="extra-include-directories-for-assembler" value=";"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
         <property key="extra-include-directories-for-preprocessor"
                   value=";../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ;../../../../third_party/rtos/FreeRTOS/Source/include;../src/system_config/chipkit_wifire_ec"/>
       </C32-AS>
@@ -1853,6 +1444,7 @@
         <property key="UART5" value="true"/>
         <property key="UART6" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="false"/>

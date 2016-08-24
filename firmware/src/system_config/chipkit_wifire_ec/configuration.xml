@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<configuration version="1.0.7.16">
+<configuration version="1.0.8.7">
   <General>
     <HarmonyPath path="../.."/>
+    <Processor name="PIC32MZ2048ECG100"/>
     <ForceOptimization flag="false"/>
+    <MergeStrategy flag="USER_ALL"/>
   </General>
   <Manifest>
     <Files>
@@ -11,12 +13,20 @@
         <Path>Source Files/framework/system/random/src</Path>
       </File>
       <File>
+        <Name>camellia.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
         <Name>semphr.h</Name>
         <Path>Header Files/FreeRTOS</Path>
       </File>
       <File>
         <Name>ecc.c</Name>
         <Path>Source Files/framework/crypto/src</Path>
+      </File>
+      <File>
+        <Name>asn_public.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
         <Name>tcpip_heap_alloc.h</Name>
@@ -29,6 +39,10 @@
       <File>
         <Name>tcpip_mac.h</Name>
         <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
+        <Name>sys_reset_mapping.h</Name>
+        <Path>Header Files/framework/system/reset/src</Path>
       </File>
       <File>
         <Name>drv_wifi_iwpriv.c</Name>
@@ -57,6 +71,10 @@
       <File>
         <Name>dns_manager.h</Name>
         <Path>Header Files/framework/tcpip/stack</Path>
+      </File>
+      <File>
+        <Name>dh.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
         <Name>sha512.c</Name>
@@ -111,6 +129,18 @@
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
       </File>
       <File>
+        <Name>drv_nvm_variant_mapping.h</Name>
+        <Path>Header Files/framework/driver/nvm/src</Path>
+      </File>
+      <File>
+        <Name>osal_impl_basic.h</Name>
+        <Path>Header Files/framework/osal/src</Path>
+      </File>
+      <File>
+        <Name>peripheral_common_32bit.h</Name>
+        <Path>Header Files/framework/peripheral</Path>
+      </File>
+      <File>
         <Name>sys_reset.h</Name>
         <Path>Header Files/framework/system/reset</Path>
       </File>
@@ -135,8 +165,16 @@
         <Path>Header Files/framework/tcpip/stack</Path>
       </File>
       <File>
+        <Name>osal.h</Name>
+        <Path>Header Files/framework/osal</Path>
+      </File>
+      <File>
         <Name>net_pres_certstore.h</Name>
         <Path>Header Files/framework/net/pres</Path>
+      </File>
+      <File>
+        <Name>sys_dma_local.h</Name>
+        <Path>Header Files/framework/system/dma/src</Path>
       </File>
       <File>
         <Name>internal.h</Name>
@@ -183,6 +221,10 @@
         <Path>Source Files/framework/crypto/src</Path>
       </File>
       <File>
+        <Name>hc128.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
         <Name>arp_private.h</Name>
         <Path>Header Files/framework/tcpip/stack</Path>
       </File>
@@ -199,6 +241,10 @@
         <Path>Header Files/framework/tcpip/stack</Path>
       </File>
       <File>
+        <Name>sys_int_mapping.h</Name>
+        <Path>Header Files/framework/system/int</Path>
+      </File>
+      <File>
         <Name>logging.h</Name>
         <Path>Header Files/framework/crypto/src</Path>
       </File>
@@ -207,12 +253,24 @@
         <Path>Header Files/framework/driver/spi/private</Path>
       </File>
       <File>
+        <Name>tcpip_reboot.h</Name>
+        <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
+        <Name>md4.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
         <Name>sys_devcon.h</Name>
         <Path>Header Files/framework/system/devcon</Path>
       </File>
       <File>
         <Name>nbns.h</Name>
         <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
+        <Name>sys_debug.h</Name>
+        <Path>Header Files/framework/system/debug</Path>
       </File>
       <File>
         <Name>ipv4_manager.h</Name>
@@ -239,6 +297,10 @@
         <Path>Header Files/framework/crypto/src/zlib-1.2.7</Path>
       </File>
       <File>
+        <Name>peripheral.h</Name>
+        <Path>Header Files/framework/peripheral</Path>
+      </File>
+      <File>
         <Name>queue.c</Name>
         <Path>Source Files/FreeRTOS</Path>
       </File>
@@ -247,8 +309,20 @@
         <Path>Source Files/framework/tcpip/common</Path>
       </File>
       <File>
+        <Name>tcpip_announce.h</Name>
+        <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
+        <Name>drv_tmr_mapping.h</Name>
+        <Path>Header Files/framework/driver/tmr</Path>
+      </File>
+      <File>
         <Name>crypto.h</Name>
         <Path>Header Files/framework/crypto</Path>
+      </File>
+      <File>
+        <Name>sys_reset_local.h</Name>
+        <Path>Header Files/framework/system/reset/src</Path>
       </File>
       <File>
         <Name>queue.h</Name>
@@ -263,8 +337,16 @@
         <Path>Source Files/bsp/chipkit_wifire_ec</Path>
       </File>
       <File>
+        <Name>mpi_superclass.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
         <Name>tcp.h</Name>
         <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
+        <Name>net_pres_socketapiconversion.h</Name>
+        <Path>Header Files/framework/net/pres</Path>
       </File>
       <File>
         <Name>drv_wifi_init.c</Name>
@@ -285,6 +367,10 @@
       <File>
         <Name>driver.h</Name>
         <Path>Header Files/framework/driver</Path>
+      </File>
+      <File>
+        <Name>peripheral_common.h</Name>
+        <Path>Header Files/framework/peripheral</Path>
       </File>
       <File>
         <Name>sys_int_pic32.c</Name>
@@ -319,12 +405,24 @@
         <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
+        <Name>drv_tmr_compatibility.h</Name>
+        <Path>Header Files/framework/driver/tmr</Path>
+      </File>
+      <File>
+        <Name>sys_tmr_local.h</Name>
+        <Path>Header Files/framework/system/tmr/src</Path>
+      </File>
+      <File>
         <Name>tcpip_mac_object.h</Name>
         <Path>Header Files/framework/tcpip</Path>
       </File>
       <File>
         <Name>inftrees.h</Name>
         <Path>Header Files/framework/crypto/src/zlib-1.2.7</Path>
+      </File>
+      <File>
+        <Name>lldp_private.h</Name>
+        <Path>Header Files/framework/tcpip/src</Path>
       </File>
       <File>
         <Name>udp_manager.h</Name>
@@ -343,12 +441,20 @@
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
       </File>
       <File>
+        <Name>drv_nvm_local.h</Name>
+        <Path>Header Files/framework/driver/nvm/src</Path>
+      </File>
+      <File>
         <Name>drv_wifi_mac.c</Name>
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
       </File>
       <File>
         <Name>drv_wifi_spi.c</Name>
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
+      </File>
+      <File>
+        <Name>gzlog.h</Name>
+        <Path>Header Files/framework/crypto/src/zlib-1.2.7/examples</Path>
       </File>
       <File>
         <Name>port.c</Name>
@@ -359,12 +465,20 @@
         <Path>Header Files/framework/system/int</Path>
       </File>
       <File>
+        <Name>osal_freertos.h</Name>
+        <Path>Header Files/framework/osal/src</Path>
+      </File>
+      <File>
         <Name>dns_private.h</Name>
         <Path>Header Files/framework/tcpip/stack</Path>
       </File>
       <File>
         <Name>berkeley_api.h</Name>
         <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
+        <Name>lldp_tlv.h</Name>
+        <Path>Header Files/framework/tcpip/src</Path>
       </File>
       <File>
         <Name>tcpip_notify.c</Name>
@@ -403,6 +517,10 @@
         <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
+        <Name>rabbit.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
         <Name>drv_spi_sys_queue.h</Name>
         <Path>Header Files/framework/driver/spi/private</Path>
       </File>
@@ -412,6 +530,10 @@
       </File>
       <File>
         <Name>sys_common.h</Name>
+        <Path>Header Files/framework/system/common</Path>
+      </File>
+      <File>
+        <Name>sys_buffer.h</Name>
         <Path>Header Files/framework/system/common</Path>
       </File>
       <File>
@@ -431,12 +553,24 @@
         <Path>Source Files/framework/tcpip/stack</Path>
       </File>
       <File>
+        <Name>osal_impl_none.h</Name>
+        <Path>Header Files/framework/osal/src</Path>
+      </File>
+      <File>
         <Name>tcpip_helpers.h</Name>
+        <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
+        <Name>dhcpv6.h</Name>
         <Path>Header Files/framework/tcpip</Path>
       </File>
       <File>
         <Name>misc.c</Name>
         <Path>Source Files/framework/crypto/src</Path>
+      </File>
+      <File>
+        <Name>sys_clk_mapping.h</Name>
+        <Path>Header Files/framework/system/clk</Path>
       </File>
       <File>
         <Name>sys_devcon_cache_pic32mz.S</Name>
@@ -447,8 +581,8 @@
         <Path>Header Files/framework/crypto/src/zlib-1.2.7</Path>
       </File>
       <File>
-        <Name>sys_devcon_cache.h</Name>
-        <Path>Header Files/framework/system/devcon</Path>
+        <Name>md2.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
         <Name>tcpip_private.h</Name>
@@ -471,6 +605,10 @@
         <Path>Source Files/framework/crypto/src</Path>
       </File>
       <File>
+        <Name>ripemd.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
         <Name>drv_nvm.h</Name>
         <Path>Header Files/framework/driver/nvm</Path>
       </File>
@@ -485,6 +623,10 @@
       <File>
         <Name>sys_devcon_pic32mz.c</Name>
         <Path>Source Files/framework/system/devcon/src</Path>
+      </File>
+      <File>
+        <Name>dsa.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
         <Name>tcpip.h</Name>
@@ -503,12 +645,20 @@
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
       </File>
       <File>
+        <Name>sys_queue.h</Name>
+        <Path>Header Files/framework/system/common</Path>
+      </File>
+      <File>
         <Name>compress.c</Name>
         <Path>Source Files/framework/crypto/src/zlib-1.2.7</Path>
       </File>
       <File>
         <Name>sha.h</Name>
         <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
+        <Name>drv_tmr_local.h</Name>
+        <Path>Header Files/framework/driver/tmr/src</Path>
       </File>
       <File>
         <Name>tcpip_helper_c32.S</Name>
@@ -551,8 +701,20 @@
         <Path>Header Files/framework/tcpip/stack</Path>
       </File>
       <File>
+        <Name>certs_test.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
+        <Name>sys_devcon_cache.h</Name>
+        <Path>Source Files/framework/system/devcon/src</Path>
+      </File>
+      <File>
         <Name>tcpip_packet.h</Name>
         <Path>Header Files/framework/tcpip/stack</Path>
+      </File>
+      <File>
+        <Name>gzguts.h</Name>
+        <Path>Header Files/framework/crypto/src/zlib-1.2.7</Path>
       </File>
       <File>
         <Name>drv_wifi_raw.c</Name>
@@ -561,6 +723,10 @@
       <File>
         <Name>tcpip_helpers_private.h</Name>
         <Path>Header Files/framework/tcpip/stack</Path>
+      </File>
+      <File>
+        <Name>berkeley_manager.h</Name>
+        <Path>Header Files/framework/tcpip/src</Path>
       </File>
       <File>
         <Name>dns.c</Name>
@@ -581,6 +747,10 @@
       <File>
         <Name>drv_wifi_mgmt_msg.h</Name>
         <Path>Header Files/framework/driver/wifi/mrf24w/src</Path>
+      </File>
+      <File>
+        <Name>drv_spi_variant_mapping.h</Name>
+        <Path>Header Files/framework/driver/spi/src</Path>
       </File>
       <File>
         <Name>sys_dma.c</Name>
@@ -625,6 +795,10 @@
       <File>
         <Name>sys_devcon.c</Name>
         <Path>Source Files/framework/system/devcon/src</Path>
+      </File>
+      <File>
+        <Name>sys_random_local.h</Name>
+        <Path>Header Files/framework/system/random/src</Path>
       </File>
       <File>
         <Name>sys_dma.h</Name>
@@ -687,6 +861,10 @@
         <Path>Header Files/FreeRTOS</Path>
       </File>
       <File>
+        <Name>lldp_manager.h</Name>
+        <Path>Header Files/framework/tcpip/src</Path>
+      </File>
+      <File>
         <Name>tcpip_announce.c</Name>
         <Path>Source Files/framework/tcpip/stack</Path>
       </File>
@@ -709,6 +887,10 @@
       <File>
         <Name>uncompr.c</Name>
         <Path>Source Files/framework/crypto/src/zlib-1.2.7</Path>
+      </File>
+      <File>
+        <Name>osal_definitions.h</Name>
+        <Path>Header Files/framework/osal</Path>
       </File>
       <File>
         <Name>dhcp.c</Name>
@@ -743,6 +925,10 @@
         <Path>Source Files/framework/crypto/src</Path>
       </File>
       <File>
+        <Name>sys_devcon_local.h</Name>
+        <Path>Header Files/framework/system/devcon/src</Path>
+      </File>
+      <File>
         <Name>drv_wifi_scan_helper.c</Name>
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
       </File>
@@ -755,12 +941,20 @@
         <Path>Source Files/framework/crypto/src</Path>
       </File>
       <File>
+        <Name>lldp.h</Name>
+        <Path>Header Files/framework/tcpip</Path>
+      </File>
+      <File>
         <Name>drv_wifi_debug_output.c</Name>
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
       </File>
       <File>
         <Name>drv_wifi_context_loader.c</Name>
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
+      </File>
+      <File>
+        <Name>driver_common.h</Name>
+        <Path>Header Files/framework/driver</Path>
       </File>
       <File>
         <Name>drv_wifi_eint.c</Name>
@@ -773,6 +967,10 @@
       <File>
         <Name>croutine.c</Name>
         <Path>Source Files/FreeRTOS</Path>
+      </File>
+      <File>
+        <Name>ec.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
         <Name>memory.c</Name>
@@ -799,6 +997,10 @@
         <Path>Header Files/framework/crypto/src/zlib-1.2.7</Path>
       </File>
       <File>
+        <Name>sys_clk.h</Name>
+        <Path>Header Files/framework/system/clk</Path>
+      </File>
+      <File>
         <Name>dhcps.h</Name>
         <Path>Header Files/framework/tcpip</Path>
       </File>
@@ -819,6 +1021,10 @@
         <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
+        <Name>ssl.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
+      </File>
+      <File>
         <Name>drv_tmr.c</Name>
         <Path>Source Files/framework/driver/tmr/src/dynamic</Path>
       </File>
@@ -827,8 +1033,12 @@
         <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
-        <Name>lfsr.c</Name>
-        <Path>Source Files/framework/tcpip/common</Path>
+        <Name>sys_int_private.h</Name>
+        <Path>Header Files/framework/system/int/src</Path>
+      </File>
+      <File>
+        <Name>deprecated_definitions.h</Name>
+        <Path>Header Files/FreeRTOS</Path>
       </File>
       <File>
         <Name>helpers.h</Name>
@@ -855,10 +1065,6 @@
         <Path>Source Files/FreeRTOS/portable/MPLAB/PIC32MZ</Path>
       </File>
       <File>
-        <Name>ssl-dummy.c</Name>
-        <Path>Source Files/framework/crypto/src</Path>
-      </File>
-      <File>
         <Name>trees.c</Name>
         <Path>Source Files/framework/crypto/src/zlib-1.2.7</Path>
       </File>
@@ -877,6 +1083,10 @@
       <File>
         <Name>compress.c</Name>
         <Path>Source Files/framework/crypto/src</Path>
+      </File>
+      <File>
+        <Name>drv_tmr_variant_mapping.h</Name>
+        <Path>Header Files/framework/driver/tmr/src</Path>
       </File>
       <File>
         <Name>dhcps_private.h</Name>
@@ -959,6 +1169,10 @@
         <Path>Header Files/framework/tcpip/stack</Path>
       </File>
       <File>
+        <Name>dhcpv6_manager.h</Name>
+        <Path>Header Files/framework/tcpip/src</Path>
+      </File>
+      <File>
         <Name>FreeRTOS.h</Name>
         <Path>Header Files/FreeRTOS</Path>
       </File>
@@ -971,8 +1185,8 @@
         <Path>Source Files/framework/driver/wifi/mrf24w/src</Path>
       </File>
       <File>
-        <Name>sys_ports.c</Name>
-        <Path>Source Files/framework/system/ports/src</Path>
+        <Name>gfx_palette.h</Name>
+        <Path>Header Files/framework/gfx</Path>
       </File>
       <File>
         <Name>event_groups.c</Name>
@@ -981,6 +1195,14 @@
       <File>
         <Name>pwdbased.c</Name>
         <Path>Source Files/framework/crypto/src</Path>
+      </File>
+      <File>
+        <Name>dhcpv6_private.h</Name>
+        <Path>Header Files/framework/tcpip/src</Path>
+      </File>
+      <File>
+        <Name>mpi_class.h</Name>
+        <Path>Header Files/framework/crypto/src</Path>
       </File>
       <File>
         <Name>drv_wifi_mgmt_msg.c</Name>
@@ -993,10 +1215,6 @@
       <File>
         <Name>zutil.h</Name>
         <Path>Header Files/framework/crypto/src/zlib-1.2.7</Path>
-      </File>
-      <File>
-        <Name>lfsr.h</Name>
-        <Path>Header Files/framework/tcpip/common</Path>
       </File>
       <File>
         <Name>dnss.c</Name>
@@ -1029,7 +1247,7 @@
       <Template>
         <Name>sys_ports_static.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec/framework/system/ports/src</Path>
-        <Checksum>750CC132A7467E68BB9A2036EA7C188E</Checksum>
+        <Checksum>4A7294EB4B7B5F53E668E86EFF06F214</Checksum>
       </Template>
       <Template>
         <Name>rtos_hooks.c</Name>
@@ -1068,17 +1286,17 @@
       <Template>
         <Name>system_tasks.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec</Path>
-        <Checksum>793E6CEC0B05C077364E45BFD7E10AFB</Checksum>
+        <Checksum>C4E2FDD0329CFD05FC4A943C54A74DFD</Checksum>
       </Template>
       <Template>
         <Name>drv_spi_tasks.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec/framework/driver/spi/dynamic</Path>
-        <Checksum>DB10630DD163BF0833E31B966391D498</Checksum>
+        <Checksum>7D79BD8EB7868A4BB3E6D88BE9E9760D</Checksum>
       </Template>
       <Template>
         <Name>system_config.h</Name>
         <Path>Header Files/app/system_config/chipkit_wifire_ec</Path>
-        <Checksum>0000E47DFB9B4DD48515940384E629B4</Checksum>
+        <Checksum>118C95233C6B128DB11D12956040F75A</Checksum>
         <ProjectFileChecksum>1E18EB289F18677D6FC604658BC4813E</ProjectFileChecksum>
       </Template>
       <Template>
@@ -1098,17 +1316,17 @@
       <Template>
         <Name>system_init.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec</Path>
-        <Checksum>A204E768159E6FA471826C0D3E922C63</Checksum>
+        <Checksum>7DD7291265DE13A3C676F71441F90934</Checksum>
       </Template>
       <Template>
         <Name>drv_spi_master_dma_tasks.c</Name>
         <Path>Source Files/app/system_config/chipkit_wifire_ec/framework/driver/spi/dynamic</Path>
-        <Checksum>ABD3BFDDF06D27E49DE2E7D95DC3B9C6</Checksum>
+        <Checksum>4626EB40B153D853AF96C626BA1FDEB0</Checksum>
       </Template>
       <Template>
         <Name>FreeRTOSConfig.h</Name>
         <Path>Header Files/app/system_config/chipkit_wifire_ec</Path>
-        <Checksum>F7E76518519C07101D4C3010C29A38FB</Checksum>
+        <Checksum>3910303E257D02B24903FB716E42A1C5</Checksum>
       </Template>
       <Template>
         <Name>system_definitions.h</Name>
@@ -1123,6 +1341,11 @@
         <Include value="../src/system_config/chipkit_wifire_ec"/>
       </C32-AS>
       <C32>
+        <Include value="C:\microchip\harmony\current\apps\creator-wifire-app\firmware\src"/>
+        <Include value="C:\microchip\harmony\current\apps\creator-wifire-app\firmware\src\system_config\chipkit_wifire_ec"/>
+        <Include value="C:\microchip\harmony\current\apps\creator-wifire-app\firmware\src\chipkit_wifire_ec"/>
+        <Include value="C:\microchip\harmony\current\framework"/>
+        <Include value="C:\microchip\harmony\current\apps\creator-wifire-app\firmware\src\system_config\chipkit_wifire_ec\framework"/>
         <Include value="../../../../bsp/chipkit_wifire_ec"/>
         <Include value="../../../../third_party/rtos/FreeRTOS/Source/portable/MPLAB/PIC32MZ"/>
         <Include value="../../../../third_party/rtos/FreeRTOS/Source/include"/>
@@ -1131,6 +1354,7 @@
     </CompilerItems>
     <Libraries>
       <Library value="../../../../bin/framework/peripheral/PIC32MZ2048ECG100_peripherals.a"/>
+      <Library value="../../../../framework/tcpip/src/crypto/aes_pic32mx.a"/>
     </Libraries>
   </Manifest>
 </configuration>

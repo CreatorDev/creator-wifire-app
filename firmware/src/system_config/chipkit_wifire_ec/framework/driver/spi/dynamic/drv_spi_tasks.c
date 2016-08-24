@@ -53,7 +53,7 @@ uint8_t sDrvSpiTxDummy[DRV_SPI_DMA_DUMMY_BUFFER_SIZE];
 
 int32_t DRV_SPI_ISRMasterEBM8BitTasks ( struct DRV_SPI_DRIVER_OBJECT * pDrvInstance )    
 {
-    bool continueLoop;
+    volatile bool continueLoop;
     
     /* Disable the interrupts */
     SYS_INT_SourceDisable(pDrvInstance->rxInterruptSource);
@@ -158,20 +158,7 @@ int32_t DRV_SPI_ISRMasterEBM8BitTasks ( struct DRV_SPI_DRIVER_OBJECT * pDrvInsta
                 
         continueLoop = false;
         /* Execute the sub tasks */
-
-        DRV_SPI_ISRErrorTasks(pDrvInstance);
-        
-        /* Figure out how many bytes are left to be received */
-        size_t bytesLeft = currentJob->dataLeftToRx + currentJob->dummyLeftToRx;
-        // Check to see if we have any data left to receive and update the bytes left.
-
-        if ((bytesLeft != 0) && !rxDMAInProgress)
-        {
-            DRV_SPI_MasterEBMReceive8BitISR(pDrvInstance);
-            bytesLeft = currentJob->dataLeftToRx + currentJob->dummyLeftToRx;
-        }
-        
-        if 
+             if 
             (!txDMAInProgress &&
             (currentJob->dataLeftToTx +currentJob->dummyLeftToTx != 0)
             )
@@ -179,6 +166,18 @@ int32_t DRV_SPI_ISRMasterEBM8BitTasks ( struct DRV_SPI_DRIVER_OBJECT * pDrvInsta
             DRV_SPI_MasterEBMSend8BitISR(pDrvInstance);
         }
         
+        DRV_SPI_ISRErrorTasks(pDrvInstance);
+        
+        /* Figure out how many bytes are left to be received */
+        volatile size_t bytesLeft = currentJob->dataLeftToRx + currentJob->dummyLeftToRx;
+        // Check to see if we have any data left to receive and update the bytes left.
+
+        if ((bytesLeft != 0) && !rxDMAInProgress)
+        {
+            DRV_SPI_MasterEBMReceive8BitISR(pDrvInstance);
+            bytesLeft = currentJob->dataLeftToRx + currentJob->dummyLeftToRx;
+        }
+     
         if ((bytesLeft == 0) && !rxDMAInProgress && !txDMAInProgress)
         {
                     // Disable the interrupt, or more correctly don't re-enable it later*/
@@ -228,32 +227,25 @@ int32_t DRV_SPI_ISRMasterEBM8BitTasks ( struct DRV_SPI_DRIVER_OBJECT * pDrvInsta
     
         /* Check to see if the interrupts would fire again if so just go back into 
            the loop instead of suffering the interrupt latency of exiting and re-entering*/
-        if (pDrvInstance->currentJob != NULL)
+        if ((pDrvInstance->currentJob != NULL) && !rxDMAInProgress && !txDMAInProgress)
         {   
             /* Clear the Interrupts */
             SYS_INT_SourceStatusClear(pDrvInstance->rxInterruptSource);
             SYS_INT_SourceStatusClear(pDrvInstance->txInterruptSource);
             SYS_INT_SourceStatusClear(pDrvInstance->errInterruptSource);
             /* Interrupts should immediately become active again if they're in a fired condition */
-            if (((pDrvInstance->rxEnabled) && SYS_INT_SourceStatusGet(pDrvInstance->rxInterruptSource)) ||
-                ((pDrvInstance->txEnabled) && SYS_INT_SourceStatusGet(pDrvInstance->txInterruptSource)) ||
+            if ((SYS_INT_SourceStatusGet(pDrvInstance->rxInterruptSource)) ||
+                (SYS_INT_SourceStatusGet(pDrvInstance->txInterruptSource)) ||
                 (SYS_INT_SourceStatusGet(pDrvInstance->errInterruptSource)))
             {
                 /* Interrupt would fire again anyway so we should just go back to the start*/
                 continueLoop = true;
                 continue;                            
             }
-            /* If we're here then we know that the interrupt should not be firing again so we can exit cleanly*/
-            /* Clear the interrupts now that we're done*/
-            /* Re-enable the interrupts*/
-            if (pDrvInstance->rxEnabled)
-            {
-                SYS_INT_SourceEnable(pDrvInstance->rxInterruptSource);
-            }
-            if (pDrvInstance->txEnabled)
-            {
-                SYS_INT_SourceEnable(pDrvInstance->txInterruptSource);
-            }
+            /* If we're here then we know that the interrupt should not be firing again immediately, so re-enable them and exit*/
+            SYS_INT_SourceEnable(pDrvInstance->rxInterruptSource);
+            SYS_INT_SourceEnable(pDrvInstance->txInterruptSource);
+
             return 0;            
         }
     

@@ -99,21 +99,6 @@ void SYS_Tasks ( void )
                 "SYS_TMR Tasks",
                 1024, NULL, 1, NULL);
 
-    /* Create OS Thread for Wi-Fi RTOS Initialization Task. */
-    xTaskCreate((TaskFunction_t) DRV_WIFI_InitTask,
-                "Wi-Fi RTOS Initialization Task",
-                512, NULL, 3, NULL);
-
-    /* Create OS Thread for Wi-Fi RTOS Deferred ISR. */
-    xTaskCreate((TaskFunction_t) DRV_WIFI_Deferred_ISR,
-                "Wi-Fi RTOS Deferred ISR",
-                1024, NULL, 7, NULL);
-
-    /* Create OS Thread for Wi-Fi RTOS MAC Task. */
-    xTaskCreate((TaskFunction_t) DRV_WIFI_MACTask,
-                "Wi-Fi RTOS MAC Task",
-                1024, NULL, 3, NULL);
-
 
     /* Create task for TCPIP state machine*/
     /* Create OS Thread for TCPIP Tasks. */

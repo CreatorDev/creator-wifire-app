@@ -73,7 +73,6 @@ void DRV_SPI_MasterDMASendDummy8BitISR(SYS_DMA_TRANSFER_EVENT event, SYS_DMA_CHA
     {
         // Job is done
         currentJob->txDMAProgressStage = DRV_SPI_DMA_COMPLETE;
-        pDrvInstance->txEnabled = true;
     }
 
 }
@@ -102,7 +101,6 @@ void DRV_SPI_MasterDMASendData8BitISR(SYS_DMA_TRANSFER_EVENT event, SYS_DMA_CHAN
     {
         // Job is done
         currentJob->txDMAProgressStage = DRV_SPI_DMA_COMPLETE;
-        pDrvInstance->txEnabled = true;
     }
 }
 
@@ -146,7 +144,6 @@ void DRV_SPI_MasterDMAReceiveDummy8BitISR(SYS_DMA_TRANSFER_EVENT event, SYS_DMA_
     {
         // Job is done
         currentJob->rxDMAProgressStage = DRV_SPI_DMA_COMPLETE;
-        pDrvInstance->rxEnabled = true;
         SYS_INT_SourceEnable(pDrvInstance->rxInterruptSource);
     }
 }
@@ -174,7 +171,6 @@ void DRV_SPI_MasterDMAReceiveData8BitISR(SYS_DMA_TRANSFER_EVENT event, SYS_DMA_C
     {
         // Job is done
         currentJob->rxDMAProgressStage = DRV_SPI_DMA_COMPLETE;
-        pDrvInstance->rxEnabled = true;
         SYS_INT_SourceEnable(pDrvInstance->rxInterruptSource);
     }
 }

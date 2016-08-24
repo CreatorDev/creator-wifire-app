@@ -672,10 +672,7 @@ void SYS_Initialize ( void* data )
     
     /* TCPIP Stack Initialization */
     sysObj.tcpip = TCPIP_STACK_Init();
-    if (sysObj.tcpip == SYS_MODULE_OBJ_INVALID)
-    {
-       return;
-    }
+    SYS_ASSERT(sysObj.tcpip != SYS_MODULE_OBJ_INVALID, "TCPIP_STACK_Init Failed" );
 
 
 

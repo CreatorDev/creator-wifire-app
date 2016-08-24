@@ -18,7 +18,7 @@
     definitions for build-time configuration options that are not instantiated
     until used by another MPLAB Harmony module or application.
     
-    Created with MPLAB Harmony Version 1.07
+    Created with MPLAB Harmony Version 1.08.01
 *******************************************************************************/
 
 // DOM-IGNORE-BEGIN
@@ -75,8 +75,8 @@ extern "C" {
 // *****************************************************************************
 /* Common System Service Configuration Options
 */
-#define SYS_VERSION_STR           "1.07"
-#define SYS_VERSION               10700
+#define SYS_VERSION_STR           "1.08.01"
+#define SYS_VERSION               10801
 
 // *****************************************************************************
 /* Clock System Service Configuration Options
@@ -252,6 +252,13 @@ extern "C" {
 #define DRV_WIFI_CONFIG_MHC
 #define DRV_WIFI_USE_FREERTOS
 
+#define DRV_WIFI_RTOS_INIT_TASK_SIZE 512u
+#define DRV_WIFI_RTOS_INIT_TASK_PRIORITY 3u
+#define DRV_WIFI_RTOS_DEFERRED_ISR_SIZE 1024u
+#define DRV_WIFI_RTOS_DEFERRED_ISR_PRIORITY 7u
+#define DRV_WIFI_RTOS_MAC_TASK_SIZE 1024u
+#define DRV_WIFI_RTOS_MAC_TASK_PRIORITY 3u
+
 #define DRV_WIFI_ASSERT(condition, msg) DRV_WIFI_Assert(condition, msg, __FILE__, __LINE__)
 
 #define DRV_WIFI_SPI_INDEX 0
@@ -278,7 +285,7 @@ extern "C" {
 #define MRF_INT_VECTOR INT_VECTOR_INT4
 
 #define DRV_WIFI_DEFAULT_NETWORK_TYPE       DRV_WIFI_NETWORK_TYPE_ADHOC
-#define DRV_WIFI_DEFAULT_SSID_NAME          "AdHoc"
+#define DRV_WIFI_DEFAULT_SSID               "AdHoc"
 #define DRV_WIFI_DEFAULT_LIST_RETRY_COUNT   (DRV_WIFI_RETRY_ADHOC) /* Number (1..254) of times to try to connect to the SSID when using Ad/Hoc network type */
 #define DRV_WIFI_DEFAULT_CHANNEL_LIST       {6} /* Set Ad-Hoc network channel */
 
@@ -506,11 +513,14 @@ extern "C" {
 #define TCPIP_NETWORK_DEFAULT_DNS 				"192.168.1.25"
 #define TCPIP_NETWORK_DEFAULT_SECOND_DNS 			"0.0.0.0"
 #define TCPIP_NETWORK_DEFAULT_POWER_MODE 			"full"
-#define TCPIP_NETWORK_DEFAULT_INTERFACE_FLAGS   		TCPIP_NETWORK_CONFIG_DHCP_CLIENT_ON
+#define TCPIP_NETWORK_DEFAULT_INTERFACE_FLAGS                       \
+                                                    TCPIP_NETWORK_CONFIG_DHCP_CLIENT_ON |\
+                                                    TCPIP_NETWORK_CONFIG_DNS_CLIENT_ON |\
+                                                    TCPIP_NETWORK_CONFIG_IP_STATIC
 #define TCPIP_NETWORK_DEFAULT_MAC_DRIVER 		    DRV_MRF24W_MACObject
 #define TCPIP_NETWORK_DEFAULT_IPV6_ADDRESS 			0
-#define TCPIP_NETWORK_DEFAULT_IPV6_PREFIX_LENGTH 		0
-#define TCPIP_NETWORK_DEFAULT_IPV6_GATEWAY 		        0
+#define TCPIP_NETWORK_DEFAULT_IPV6_PREFIX_LENGTH    
+#define TCPIP_NETWORK_DEFAULT_IPV6_GATEWAY 		    0
 
 
 /*** OSAL Configuration ***/
