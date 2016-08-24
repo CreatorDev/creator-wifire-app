@@ -60,8 +60,8 @@ Secure CoAP communication will be supported over DTLS (UDP transport with an enc
 
 ---   
 For further information please visit:  
-* [The CreatorDev forum](Forum.creatordev.io)  
-* [CreatorDev online documentation](Docs.creatordev.io/wifire)  
+* [The CreatorDev forum](https://forum.creatordev.io)  
+* [CreatorDev online documentation](https://docs.creatordev.io/wifire)  
 
 ---
 
