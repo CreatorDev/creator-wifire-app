@@ -22,7 +22,7 @@ An application overview, a list of IPSO supported objects, and command line setu
 
 ---
 
-For further infomation please visit:  
+For further information please visit:  
 * [The CreatorDev forum](Forum.creatordev.io)  
 * [CreatorDev online documentation](Docs.creatordev.io/wifire)  
 
