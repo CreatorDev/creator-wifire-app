@@ -128,8 +128,8 @@ Reboot after installing the tools to finalise the installation process.
 
 ---   
 For further information please visit:  
-* [The CreatorDev forum](Forum.creatordev.io)  
-* [CreatorDev online documentation](Docs.creatordev.io/wifire)  
+* [The CreatorDev forum](https://forum.creatordev.io)  
+* [CreatorDev online documentation](https://docs.creatordev.io/wifire)  
 
 ---
 
