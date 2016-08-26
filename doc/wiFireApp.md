@@ -70,6 +70,9 @@ For further information please visit:
 
 [Supported WiFire objects](supportedObjects.md)  
 
+[WiFire configuration mode](wifireconfig.md)  
+
+
 ### Previous
 
 [Back to README](../README.md)  
