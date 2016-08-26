@@ -324,4 +324,18 @@ The web service supports the following standard HTTP status codes...
 
 ---
 
+### Next
+
+[Supported WiFire objects](supportedObjects.md)  
+
+### Previous
+
+[WiFire application](wiFireApp.md)  
+
+[Back to README](../README.md)  
+
+
+
+---
+
 ---
