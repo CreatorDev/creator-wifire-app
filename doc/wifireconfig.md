@@ -75,7 +75,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-info+xml; chars
 * **MAC Address** - unique factory-programmed Wi-Fi module MAC address
 * **Serial Number** - unique factory-programmed CPU serial number (16x hex characters)
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 200 | OK - the request was fulfilled |  
@@ -105,7 +106,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.network-config+xml; ch
 * Bespoke mobile applications will need to prompt the user for these settings.  
 * The default encryption type is WPA2
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 204 | No content - the request was fulfilled and no content was returned |  
@@ -136,7 +138,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.network-config+xml; ch
 * **Password** - this field is always empty  
 * **Static address mode** - The *static* fields are only used in static mode
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 200 | OK - the request was fulfilled |  
@@ -169,7 +172,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-server+xml; cha
 * **Certificate** - Device specific certificate (Cert mode only). The WiFire will extract the client identity from this certificate.  
 * **BootstrapCertChain** - Certificate chain of trust for client to trust the bootstrap server (optional).  
  
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 200 | OK - the request was fulfilled |  
@@ -197,7 +201,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-server+xml; cha
 Notes:  
 * For security, **Private Key**, **Certificate** and **BootstrapCertChain** are omitted or empty when retrieved.
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 200 | OK - the request was fulfilled |  
@@ -219,7 +224,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-name+xml; chars
 Notes:  
 * **Device Name** - Device name is not supported by the device server. It can only be accessed in SoftAP mode or from the USB console.  
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 204 | No content - the request was fulfilled and no content was returned |  
@@ -245,7 +251,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-name+xml; chars
 Notes:  
 * **Name** - Default value is *WiFire_xxxxxx* where *xxxxxx* is the last three bytes of the device MAC address, for example, *WiFire_1E13C1*.
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 200 | OK - the request was fulfilled |  
@@ -261,7 +268,8 @@ Notes:
 * The device is rebooted after returning its response. If successful the HTTPS connection will then be closed.  
 * The device will restart in application mode if both the Network and Device server settings have been configured, otherwise it will restart in configuration mode.
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 204 | No content - the request was fulfilled and no content was returned |  
@@ -276,7 +284,8 @@ Request: **POST** https:// 192.168.1.25 /rebootsoftap
 Notes:  
 * The device is rebooted after returning its response and will boot in configuration (softAP) mode. If successful the HTTPS connection will then be closed.  
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 204 | No content - the request was fulfilled and no content was returned |  
@@ -290,7 +299,8 @@ Request: **POST** https:// 192.168.1.25 /factoryreset
 Notes:  
 * All settings are cleared. The device can now be re-configured.  
 
-A response will have one of the following status codes:
+A response will have one of the following status codes:  
+
 | HTTP Status Code | Description |  
 |-----|-----|  
 | 204 | No content - the request was fulfilled and no content was returned |  
