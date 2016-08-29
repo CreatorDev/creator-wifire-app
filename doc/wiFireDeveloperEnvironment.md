@@ -23,15 +23,15 @@ All the software listed below is available free of charge for both Windows and L
 * Git for [Windows](https://git-scm.com/download/win) or [Linux](https://git-scm.com/download/linux)
 * XC32 v1.42 - C cross compiler for PIC microcontrollers  
 * MPLABX IDE v3.35 - Microchip PIC integrated development environment  
-* Harmony v1_07_01 - integrated firmware development platform for PIC32 microcontrollers  
+* Harmony v1_08_01 - integrated firmware development platform for PIC32 microcontrollers  
 
 ### Installing on Windows
 
-### Installing Harmony v1_07_01  
+### Installing Harmony v1_08_01  
 
-**Note.** *The WiFire application is designed to work specifically with Harmony v1.07.01. Successful operation is not guaranteed with other versions.* Version 1.07.01 is available for download under the *archived downloads* tab at the following link:  
+**Note.** *The WiFire application is designed to work specifically with Harmony v1.08.01. Successful operation is not guaranteed with other versions.* Version 1.08.01 is available for download at the following link:  
 
-[Harmony v1_07_01 - integrated firmware development platform for PIC32 microcontrollers. ](http://www.microchip.com/mplab/mplab-harmony)  
+[Harmony v1_08_01 - integrated firmware development platform for PIC32 microcontrollers. ](http://www.microchip.com/mplab/mplab-harmony)  
 
 After downloading, run the executable *harmony_vX_XXX_windows_installer.exe*. You may need administrator rights on your PC.  
 
