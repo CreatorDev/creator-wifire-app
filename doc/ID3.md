@@ -13,7 +13,7 @@ To use Microchip’s MPLAB® ICD3 In-circuit debugger tool you'll need an approp
 
 Alternatively you can make your own adaptor using the pinouts illustrated below.  
 
-[](c.png)
+![](c.png)
 
 
 | RJ11 Socket Pin | 6-way Plug Conductor |  
