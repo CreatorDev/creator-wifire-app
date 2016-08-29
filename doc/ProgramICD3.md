@@ -13,25 +13,15 @@ The staggered positioning of the holes in the WiFire's ICSP interface allows the
 
 ![](p2.png)  
 
-11.	Plug the programmer tool into a free USB port on the development PC. If applicable plug the adaptor cable into the ICSP socket of your programmer
-
-12.	Plug the programmer’s 6-pin ICSP connection (or adaptor cable if applicable) into the 6-way ICSP header on your development board. For the chipKIT Wi-FIRE this is connector ‘JP1’.
-
-13.	In MPLAB® X, right-click the project name ‘flow_skeletonapp’ in the ‘Projects’ pane and select ‘Properties’ from the context menu that appears.
-
-14.	Within the Project Properties dialog, select the appropriate programmer from the ‘Hardware Tool’ list box. For ICD3 select ‘ICD3’; for other programmer tool types, you may need to experiment to determine the correct setting for your device.
-
-15.	Click ‘Apply’ to change to the selected programmer tool.
-
-Under the ‘Conf: [chipkit_wifire]’ (or ‘Conf: [chipkit_wifire_ec]’ if you have a Rev B board) entry in the project properties list you should see the name of the selected programmer tool appear.
-
-16.	Select the name of the programmer tool, and under the tool’s ‘Options’ page, make sure the ‘Preserve Program Memory’ option is checked.
-
-17.	Make sure the ‘Preserve Program Memory Start (hex)’ text box, has the entry 0x1d000000. 
-
-18.	Make sure the ‘Preserve Program Memory End (hex)’ text box, has the entry 0x1d1fffff.
-
-19.	Click ‘OK’ to close the ‘Project Properties’ dialog.
+*	Plug the programmer tool into a free USB port on the development PC.  
+*	Plug the programmer’s 6-pin ICSP connection (or adaptor cable) into the 6-way ICSP header on your development board. For the WiFire this is connector ‘JP1’.  
+*	In MPLAB® X, right-click the project name of the target file and select ‘Properties’ from the context menu that appears.  
+*	In the Project Properties dialog, select the appropriate programmer from the ‘Hardware Tool’ list box. For ICD3 select ‘ICD3’; for other programmer tool types, you may need to experiment to determine the correct setting for your device.  
+*	Click ‘Apply’ to change to the selected programmer tool. Under the ‘Conf: [chipkit_wifire]’ (or ‘Conf: [chipkit_wifire_ec]’ if you have a Rev B board) entry in the project properties list you should see the name of the selected programmer tool appear.  
+*	Select the name of the programmer tool, and under the tool’s ‘Options’ page, make sure the ‘Preserve Program Memory’ option is checked.  
+*	Make sure the ‘Preserve Program Memory Start (hex)’ text box, has the entry 0x1d000000.  
+*	Make sure the ‘Preserve Program Memory End (hex)’ text box, has the entry 0x1d1fffff.  
+*	Click ‘OK’ to close the ‘Project Properties’ dialog.  
 
 Next we must update the MPLAB® project to include the required Harmony source files. This is achieved using the MPLAB® X Harmony Code Configurator Plugin. The Plugin allows the developer to select and configure the individual elements of the Harmony Framework that they require for their embedded project. In our case the, skeleton app requires the configurator to add-in the source files for the Harmony TCP/IP stack and various low-level drivers. When developing your application, you can re-run the Harmony configurator tool at any time in order to add/remove parts of the Harmony Framework as required.
 
