@@ -3,7 +3,7 @@
 
 ---
 
-## Setting up the WiFire board with the MPLAB ICD 3 In-Circuit Debugger
+## Programming the WiFire board with the MPLAB ICD 3 In-Circuit Debugger using MPLAB IPE
 
 To use Microchip’s [MPLAB® ICD3 In-circuit debugger tool](http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=DV164035) you'll need an appropriate adaptor board or cable to connect the ICD3 to the WiFire. The straight-through adaptor cable shown below ([Microchip part no. AC164110](http://www.digikey.co.nz/product-detail/en/microchip-technology/AC164110/AC164110-ND/1212490)) converts the RJ11 connection of the ICD3 to the 6-way inline connection of the WiFire.  
 
@@ -34,21 +34,19 @@ Alternatively you can make your own adaptor using the pinouts illustrated below.
 
 **Note.** *In the above picture there's a further USB cable connecting the Mini-USB/UART connector of the Wifire board to a virtual COM port on the development PC. For details on how this is used see [WiFire hardware setup](wiFireHardwareSetup.md).*  
 
-### Programming your device using MPLABs IPE
+### Programming your device using MPLAB IPE
 
 1. Start the MPLAB IPE application on your PC  
-2. Select the board type from the drop down list in MPLAB IPE to match your version of WiFIRE board:  
+2. Select the board type from the drop down list in MPLAB IPE to match your version of WiFire board:  
 ![](IPEDevAndTool.png)  
-3. Press the connect in MPLAB IPE button to connect the app to your ICD programmer. Wait for any programmer firmware updates to be automatically run by MPLAB IPE.  
-4. Press the Browse button for the Source field, navigate to the hex file to be programmed and select it.  
+3. Press the *Connect* button to connect the MPLAB IPE to your ICD programmer. Wait for any programmer firmware updates to be automatically run by MPLAB IPE.  
+4. Press the *Browse* button for the Source field, then navigate to the hex file to be programmed and select it.  
 ![](4.jpg)
-5. If a dialog box is shown regarding debug information being cleared press the OK button to continue.  
-6. Press the program button in the MPLAB IPE app.  
+5. If a dialog box is shown regarding debug information being cleared, press *OK* to continue.  
+6. Press the *Program* button.  
 ![](5.jpg)
-7. Wait for the the hex to be loaded to the WiFire board and verified.  
+7. Wait for the the hex file to be loaded and verified.  
 ![](6.jpg)
-
-
 
 
 ----
