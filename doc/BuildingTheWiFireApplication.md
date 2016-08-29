@@ -99,15 +99,17 @@ Select (ctrl+click), and open all of the following project libraries:
     * libcreatorcore.X  
     * libcyassl.X  		
 
-	** The *EC config* for each of the above library projects must be made active in order to ensure the correct configuration for the EC board:**  
-	
+3. The *EC config* for each of the above library projects must be made active in order to ensure the correct configuration for the EC board...  
+
     * Right-click on the library project and select *properties* from the context menu
     * Click the *Manage Configurations* button in the Project Properties dialogue box   
     * Select *pic32mz_ec* in the Configurations dialogue and click the *Set Active* button  
     * Repeat for each project library  
-![](../images/setActiveCropped.png)
+
+![](../images/setActiveCropped.png)  
+
 	
-3. Open the application project:  
+4. Open the application project:  
 *C:\microchip\harmony\current\apps\creator-wifire-app\firmware\creator_wifireapp.X*  
 Ensure that '*chipkit_wifire_ec*' is selected as the main project.  
 **Note.** The load process may report the following errors:  
@@ -116,8 +118,17 @@ Ensure that '*chipkit_wifire_ec*' is selected as the main project.
 The above errors may be ignored.  
 ![](../images/mplab_chipkit_ec_selected.png)  
 
-4. Build the application.  
+
+5. Build the application.  
 ![](../images/mplab_build_icon_ec.png)  
+
+
+### Programming the WiFire device
+
+[Using the MPLAB ICD3](ID3.md)
+
+[Using the PICkit 3 ICD](PICkit.md)  
+
 
 ---    
 For further information please visit:  
