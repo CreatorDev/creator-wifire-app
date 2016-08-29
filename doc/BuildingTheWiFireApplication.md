@@ -76,6 +76,9 @@ Error: Project "creator_wifireapp" refers to file "bsp_config.h" which does not 
 Error: Project "creator_wifireapp" refers to file "bsp_sys_init.c" which does not exist in the disk. The project failed to load.  
 ```  
 The above errors may be ignored.  
+
+Ensure that the ChipKIT WiFire device is selected:
+
 ![](../images/mplab_chipkit_selected.png)  
 4. Build the application.  
 ![](../images/mplab_build_icon.png)  
@@ -125,6 +128,9 @@ Ensure that '*chipkit_wifire_ec*' is selected as the main project.
 `Error: Project "creator_wifireapp" refers to file "bsp_config.h" which does not exist in the disk. The project failed to load.`  
 `Error: Project "creator_wifireapp" refers to file "bsp_sys_init.c" which does not exist in the disk. The project failed to load.`   
 The above errors may be ignored.  
+
+Ensure that the ChipKIT WiFire EC device is selected:
+
 ![](../images/mplab_chipkit_ec_selected.png)  
 
 
