@@ -81,6 +81,15 @@ The above errors may be ignored.
 ![](../images/mplab_build_icon.png)  
 
 
+### Programming the WiFire device
+
+[Using the MPLAB ICD3](ID3.md)
+
+[Using the PICkit 3 ICD](PICkit.md)  
+
+---  
+
+
 ### Building the WiFire application code for the first time using the EC board 
 
 
