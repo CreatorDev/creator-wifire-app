@@ -15,7 +15,7 @@ All the software listed below is available free of charge for both Windows and L
 
 ### Hardware
 * Digilent ChipKIT WiFire development board (PIC32MZ2048EFG100 processor)  
-* MPLAB ICD 3 – Microchip In-Circuit Debugger  
+* MPLAB ICD 3 – Microchip In-Circuit Debugger ([setup information available here](doc/ID3.md)) *or* PICkit™ 3 In-Circuit Debugger ([setup information available here](doc/PICkit3.md))   
 * Adaptor cable – to connect ICD to WiFire  
 * USB cable – for command console  
 
