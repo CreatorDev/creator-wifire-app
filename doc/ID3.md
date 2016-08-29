@@ -25,7 +25,28 @@ Alternatively you can make your own adaptor using the pinouts illustrated below.
 | 5	| 5 |  
 | 6	| 6 |  
 
+### Putting it all together 
 
+*	Plug the programmer tool into a free USB port on the development PC.  
+*	Plug the programmer’s 6-pin ICSP connection (or adaptor cable) into the 6-way ICSP header on your development board. For the WiFire this is connector ‘JP1’. 
+
+![](ICDAndWiFire.jpg)  
+
+**Note.** *In the above picture there's a further USB cable connecting the Mini-USB/UART connector of the Wifire board to a virtual COM port on the development PC. For details on how this is used see [WiFire hardware setup](wiFireHardwareSetup.md).*  
+
+### Programming your device using MPLABs IPE
+
+1. Start the MPLAB IPE application on your PC  
+2. Select the board type from the drop down list in MPLAB IPE to match your version of WiFIRE board:  
+![](IPEDevAndTool.png)  
+3. Press the connect in MPLAB IPE button to connect the app to your ICD programmer. Wait for any programmer firmware updates to be automatically run by MPLAB IPE.  
+4. Press the Browse button for the Source field, navigate to the hex file to be programmed and select it.  
+![](4.jpg)
+5. If a dialog box is shown regarding debug information being cleared press the OK button to continue.  
+6. Press the program button in the MPLAB IPE app.  
+![](5.jpg)
+7. Wait for the the hex to be loaded to the WiFire board and verified.  
+![](6.jpg)
 
 
 
