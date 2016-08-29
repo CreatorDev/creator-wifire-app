@@ -21,7 +21,7 @@ When successfully configured the WiFire device will power up or reboot into appl
 The device can be forced back into configuration mode by:  
 * Holding down Button 1 and Button 2, while pressing the reset button  
 * Entering *reboot_softap* at the command line interface  
-* Issuing a reboot in softap mode command via the LWM2M interface  
+* Issuing Execute command *reboot_softap* via the LWM2M interface  
 
 On startup in configuration mode the console  will display content *similar* to the following:
 ```
@@ -61,7 +61,6 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-info+xml; chars
 
 <DeviceInfo>
   <DeviceName> -- Device Name -- </DeviceName>
-  <ClientID> -- client identifier -- </ClientID>
   <DeviceType>wifire</DeviceType>
   <SerialNumber> -- Device Serial number -- </SerialNumber>
   <MACAddress> -- Device MAC address -- </MACAddress>
@@ -69,9 +68,8 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-info+xml; chars
 </DeviceInfo>
 ```
 **Notes:**  
-* **Device Name** - a default or user assigned name for this device (default = 'wifire'). Device name is not supported by the device server. In application mode the device name can be retrieved from the custom ClientInfo object (over LWM2M).
+* **Device Name** - a default or user assigned name for this device (default = 'WiFire_xxxxxx' where xxxxxx is last 6 digits of MAC address). WiFire uses the device name as client identity for LWM2M.
 * **Device Type** - device type is set by the application (default = ‘wifire’).
-* **Client ID** - set by the security settings in the Device Server configuration (typically a Guid). The default value is empty until the device server has been configured.
 * **MAC Address** - unique factory-programmed Wi-Fi module MAC address
 * **Serial Number** - unique factory-programmed CPU serial number (16x hex characters)
 
@@ -157,7 +155,7 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-server+xml; cha
   <BootstrapUrl> -- Bootstrap server URL -- </BootstrapUrl>
   <SecurityMode>NoSec | PSK | Cert</SecurityMode>
   <PublicKey> -- PSK (Pre-Shared Key) identity -- </PublicKey>
-  <PrivateKey> -- Pre-Shared Key -- </PrivateKey>
+  <PrivateKey> -- PSK secret -- </PrivateKey>
   <Certificate> -- Device specific certificate (X.509 - ASN.1 in PEM format) -- </Certificate>
   <BootstrapCertChain> -- Chain of trust for bootstrap server (X.509 - ASN.1 in PEM format) -- </BootstrapCertChain>
 </DeviceServer>
@@ -168,7 +166,7 @@ Content-Type: application/xml; application/vnd.imgtec.com.device-server+xml; cha
 * **Bootstrap Url** - Used to bootstrap to the device server (LWM2M).  
 * **Security Mode** - NoSec = No security (for testing only, not supported by device server), PSK = Pre-shared key mode, Cert = Certificate mode.  
 * **Public Key** - PSK identity (PSK mode only). Provides the client identity for use with the device server
-* **Private Key** - Pre-shared key (PSK mode only).  
+* **Private Key** - PSK secret (PSK mode only).  
 * **Certificate** - Device specific certificate (Cert mode only). The WiFire will extract the client identity from this certificate.  
 * **BootstrapCertChain** - Certificate chain of trust for client to trust the bootstrap server (optional).  
  
