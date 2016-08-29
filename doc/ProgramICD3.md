@@ -7,7 +7,7 @@ If your programming tool does not come with one already you will need to provide
  
 ![](p1.png)  
 
-The staggered positioning of the holes in the WiFire's ICSP interface allows the 6-way header an interference fit, so there should be no need to solder it into position unles a permanent commection is desired.  
+The staggered positioning of the holes in the WiFire's ICSP interface allows the 6-way header an interference fit, so there should be no need to solder it into position unless a permanent connection is desired.  
 
 <span style="color:red">IMPORTANT: Pin-1 of the ICSP interface is marked with a ‘1’ character. Ensure that the Pin-1 of the programmer connector is aligned with the Pin-1 on the WiFire ICSP.</span>  
 
