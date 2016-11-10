@@ -147,8 +147,7 @@ For the commit message, the following rules apply:
  * Provide a detailed description of the change.
  * Leave a blank line after the description.
  * If the patch relates to an issue, add a line with 'Ref: ISSUE_ID'.
- * Add a Gerrit 'Change-id' line.
- * Add a Git 'Signed-off-by' line using ````git commit -s```` or ````git commit --sign-off```` (see *Signing your work* below).
+  * Add a Git 'Signed-off-by' line using ````git commit -s```` or ````git commit --sign-off```` (see *Signing your work* below).
 
  Example:
 
@@ -161,8 +160,7 @@ For the commit message, the following rules apply:
     For real features this would contain some text
     describing in detail what the new feature actually does.
 
-    Ref: AWA-2131
-    Change-Id: Id564ab1230913abf88123dff193b1231b1
+    Ref: <project>-<ID_number>
     Signed-off-by: User Name <user.name@email.com>
 
 ````
