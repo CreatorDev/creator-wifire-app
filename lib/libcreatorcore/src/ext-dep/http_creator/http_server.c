@@ -182,6 +182,13 @@ void CreatorHTTPServerRequest_SendResponse(CreatorHTTPServerRequest self, int st
         header += length;
         header = AddCrLf(header);
     }
+    
+    memcpy(header, "Access-Control-Allow-Origin: *", 30);
+    header += 30;
+    header = AddCrLf(header);
+    memcpy(header, "Access-Control-Allow-Methods: POST, GET, OPTIONS", 48);
+    header += 48;
+    header = AddCrLf(header);
 
     memcpy(header, "Content-Length: ", 16);
     header += 16;
