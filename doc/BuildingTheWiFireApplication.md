@@ -88,7 +88,7 @@ Ensure that the ChipKIT WiFire device is selected:
 
 [Using the MPLAB ICD3](ID3.md)
 
-[Using the PICkit 3 ICD](PICkit.md)  
+[Using the PICkit 3 ICD](PICkit3.md)  
 
 ---  
 
